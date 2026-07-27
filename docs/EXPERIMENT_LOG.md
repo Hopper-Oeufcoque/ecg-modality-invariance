@@ -63,6 +63,7 @@
 | E38 | **REAL PAIRED clinical Lead-I ↔ Apple Watch profile (SJLIFE n=243)** | gain 8.25×, norm-dist 1.065, AW bw 0.202 vs clin 0.033 | ✅ | **First real PAIRED-hardware read (same patient, both devices). (1) Systematic ~8.25× amplitude gain (Apple µV vs clinical coarse units) — ALWAYS per-record normalize before cross-modality. (2) Real modality gap is LARGER than HOME suggested (norm-dist 1.065 vs E37's 0.25-0.50): AW has 6× more baseline wander (0.202 vs 0.033) + lower QRS-band energy — a mild-noise + wander shift, NOT HF. Confirms LIGHT-DR direction but says calibrate wander UP. Caveat: recordings ~64min apart → distributional only, not beat-aligned** |
 | E39 | **recalibrate augmenter to real Apple target (SJLIFE)** | open-loop overshoots: dist worsens 1.06→1.13-1.22 | ❌ | **Informative NEGATIVE: light-DR too gentle (no move); open-loop CalibratedAWAugmenter OVERSHOOTS bw (0.53 vs target 0.23) AND collapses kurtosis (11.9→3.6) → coverage worse than clean. Root cause: open-loop sqrt(gap)·4 heuristic never checks measured output. Calibration must be closed-loop** |
 | E40 | **closed-loop calibrator (binary-search to measured target)** | dist 1.06→0.659 (38% closer), morph safe | ✅ | **FIX: binary-search wander amp until MEASURED bw hits target + 1/f coloured wander (not sinusoids). First variant to beat clean floor: dist 0.659, bw 0.217 vs target 0.230, kurtosis 7.50 preserved (open-loop→0.08), QRS-corr 0.988/R-peak 0.963. Promoted ClosedLoopCalibrator to src/. Coverage necessary-not-sufficient — AUROC still needs labels** |
+| E41 | **END-TO-END AUROC: clinical→real labeled single-lead (CinC, 5 seeds)** | closed-loop 0.753 vs clean 0.681, +0.072 (5/5, p=0.086) | ⚠️✅ | **FIRST real end-to-end utility test. Closed-loop-calibrated clinical training LIFTS real single-lead AUROC: +0.072 over clean, wins 5/5 seeds, best zero-label arm (>light-DR 0.712), closes ~29% of clean→oracle(0.930) gap with ZERO test labels. Coverage→utility CONFIRMED (answers E25b). BUT p=0.086 not sig (needs more seeds) + cocktail REGRESSED (0.722<0.753, contradicts E26 — cocktail rule is target-dependent). CinC=finger not wrist; AF/NORM easy task** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -985,6 +986,41 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   unblock — find a LABELED single-lead set to test whether closed-loop-calibrated
   training data actually lifts AUROC. Files: `results/40_closed_loop_calib/`,
   `experiments/40_closed_loop_calib.py`, `src/aw_generator.py::ClosedLoopCalibrator`.
+
+---
+
+## E41 — END-TO-END AUROC: clinical→real labeled single-lead transfer (2026-07-27)
+- **Milestone:** the experiment the project was built toward — a REAL downstream
+  AUROC on REAL labeled single-lead data, testing whether the E40 closed-loop
+  calibrator (proven to hit the real modality profile) actually LIFTS transfer
+  accuracy. Answers E25b's necessary-vs-sufficient (coverage vs utility) question.
+- **Setup:** TRAIN = PTB-XL Lead-I AFIB-vs-NORM (real 12-lead clinical, ch0),
+  ~700/class. TEST = held-out real CinC 2017 AF-vs-Normal (AliveCor KardiaMobile
+  dry-electrode single-lead, 300→100 Hz). 5 seeds. Calibration fit to UNLABELED
+  CinC-ref bw_energy only (zero test labels). Model = 1-lead ResNet, 20 ep.
+- **Result (AUROC on real CinC):** clean 0.681±0.052 · light_DR 0.712±0.047 ·
+  **closed_loop 0.753±0.060** · clean+closed 0.722±0.064 · oracle 0.930±0.014.
+  Closed-loop − clean = **+0.072, wins 5/5 seeds, paired t=2.26 p=0.086**.
+  Closes ~29% of the clean→oracle gap with ZERO test labels.
+- **Verdict ⚠️✅ (promising trend):** coverage DID translate to utility — the
+  best zero-label arm is the real-distribution-calibrated one, consistently
+  (5/5). But p=0.086 is NOT significant at 0.05; needs more seeds before a hard
+  claim. Strongest real-labeled zero-label result the project has.
+- **Two honesty flags:**
+  (1) **Cocktail regressed** (0.722 < 0.753 closed-loop-alone) — CONTRADICTS E26
+  (clean∪aug beat aug-alone). E26's target was a WatchSim proxy; here mixing
+  clean clinical dilutes real-distribution coverage. **The cocktail rule is
+  target-dependent, not universal.**
+  (2) CinC = finger dry-electrode ≠ Apple Watch wrist (closest LABELED proxy;
+  real AW has no labels). AF/NORM = easy distinctive-rhythm task (E31: harder
+  tasks generalize worse). Single-site clinical source.
+- **Lesson:** measuring the real target distribution (unlabeled) and closing the
+  calibration loop to it converts abundant clinical data into materially better
+  real-single-lead transfer — the north-star mechanism works on real labeled
+  data, pending statistical confirmation.
+- ⟲ **follow-up:** E42 = 15–20 seeds to settle p<0.05; cocktail mixing-ratio
+  sweep; multi-axis closed-loop. Files: `results/41_endtoend_auroc/`,
+  `experiments/41_endtoend_auroc.py`.
 
 ---
 
