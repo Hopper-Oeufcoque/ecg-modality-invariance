@@ -37,6 +37,7 @@
 | E18 | scattering transforms (novel, deformation-stable) | 0.661 | ⚠️ | training-free modality-robustness beats naive; underperforms learned but complementary |
 | E20 | set-invariant DeepSet over leads (architectural novelty) | 0.708 | ⚠️ | competitive but mean-pool discards lead identity; < lead-masking (0.718) / sim-trained (0.742) |
 | E6 | real single-lead simulator validation | (dist, n/a) | ⚠️⚠️ | **simulator over-degrades; sim_vs_real gap > real_vs_clinical; E17 win carries realism debt** |
+| E10 | INLP modality scrubbing (novel, NLP→ECG) | 0.708→0.712 | ❌ | modality linearly separable (0.999) but scrubbing it is NEUTRAL — gap is info loss, not a removable shortcut |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -283,6 +284,36 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
 - ⟲ Follow-up E6b (classifier cross-over), E-sim-calib (recalibrate noise →
   kurtosis ≥ 15 / entropy ≤ 0.4, re-run E17), E-sim-dryelec (wrist dry-electrode
   reference data).
+
+## E10 — INLP modality-direction scrubbing (novel, NLP→ECG) (2026-07-27)
+- **Hypothesis:** the recording-modality signature lives in a low-rank linear
+  subspace of a trained encoder's penultimate features; iteratively projecting it
+  out (INLP, Ravfogel et al. 2020 — NLP fairness workhorse, never on ECG
+  modality) makes a pathology classifier invariant without retraining.
+- **Setup:** frozen lead-masking backbone (E2 V2). 32-dim penultimate features
+  for clinical + sim-watch. Modality adversary = logistic regression (clinical vs
+  watch); INLP iterates K=1..8 rounds (fit adversary → project direction out).
+  Pathology probe: cross-domain (train clinical→test watch) + in-domain.
+  `experiments/10_modality_scrub.py`.
+- **Result:** baseline modality-adversary acc = **0.999** (modality almost
+  perfectly linearly separable). INLP drops it 0.999→0.906(K1)→0.825(K3)→0.738(K5)
+  →**plateau 0.732 (K8)** — modality is distributed/nonlinear, only partly
+  linearly removable. Pathology AUROC barely moves: cross-domain 0.708→0.712(K5,
+  best)→0.703(K8); in-domain flat 0.724. Full sweep within ±0.005 = seed noise.
+- **Verdict:** ❌ (neutral). The linear modality direction EXISTS (0.999) and IS
+  partly removable, but scrubbing it does NOT close the cross-domain gap.
+- **Lesson:** the residual cross-domain gap is **NOT a linearly-removable
+  modality shortcut** — it's genuine information loss (lead-count, per E1) + sim/
+  real mismatch (per E6). Post-hoc feature surgery cannot recover information the
+  single-lead recording never contained. INLP confirms the encoder (lead-masking
+  trained) already uses content features (no modality shortcut crowding out
+  pathology signal to remove). Principled rejection of the I8 frontier idea.
+- **Lesson for the project:** the lever is either training-time invariance
+  (MixStyle E15 / IRM E9 — prevent reliance) or recovering missing lead info
+  (synthesis B1 / latent alignment E3), NOT post-hoc removal. E10 vs E15 will
+  contrast post-hoc removal (neutral) vs by-construction prevention.
+- ⟲ Follow-up E15 (MixStyle, by-construction counterpart); E10b (nonlinear
+  scrubbing — likely still neutral).
 
 ---
 

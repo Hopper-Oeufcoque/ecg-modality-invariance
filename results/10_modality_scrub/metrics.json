@@ -1,0 +1,87 @@
+{
+  "fs": 100.0,
+  "n_train": 1225,
+  "n_test": 497,
+  "classes": [
+    "NORM",
+    "MI",
+    "STTC",
+    "CD",
+    "HYP"
+  ],
+  "feat_dim": 32,
+  "backbone": "ECGResNet1d 12-lead lead-masking prob=0.5 (E2 V2)",
+  "inlp": {
+    "baseline_modality_acc": 0.9989939637826962,
+    "K0_cross_domain_auroc": 0.7077872430352798,
+    "K0_in_domain_auroc": 0.7242885033914381,
+    "rounds": [
+      {
+        "K": 1,
+        "modality_acc": 0.9064386317907445,
+        "cross_domain_auroc": 0.7066876925269344,
+        "in_domain_auroc": 0.7241835377128475,
+        "train_modality_acc_per_round": [
+          0.5
+        ]
+      },
+      {
+        "K": 2,
+        "modality_acc": 0.8893360160965795,
+        "cross_domain_auroc": 0.707886935450184,
+        "in_domain_auroc": 0.7246122161500081,
+        "train_modality_acc_per_round": [
+          0.5,
+          0.5
+        ]
+      },
+      {
+        "K": 3,
+        "modality_acc": 0.8249496981891348,
+        "cross_domain_auroc": 0.7084360690347846,
+        "in_domain_auroc": 0.7241178527255975,
+        "train_modality_acc_per_round": [
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      {
+        "K": 5,
+        "modality_acc": 0.738430583501006,
+        "cross_domain_auroc": 0.7116508484514632,
+        "in_domain_auroc": 0.723948229829581,
+        "train_modality_acc_per_round": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      {
+        "K": 8,
+        "modality_acc": 0.7323943661971831,
+        "cross_domain_auroc": 0.7030353146834365,
+        "in_domain_auroc": 0.7232390533716604,
+        "train_modality_acc_per_round": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      }
+    ]
+  },
+  "honesty": [
+    "single seed",
+    "single backbone",
+    "32-dim feature space (INLP rank-limited)",
+    "sim-watch not real-watch",
+    "linear probes only (nonlinear modality evades INLP)"
+  ]
+}
