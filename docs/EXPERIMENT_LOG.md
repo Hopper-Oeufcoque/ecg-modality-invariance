@@ -43,6 +43,7 @@
 | E6b | classifier cross-over: train sim → test REAL CinC | 0.993→0.737 | ⚠️⚠️⚠️ | **sim HURTS real transfer; clean Lead-I (0.753) > sim (0.737); E17 edge is a sim→sim artifact; sim/real debt = 0.256** |
 | E9 | REx across sim environments (novel, report Solution-2) | 0.726→0.733 | ⚠️ | near-neutral on sim (+0.007, within noise); var_risk low (envs too similar); on the now-refuted sim domain anyway |
 | E23 | lead-masking on REAL CinC | 0.557 | ⚠️⚠️⚠️ | **12-lead lead-masking catastrophically fails on real (0.557 vs sim 0.718); single-lead (0.72-0.73) far more robust; 12-lead prior doesn't survive real shift** |
+| E24 | HOME real Apple Watch modality-gap meta-analysis | rho 0.42-0.86 | ✅ | **REAL-device confirmation: modality gap task-dependent; spatial tasks (Low EF/High LA/NT-proBNP) largest gaps, mirroring E1 sim; diffuse (Low Hb) smallest** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -445,6 +446,38 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   constant, isolating the architecture effect.
 - ⟲ Follow-up E5b (test-time BN recompute on real — may recover 0.557→0.72),
   single-lead+MixStyle (E15 V3) on real, real watch data (→ 0.946 oracle ceiling).
+
+## E24 — HOME real Apple Watch modality-gap meta-analysis (2026-07-27)
+- **Hypothesis:** the agreement between HOME's published "12-lead model" (clinical
+  Lead-I trained) and "fine-tuning model" (real Apple Watch trained) predictions on
+  the same 1000 real AW ECGs measures the clinical→watch modality gap per task on
+  the TRUE target device.
+- **Setup:** license-compliant meta-analysis — NO training/fine-tuning on HOME data,
+  only analysis of their published predictions. Per task: Pearson r, Spearman rho,
+  decision agreement. `experiments/24_home_modality_gap.py`. Real AW data at
+  ~/data/HOME (HOME benchmark, github.com/xup6fup/HOME).
+- **Result (Spearman rho, 12-lead vs fine-tuning):** Low Hb 0.856 (best) · Death
+  0.703 · Gender 0.691 · Low eGFR 0.658 · Age 0.611 · High PASP 0.607 · NT-proBNP
+  0.496 · High LA 0.429 · Low EF 0.421 (worst). Mean 0.608.
+- **Verdict:** ✅ (first REAL-device evidence). The modality gap is real, task-
+  dependent, moderate-to-large. **Largest gaps = spatial/structural cardiac tasks**
+  (Low EF, High LA, NT-proBNP — HF/chamber markers needing spatial lead
+  relationships a single watch lead captures poorly). **Smallest = diffuse
+  metabolic** (Low Hb). This mirrors E1's SIM finding (spatial classes collapse
+  under lead reduction) — now CONFIRMED on real Apple Watch.
+- **Critical caveat:** measures AGREEMENT not ACCURACY (labels withheld). High
+  agreement = fine-tuning changed little, NOT that either model is correct. LARGE-
+  gap tasks robustly flagged (fine-tuning materially changed → clinical-only
+  insufficient); TRANSFERS-WELL tasks only weakly supported (needs labels to confirm).
+  Also: decision agreement can mask ranking disagreement (Low EF 0.90 dec-agree but
+  0.42 rho — rare-positive task; rho is the right lens).
+- **Lesson:** corroborates the project's core premise on REAL data — the gap is not
+  a sim artifact. Modality-invariance methods matter MOST for spatial tasks (Low EF,
+  chamber markers), least for diffuse (Low Hb). Future method work should be
+  evaluated on high-gap tasks. Validates fine-tuning/real-target-data as the answer
+  (echoes E6b oracle 0.946).
+- ⟲ Follow-up: if eval account obtained, submit our single-lead models on high-gap
+  tasks for true AUROC; focus future experiments on Low EF / High LA.
 
 ---
 

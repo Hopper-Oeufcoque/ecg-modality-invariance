@@ -1,0 +1,141 @@
+{
+  "device": "Apple Watch",
+  "n_tasks": 9,
+  "per_task": {
+    "1-Gender": {
+      "label": "Gender (binary)",
+      "is_binary": true,
+      "n": 1000,
+      "pearson_r": 0.5792816098937256,
+      "spearman_rho": 0.6912064149606263,
+      "mean_abs_diff": 0.2605652,
+      "mad_normalized": 0.26056519973943476,
+      "mean_12lead": 0.6585313,
+      "mean_ft": 0.5134599000000001,
+      "decision_agreement_@0.5": 0.711,
+      "positive_rate_12lead": 0.663,
+      "positive_rate_ft": 0.498
+    },
+    "2-Age": {
+      "label": "Age (continuous)",
+      "is_binary": false,
+      "n": 1000,
+      "pearson_r": 0.6228942697512873,
+      "spearman_rho": 0.6111047854312155,
+      "mean_abs_diff": 6.4508600000000005,
+      "mad_normalized": 0.13840077236347567,
+      "mean_12lead": 63.44238000000001,
+      "mean_ft": 61.84401999999999
+    },
+    "3-Death": {
+      "label": "Death (binary)",
+      "is_binary": true,
+      "n": 824,
+      "pearson_r": 0.6990161009273702,
+      "spearman_rho": 0.7031002968218084,
+      "mean_abs_diff": 0.11266662621359223,
+      "mad_normalized": 0.12413687317040034,
+      "mean_12lead": 0.4170604368932038,
+      "mean_ft": 0.4051304611650485,
+      "decision_agreement_@0.5": 0.7766990291262136,
+      "positive_rate_12lead": 0.3567961165048544,
+      "positive_rate_ft": 0.2766990291262136
+    },
+    "4-Low_EF": {
+      "label": "Low EF (binary)",
+      "is_binary": true,
+      "n": 761,
+      "pearson_r": 0.5264488652232248,
+      "spearman_rho": 0.42092187858093066,
+      "mean_abs_diff": 0.1332185282522996,
+      "mad_normalized": 0.13323185130419818,
+      "mean_12lead": 0.17629540078843625,
+      "mean_ft": 0.1212574244415243,
+      "decision_agreement_@0.5": 0.900131406044678,
+      "positive_rate_12lead": 0.09986859395532194,
+      "positive_rate_ft": 0.06044678055190539
+    },
+    "5-High_PASP": {
+      "label": "High PASP (binary)",
+      "is_binary": true,
+      "n": 762,
+      "pearson_r": 0.5917496033742083,
+      "spearman_rho": 0.6073042517703586,
+      "mean_abs_diff": 0.13423333333333332,
+      "mad_normalized": 0.1590819307587715,
+      "mean_12lead": 0.2966043307086614,
+      "mean_ft": 0.3132681102362205,
+      "decision_agreement_@0.5": 0.8241469816272966,
+      "positive_rate_12lead": 0.20341207349081364,
+      "positive_rate_ft": 0.15091863517060367
+    },
+    "6-High_LA": {
+      "label": "High LA (binary)",
+      "is_binary": true,
+      "n": 762,
+      "pearson_r": 0.5117325219591145,
+      "spearman_rho": 0.42924478696788265,
+      "mean_abs_diff": 0.19343923884514436,
+      "mad_normalized": 0.1934392386517051,
+      "mean_12lead": 0.27331482939632545,
+      "mean_ft": 0.1155992125984252,
+      "decision_agreement_@0.5": 0.8818897637795275,
+      "positive_rate_12lead": 0.14173228346456693,
+      "positive_rate_ft": 0.06299212598425197
+    },
+    "7-High_NT-proBNP": {
+      "label": "High NT-proBNP (binary)",
+      "is_binary": true,
+      "n": 100,
+      "pearson_r": 0.5262035779071709,
+      "spearman_rho": 0.4962527921703463,
+      "mean_abs_diff": 0.24895400000000006,
+      "mad_normalized": 0.24895399975104604,
+      "mean_12lead": 0.33967800000000004,
+      "mean_ft": 0.35507000000000005,
+      "decision_agreement_@0.5": 0.73,
+      "positive_rate_12lead": 0.32,
+      "positive_rate_ft": 0.37
+    },
+    "8-Low_Hb": {
+      "label": "Low Hb (binary)",
+      "is_binary": true,
+      "n": 172,
+      "pearson_r": 0.8569694368783654,
+      "spearman_rho": 0.8558383273088777,
+      "mean_abs_diff": 0.1332377906976744,
+      "mad_normalized": 0.14447819405031037,
+      "mean_12lead": 0.5357354651162791,
+      "mean_ft": 0.4175116279069767,
+      "decision_agreement_@0.5": 0.8197674418604651,
+      "positive_rate_12lead": 0.5755813953488372,
+      "positive_rate_ft": 0.4186046511627907
+    },
+    "9-Low_eGFR": {
+      "label": "Low eGFR (binary)",
+      "is_binary": true,
+      "n": 383,
+      "pearson_r": 0.41427939429122645,
+      "spearman_rho": 0.6576531613758139,
+      "mean_abs_diff": 0.5179694516971279,
+      "mad_normalized": 0.5179694511791585,
+      "mean_12lead": 0.33011279373368146,
+      "mean_ft": 0.8263731070496083,
+      "decision_agreement_@0.5": 0.4464751958224543,
+      "positive_rate_12lead": 0.30548302872062666,
+      "positive_rate_ft": 0.8485639686684073
+    }
+  },
+  "mean_spearman_rho": 0.6080696328208733,
+  "median_spearman_rho": 0.6111047854312155,
+  "interpretation": {
+    "high_rho": "clinical 12-lead model transfers well to real Apple Watch; small modality gap",
+    "low_rho": "fine-tuning substantially changes predictions; large modality gap; clinical-only insufficient"
+  },
+  "honesty": [
+    "This analyzes AGREEMENT between HOME's two models, NOT accuracy (labels withheld).",
+    "High 12-lead/fine-tuned agreement does not prove either is CORRECT \u2014 only that fine-tuning changed little.",
+    "A task where both models are equally wrong would show high agreement but poor real utility.",
+    "License-compliant: no training/fine-tuning/domain-adaptation on HOME data; meta-analysis of published predictions only."
+  ]
+}
