@@ -47,6 +47,7 @@
 | E6c | simulator vs REAL Apple Watch (HOME) | dist 1.065 | ⚠️✅ | **sim over-degrades vs real AW too (E6 holds on true target); BUT real AW is CLEAN (kurt 11.9, entropy 0.32) & CinC is an excellent AW proxy (0.247) — validates CinC experiments** |
 | E25 | **AW-generator (Phase A) acceptance, single-seed** | gen 0.669 vs clean 0.622 | ⚠️ | single-seed hinted generator beats clean, but split unrepresentative (clean 0.622 vs E6b 0.753) — flagged for multi-seed |
 | E25b | **AW-generator (Phase A) acceptance, 5-seed** | gen 0.676 vs clean 0.681 | ❌⚠️ | **generator-alone NEUTRAL (Δ−0.005, 3/5); clean+gen aug modest+stable (Δ+0.028, var collapses 0.052→0.012); heavy sim biggest winner (+0.049) → fidelity≠utility, win = augmentation diversity. Downgrades E6b's single-seed "sim hurts" claim** |
+| E26 | **stochastic AW augmentation, 5-seed** | clean+stoch 0.733 vs clean 0.681 | ✅ | **FIRST method to BEAT clean w/ significance: clean+stochastic Δ+0.053, 5/5 seeds, paired t=3.62 p=0.022. Stochastic-alone n.s. (3/5). Confirms diversity>fidelity — north-star tool now has a validated core recipe (train on clean ∪ label-preserving stochastic augment)** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -570,6 +571,38 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   preservation loss) only if E26 plateaus. Files: `results/25_aw_generator/`,
   `results/25b_aw_generator_multiseed/`, `src/aw_generator.py`,
   `docs/AW_GENERATOR_DESIGN.md`.
+
+---
+
+## E26 — Stochastic AW augmentation: diversity > fidelity (2026-07-27)
+- **Hypothesis:** E25b showed the faithful spectral generator was neutral while
+  the crude sim gained most → the useful ingredient is augmentation DIVERSITY,
+  not target FIDELITY. Test: does a label-preserving STOCHASTIC augmenter
+  (contact dropouts, motion bursts, dry-electrode gain wander, variable
+  baseline, mild noise) beat clean clinical Lead-I on real single-lead data?
+- **Setup:** identical harness to E25b (NORM/AF, PTB-XL Lead-I n=524 → real CinC
+  n=1400, 5 seeds, 1D ResNet 20ep). `StochasticAWAugmenter` verified label-
+  preserving (0.94–0.98 source R-peak corr; 0.92 pairwise → real diversity).
+  Arms V1 clean · V2 oldsim · V3s stochastic-alone · V4s clean+stochastic · V5 oracle.
+- **Result:** V1 clean 0.681±0.052 · V2 oldsim 0.731±0.028 (Δ+0.050, 4/5) ·
+  V3s stochastic-alone 0.712±0.048 (Δ+0.031, 3/5, **n.s.** paired t=1.05 p=0.35) ·
+  **V4s clean+stochastic 0.733±0.033 (Δ+0.053, 5/5 seeds, paired t=3.62 p=0.022 ✅)** ·
+  V5 oracle 0.930±0.014.
+- **Verdict ✅:** **First method in the whole project to BEAT clean Lead-I on
+  real data with statistical significance.** The cocktail (clean ∪ augmented),
+  NOT replacement, is the mechanism — stochastic-alone is unreliable (3/5).
+- **Lesson:** confirms diversity > fidelity — a stochastic augmenter that makes
+  NO attempt to look like Apple Watch (Δ+0.053, significant) beats the faithful
+  spectral transfer (E25b, Δ−0.005, neutral). The north-star tool now has a
+  **validated core recipe: train on clean ∪ label-preserving stochastic
+  augmentation** of the abundant clinical Lead-I corpus. Gap to oracle (0.930)
+  remains — augmentation narrows, doesn't close, the modality gap.
+- ⟲ **follow-up:** E27 = sweep augmenter strength (0.5/1.0/1.5) × expansion
+  (1×/2×/3×) for the best cocktail ratio. E28 = confirm the gain generalizes to
+  a different pathology. Phase C = package `AWTrainingSetBuilder`. Phase B
+  (neural CycleGAN) deprioritized — a simple augmenter already clears the bar.
+  Files: `results/26_stochastic_augment/`, `src/aw_generator.py`
+  (`StochasticAWAugmenter`), `experiments/26_stochastic_augment.py`.
 
 ---
 

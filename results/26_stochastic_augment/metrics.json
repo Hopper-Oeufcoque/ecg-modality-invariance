@@ -1,0 +1,124 @@
+{
+  "fs": 100.0,
+  "task": "binary NORM vs AF",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "n_ptb_train": 524,
+  "n_cinc": 1400,
+  "aggregate": {
+    "V1_clean": {
+      "mean": 0.6806399560027249,
+      "std": 0.051580251642142416,
+      "vals": [
+        0.6224132441897485,
+        0.695823521716379,
+        0.6663755102040816,
+        0.771888347175605,
+        0.6466991567278101
+      ]
+    },
+    "V2_oldsim": {
+      "mean": 0.7305360172572064,
+      "std": 0.028224164692195276,
+      "vals": [
+        0.7854268198107739,
+        0.7150052328623757,
+        0.7072979591836734,
+        0.7278993229945039,
+        0.7170507514347056
+      ],
+      "delta_vs_V1_mean": 0.04989606125448169,
+      "delta_vs_V1_std": 0.06790037878006477,
+      "delta_positive_in_seeds": 4
+    },
+    "V3s_stochastic": {
+      "mean": 0.7116119455580547,
+      "std": 0.04750097917785907,
+      "vals": [
+        0.75865925436126,
+        0.7469256933542648,
+        0.6538775510204082,
+        0.745040873492254,
+        0.6535563555620862
+      ],
+      "delta_vs_V1_mean": 0.03097198955532985,
+      "delta_vs_V1_std": 0.05882532371602224,
+      "delta_positive_in_seeds": 3
+    },
+    "V4s_clean_stoch": {
+      "mean": 0.7334755068621626,
+      "std": 0.032810876722452746,
+      "vals": [
+        0.6744708120066286,
+        0.7414066588173731,
+        0.7374204081632653,
+        0.7759103641456584,
+        0.7381692911778872
+      ],
+      "delta_vs_V1_mean": 0.0528355508594377,
+      "delta_vs_V1_std": 0.029189639342511123,
+      "delta_positive_in_seeds": 5
+    },
+    "V5_oracle": {
+      "mean": 0.9298769763629288,
+      "std": 0.013599503945412884,
+      "vals": [
+        0.9276892056261683,
+        0.9544250392464678,
+        0.9297142857142857,
+        0.9128222717658492,
+        0.9247340794618732
+      ]
+    }
+  },
+  "per_seed": {
+    "0": {
+      "V1_clean": 0.6224132441897485,
+      "V2_oldsim": 0.7854268198107739,
+      "V3s_stochastic": 0.75865925436126,
+      "V4s_clean_stoch": 0.6744708120066286,
+      "V5_oracle": 0.9276892056261683
+    },
+    "1": {
+      "V1_clean": 0.695823521716379,
+      "V2_oldsim": 0.7150052328623757,
+      "V3s_stochastic": 0.7469256933542648,
+      "V4s_clean_stoch": 0.7414066588173731,
+      "V5_oracle": 0.9544250392464678
+    },
+    "2": {
+      "V1_clean": 0.6663755102040816,
+      "V2_oldsim": 0.7072979591836734,
+      "V3s_stochastic": 0.6538775510204082,
+      "V4s_clean_stoch": 0.7374204081632653,
+      "V5_oracle": 0.9297142857142857
+    },
+    "3": {
+      "V1_clean": 0.771888347175605,
+      "V2_oldsim": 0.7278993229945039,
+      "V3s_stochastic": 0.745040873492254,
+      "V4s_clean_stoch": 0.7759103641456584,
+      "V5_oracle": 0.9128222717658492
+    },
+    "4": {
+      "V1_clean": 0.6466991567278101,
+      "V2_oldsim": 0.7170507514347056,
+      "V3s_stochastic": 0.6535563555620862,
+      "V4s_clean_stoch": 0.7381692911778872,
+      "V5_oracle": 0.9247340794618732
+    }
+  },
+  "acceptance_test": "V3s_stochastic and V4s_clean_stoch delta_vs_V1 > 0 across seeds",
+  "hypothesis": "diversity > fidelity: stochastic label-preserving augmentation beats clean where faithful spectral transfer (E25b V3) did not",
+  "honesty": [
+    "5 seeds, n=700 CinC (350 test/seed)",
+    "AF/NORM only",
+    "stochastic augmentation is label-preserving by construction (no time-warp/inversion)",
+    "same harness/split as E25b for direct comparability"
+  ]
+}
