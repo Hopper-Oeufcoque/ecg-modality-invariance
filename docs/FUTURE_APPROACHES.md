@@ -15,17 +15,14 @@
 
 ---
 
-## 🔴 E4 — 500 Hz rerun to surface the bandwidth axis
+## 🔴 ~~E4 — 500 Hz rerun to surface the bandwidth axis~~ (RUN — directional, small-N)
 - **Category:** infrastructure / honest rerun
-- **Why here:** E1 found the bandwidth axis is muted at 100 Hz (Nyquist 50 Hz ≈
-  the 40 Hz Apple lowpass). The synthesis report ranks bandwidth methods (A2)
-  highly, but we couldn't exercise them. PTB-XL has a 500 Hz subset
-  (`filename_hr`) — download it, rerun E1's staircase. Expect L2 (bandwidth) to
-  show a real drop, making matched-filter (A2) and watch-aug (A5) more impactful.
-- **How:** swap `fs_col="filename_hr"`, set `FS=500`, `SIGLEN=5000`, simulator
-  `fs_watch=512` (real resample). Reuse `experiments/01_simulator_validation.py`.
-- **Difficulty:** low (mechanical). **Value:** high — fixes the biggest
-  methodology limitation of E1–E3.
+- **Status:** ✅ ran 2026-07-27 (directional, n=122/63 due to partial 500 Hz
+  download + HYP rarity). Finding: **bandwidth axis shows no clear drop at 500 Hz
+  either** (L2≈L1) — ECG diagnostic content is <40 Hz, so the filtered 40–250 Hz
+  band is mostly noise. Bandwidth methods (A2) de-prioritized at both rates.
+  Lead-masking generalizes to 500 Hz (0.393→0.641). See E4 entry in
+  `docs/EXPERIMENT_LOG.md`. Larger 500 Hz rerun is low-priority (axis is minor).
 
 ## 🔴 E6 — Real single-lead validation against actual watch shift
 - **Category:** external validation (biggest honesty flag)

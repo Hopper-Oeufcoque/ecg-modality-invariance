@@ -159,7 +159,7 @@ def main():
     df = load_ptbxl_meta(root / "ptbxl_database.csv")
     smap = build_superclass_map(root / "scp_statements.csv")
     splits = build_split(df, data_root=root, smap=smap, fs_col="filename_hr",
-                         max_per_class=300)
+                         max_per_class=40)  # HYP-limited (rare); directional 500Hz run
     c2i = {c: i for i, c in enumerate(SUPERCLASSES)}
     def lab(rs): return np.array([c2i[r["label"]] for r in rs])
     tr, te = splits["train"], splits["test"]

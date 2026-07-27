@@ -32,6 +32,7 @@
 | E5 | test-time BN adaptation (H3) on V2 | +0.007 (L4) | ⚠️ | marginal under shift; neutral/slight-hurt without; finishing move only |
 | E16 | combinations on top of lead-masking | — | ❌ | no combo beats lead-masking alone; matched-filter hurts, TTA neutral |
 | E17 | single-lead trained on sim-watch | 0.742 (L4) | ✅ | beats 12-lead lead-masking (0.725); simulator replaces 12-lead data |
+| E4 | 500 Hz rerun (directional, small-N) | 0.641 (LeadMask) | ⚠️ | bandwidth axis shows no clear drop at 500Hz either; minor at both rates |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best stack:**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -167,6 +168,26 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
 - **Honesty flag:** train/test distribution match (sim→sim) is favorable; the
   real test is E6 (does a sim-trained model transfer to *real* watch?).
 - ⟲ Follow-up E6 is now critical: real single-lead validation.
+
+## E4 — 500 Hz rerun, bandwidth axis (directional, small-N) (2026-07-27)
+- **Hypothesis:** at 500 Hz the Apple bandpass (0.3–40 Hz) removes real clinical
+  content (40–250 Hz band) → the L2 (bandwidth) staircase step shows a measurable
+  drop, unlike the muted 100 Hz run.
+- **Setup:** PTB-XL 500 Hz (filename_hr), fs_watch=500, max_per_class=40 →
+  n_train=122, n_test=63 (HYP-limited; 500 Hz download partial). 15 ep.
+  `experiments/04_500hz_rerun.py`.
+- **Result:** L0 0.810 · L1 0.393 · L2 0.433 · L3 0.400 · L4 0.418 · LeadMask@L4 0.641.
+- **Verdict:** ⚠️ (directional). The bandwidth axis shows **no clear drop at 500 Hz**
+  (L2 ≈ L1, within noise). Directional evidence that bandwidth is genuinely minor
+  even at 500 Hz — ECG diagnostic content is <40 Hz, so the 40–250 Hz band Apple's
+  filter removes is mostly noise/EMG, not signal. Lead-masking generalizes to 500 Hz
+  (0.393→0.641, same recovery pattern as 100 Hz).
+- **Lesson:** bandwidth methods (A2) are de-prioritized at both rates; the gap is
+  dominated by lead-count at both 100 and 500 Hz. Confirms the synthesis report's
+  low ranking of bandwidth methods and E16's matched-filter-hurts finding.
+- **Limitation:** n_test=63 is too small to trust exact values (all stages near
+  chance); directional only. Larger 500 Hz rerun queued but low-priority since the
+  axis appears minor regardless.
 
 ---
 
