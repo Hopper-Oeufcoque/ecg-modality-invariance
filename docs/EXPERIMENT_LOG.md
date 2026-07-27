@@ -39,6 +39,7 @@
 | E6 | real single-lead simulator validation | (dist, n/a) | ⚠️⚠️ | **simulator over-degrades; sim_vs_real gap > real_vs_clinical; E17 win carries realism debt** |
 | E10 | INLP modality scrubbing (novel, NLP→ECG) | 0.708→0.712 | ❌ | modality linearly separable (0.999) but scrubbing it is NEUTRAL — gap is info loss, not a removable shortcut |
 | E22 | simulator recalibration + E17 rerun | 0.711→0.723 | ⚠️✅ | less noise helps the model (+0.012) but kurtosis gap is FILTER-bound (bandpass), not noise-bound — stays ~5 vs real 17.7 |
+| E15 | MixStyle modality-style mixing (novel, image-DG→ECG) | 0.746 (V3) | ⚠️✅ | regime-dependent: HURTS lead-masking (confuses lead identity), HELPS single-lead+sim (new best 0.746, within noise); by-construction beats post-hoc E10 |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -342,6 +343,31 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   wrist dry-electrode. Distribution-match not task-transfer (E6b needed).
 - ⟲ Follow-up E22b (bandpass redesign to recover kurtosis), E6b (task-level
   sim→real cross-over — the decisive test).
+
+## E15 — MixStyle modality-style mixing (novel, image-DG→ECG) (2026-07-27)
+- **Hypothesis:** randomly mixing per-sample per-channel feature statistics
+  across the batch (MixStyle, Zhou et al. 2021 NeurIPS, never on ECG) forces
+  style-invariant content learning — the by-construction counterpart to E10's
+  neutral post-hoc INLP.
+- **Setup:** MixStyle layer (Beta soft interpolation, prob p) after stem.
+  V1 lead-mask baseline · V2 +MixStyle p=0.5 · V3 single-lead+sim +MixStyle ·
+  V4 prob sweep [0.3,0.7]. `experiments/15_mixstyle.py`. 20 ep, single seed.
+- **Result:** V1 0.706 · V2 0.699 (hurts) · **V3 0.746** (new best, +0.004 over
+  E17, within noise) · V4 p0.3 0.703 · V4 p0.7 0.702.
+- **Verdict:** ⚠️✅ (regime-dependent). **HURTS lead-masking** (all probs) —
+  the 12-lead model needs lead identity in channels; mixing it confuses signal.
+  **HELPS single-lead+sim** (0.746 vs 0.742) — no lead identity to preserve, and
+  style-randomization regularizes against the sim's over-aggressive noise (the
+  exact E6/E22 failure mode). The E10 vs E15 contrast resolves: training-time
+  invariance beats post-hoc removal, but only in the single-lead regime.
+- **Lesson:** MixStyle is a free regularizer for the sim-trained single-lead
+  model specifically (the project's best path). Not a large lever (consistent
+  with gap = lead-count info loss, E1). Worth stacking on the E17 winner.
+- **Limitations:** single seed; V3 +0.004 within noise (qualitative finding
+  robust, margin not). sim-watch (E6/E22 caveat — MixStyle may help *because*
+  sim is miscalibrated). MixStyle after stem only; deeper placement untested.
+- ⟲ Follow-up E15b (MixStyle + recalibrated sim E22 m=0.05 — complementary or
+  redundant?), E9 (REx — the other training-time invariance method).
 
 ---
 
