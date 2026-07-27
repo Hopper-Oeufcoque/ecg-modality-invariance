@@ -41,6 +41,8 @@
 | E22 | simulator recalibration + E17 rerun | 0.711→0.723 | ⚠️✅ | less noise helps the model (+0.012) but kurtosis gap is FILTER-bound (bandpass), not noise-bound — stays ~5 vs real 17.7 |
 | E15 | MixStyle modality-style mixing (novel, image-DG→ECG) | 0.746 (V3) | ⚠️✅ | regime-dependent: HURTS lead-masking (confuses lead identity), HELPS single-lead+sim (new best 0.746, within noise); by-construction beats post-hoc E10 |
 | E6b | classifier cross-over: train sim → test REAL CinC | 0.993→0.737 | ⚠️⚠️⚠️ | **sim HURTS real transfer; clean Lead-I (0.753) > sim (0.737); E17 edge is a sim→sim artifact; sim/real debt = 0.256** |
+| E9 | REx across sim environments (novel, report Solution-2) | 0.726→0.733 | ⚠️ | near-neutral on sim (+0.007, within noise); var_risk low (envs too similar); on the now-refuted sim domain anyway |
+| E23 | lead-masking on REAL CinC | 0.557 | ⚠️⚠️⚠️ | **12-lead lead-masking catastrophically fails on real (0.557 vs sim 0.718); single-lead (0.72-0.73) far more robust; 12-lead prior doesn't survive real shift** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -399,6 +401,50 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   vs CinC population confound (V4 controls it).
 - ⟲ Follow-up: lead-masking on real CinC (does 12-lead prior beat V3 clean?);
   E22b (bandpass redesign — likely limited by E6b regardless).
+
+## E9 — REx across simulated environments (novel, report Solution-2) (2026-07-27)
+- **Hypothesis:** penalizing cross-environment risk variance (REx, Krueger et al.
+  2021, never on ECG) across 4 sim variants forces training-time noise-invariance —
+  the by-construction counterpart to E10's neutral post-hoc INLP.
+- **Setup:** 4 envs (low/high noise, dry-electrode, motion-heavy). REx loss
+  mean_env[R]+λ·var_env[R]. λ∈{0(ERM),0.5,1.0,2.0}. Single-lead, 5-class, 20 ep.
+  `experiments/09_rex_environments.py`.
+- **Result:** ERM 0.726 · λ0.5 0.726 · λ1.0 0.733 · λ2.0 0.733 (L4). +0.007 over ERM.
+- **Verdict:** ⚠️ (near-neutral). var_risk consistently low (0.005-0.038) — envs
+  too similar; little variance to penalize. Consistent with E10/E15: gap is info
+  loss, not an avoidable shortcut. **Post-E6b caveat:** on the now-refuted sim
+  domain — real-deployment relevance questionable; proper REx test needs REAL
+  device-variant environments (→ real data, the binding constraint).
+- **Lesson:** a DG method's value depends on environments spanning a real shortcut
+  axis; sim-noise envs are too similar. The E9/E10/E15 training-time-invariance
+  trio is uniformly near-neutral — focus shifts to real data + lead recovery (B1).
+- ⟲ Re-test REx with REAL device variants if data obtained.
+
+## E23 — Lead-masking on REAL single-lead (decisive real-deployment) (2026-07-27)
+- **Hypothesis (pivoted by E6b):** lead-masking's 12-lead prior (E2 "winner" on
+  sim, 0.718) beats clean single-lead on REAL data, as on sim.
+- **Setup:** binary NORM-vs-AF, all tested on REAL CinC 2017 (700 N/700 A).
+  V1 lead-masking 12-lead (Lead-I ch0+zero-pad) · V2 clean Lead-I 1-lead · V3 sim
+  1-lead. In-experiment seeds. `experiments/23_leadmask_real_cinc.py`. 20 ep.
+- **Result:** V1 lead-masking 0.557 · V2 clean 0.721 · V3 sim 0.731.
+- **Verdict:** ⚠️⚠️⚠️. **Lead-masking catastrophically fails on real (0.557 vs sim
+  0.718, −0.161 drop).** Single-lead models (0.72-0.73) far more robust. The 12-lead
+  prior does NOT survive real single-lead domain shift — it's far WORSE than the
+  simple single-lead it beat on sim.
+- **Mechanism:** BN normalization mismatch (11 zero-pad channels + CinC Lead-I
+  violate PTB-XL-computed BN stats) + multi-lead structure reliance that, with 11
+  channels zeroed at real-device statistics, is OOD. Single-lead models avoid this.
+- **Reframe (with E6b):** sim-validated ranking is INVERTED on real — lead-masking
+  (sim best 0.718) is real WORST (0.557); single-lead (sim mediocre 0.69) is real
+  BEST (0.72-0.73). All sim-validated results carry realism debt. Robust conclusion:
+  **train a SINGLE-LEAD model for real deployment** — simpler architecture is far
+  more robust to real domain shift. Textbook sim-overfitting: sim's PTB-XL-derived
+  statistics favored methods exploiting them, which fail on real (different device).
+- **Limitations:** single seed; AF/rhythm only; CinC handheld (cleaner than wrist —
+  makes failure more damning); V1 vs V2/V3 all PTB-XL-trained → population held
+  constant, isolating the architecture effect.
+- ⟲ Follow-up E5b (test-time BN recompute on real — may recover 0.557→0.72),
+  single-lead+MixStyle (E15 V3) on real, real watch data (→ 0.946 oracle ceiling).
 
 ---
 

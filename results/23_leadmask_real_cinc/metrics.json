@@ -1,0 +1,43 @@
+{
+  "fs": 100.0,
+  "task": "binary NORM vs AF",
+  "classes": [
+    "NORM",
+    "AF"
+  ],
+  "n_ptb_train": 524,
+  "n_cinc": 1400,
+  "variants": {
+    "V1_leadmask_realCinC": {
+      "auroc": 0.5570785714285714,
+      "acc": 0.5207142857142857,
+      "n": 1400,
+      "n_af": 700
+    },
+    "V1b_leadmask_12lead_PTB": {},
+    "V2_clean_realCinC": {
+      "auroc": 0.7210418367346939,
+      "acc": 0.6585714285714286,
+      "n": 1400,
+      "n_af": 700
+    },
+    "V3_sim_realCinC": {
+      "auroc": 0.731430612244898,
+      "acc": 0.665,
+      "n": 1400,
+      "n_af": 700
+    }
+  },
+  "e6b_references": {
+    "V2_clean": 0.753,
+    "V3_sim": 0.737,
+    "V4_oracle": 0.946
+  },
+  "headline": "V1 (leadmask) vs V2 (clean): does the 12-lead prior beat single-lead on REAL data?",
+  "honesty": [
+    "single seed",
+    "AF/rhythm only",
+    "CinC handheld (cleaner than wrist)",
+    "PTB-XL vs CinC population confound (V1 vs V2 both PTB-trained -> same source population)"
+  ]
+}
