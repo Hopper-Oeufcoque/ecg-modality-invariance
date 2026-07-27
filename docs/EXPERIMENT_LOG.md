@@ -52,6 +52,8 @@
 | E27 | **augmentation recipe sweep (strength×expansion)** | s1.5_x3 0.791 vs clean 0.662 | ✅ | **augmentation SCALES, no plateau yet: best at grid corner (strength 1.5, 3× expansion), recovers ~46% of modality gap w/ zero target labels. Coherent w/ E29: gap closed by input diversity, NOT representation alignment** |
 | E27b | **augmentation plateau + morphology guard** | safe best 0.801 (s1.5_x5) | ⚠️✅ | **pure augmentation plateaus ~0.80 in the label-SAFE zone (strength≤2.0, morph corr≥0.85); strength 2.5 scores 0.83 but morph corr 0.826 = label-risk MIRAGE, rejected. Recipe LOCKED: strength 1.5, 5× expansion** |
 | E30 | **semi-supervised few-shot (labeled-data budget)** | k50 0.871, k200 0.903 vs oracle 0.934 | ✅ | **~50 real labels closes ~58% of remaining gap, 200 → ~79%; augment-pretrain worth ~150 labels vs scratch. k<25 HURTS (feature drift). Deployment recipe: augment-pretrain + finetune ≥50 real labels** |
+| E31 | **generalization: Normal-vs-Other (harder task)** | aug +0.007, oracle 0.758 | ❌⚠️ | **ladder does NOT cleanly generalize: augmentation benefit vanishes (+0.007 vs +0.12 on AF/NORM), oracle only 0.758. AF/NORM wins were partly AF being an easy distinctive rhythm. Methods are task-dependent, not universal** |
+| E32 | **TENT test-time entropy min (zero-shot lever)** | affine −0.046, full −0.071 | ❌ | **TENT HURTS (both variants, 0-1/5 seeds); entropy-min sharpens confidence around a wrong boundary. 4/4 unsupervised adaptations now fail (AdaBN/CORAL/DANN/TENT). Zero-label adaptation ruled out** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -690,6 +692,46 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
 - ⟲ **follow-up:** package Phase C (AWTrainingSetBuilder + finetune helper);
   E31 confirm k-knee on a 2nd pathology; consider active learning to lower k.
   Files: `results/30_fewshot/`, `experiments/30_fewshot.py`.
+
+---
+
+## E31 — Generalization to Normal-vs-Other: ladder does NOT cleanly transfer (2026-07-27)
+- **Hypothesis:** is the AF/NORM ladder (aug ~+0.12, few-shot knee k~50) specific
+  to AF's distinctive signature? Re-run on harder Normal-vs-Other rhythm.
+- **Setup:** PTB-XL NORM vs non-AF abnormal → real CinC N-vs-O, 5 seeds.
+- **Result:** clean 0.560 · augment 0.567 (Δ+0.007, was +0.12!) · finetune k50
+  0.597 (Δ+0.037) · oracle only 0.758 (vs 0.93 on AF/NORM).
+- **Verdict ❌⚠️:** ladder does NOT cleanly generalize. Everything is lower;
+  augmentation benefit nearly vanishes; even the oracle is only 0.758.
+- **Lesson:** the AF/NORM wins were PARTLY because AF is an easy, distinctive
+  single-lead rhythm — modality-transfer augmentation works best where a strong
+  class feature already exists for it to protect. On fuzzy/heterogeneous labels
+  it has little to grab. **Methods are task-dependent, not universal.** Bounds
+  (doesn't invalidate) the AF/NORM claims. Caveat: clinical↔CinC "Other" label
+  alignment is approximate — some of the low numbers are label mismatch.
+- ⟲ **follow-up:** correct claim scope in README/log; E34 = a cleanly-mapping
+  non-AF rhythm to disentangle task difficulty from label noise. Files:
+  `results/31_generalization_NvO/`, `experiments/31_generalization_NvO.py`.
+
+## E32 — TENT test-time entropy minimization: HURTS (2026-07-27)
+- **Hypothesis:** TENT (adapt BN affine / all params by minimizing target-batch
+  prediction entropy, no labels) is the strongest zero-label test-time method —
+  does it close the augment→oracle (0.80→0.93) gap where AdaBN failed?
+- **Setup:** augment-pretrained (0.783) → TENT-adapt on unlabeled real CinC test
+  batch; affine (BN γ/β) and full modes; 5 seeds.
+- **Result:** augment 0.783 · TENT-affine 0.737 (Δ−0.046, 1/5) · TENT-full 0.712
+  (Δ−0.071, 0/5) · oracle 0.914. Both HURT + inflate variance.
+- **Verdict ❌:** entropy minimization is the wrong objective — it sharpens
+  confidence around a partly-wrong boundary, reinforcing errors under genuine
+  shift with a small imbalanced batch.
+- **Lesson:** 4/4 unsupervised adaptation methods now fail (AdaBN/CORAL/DANN/
+  TENT). **Zero-label adaptation of a fixed clinical-trained model does NOT close
+  the gap.** The real single-lead boundary carries info the clinical+augmented
+  model never learned; recoverable only via train-time target coverage (E33) or
+  real labels (E30). Test-time adaptation ruled out for this problem.
+- ⟲ **follow-up:** all TTA deprioritized; zero-shot hope now rests on E33
+  (calibrated domain randomization). Files: `results/32_tent/`,
+  `experiments/32_tent.py`.
 
 ---
 
