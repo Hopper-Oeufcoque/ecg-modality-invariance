@@ -55,6 +55,7 @@
 | E31 | **generalization: Normal-vs-Other (harder task)** | aug +0.007, oracle 0.758 | ❌⚠️ | **ladder does NOT cleanly generalize: augmentation benefit vanishes (+0.007 vs +0.12 on AF/NORM), oracle only 0.758. AF/NORM wins were partly AF being an easy distinctive rhythm. Methods are task-dependent, not universal** |
 | E32 | **TENT test-time entropy min (zero-shot lever)** | affine −0.046, full −0.071 | ❌ | **TENT HURTS (both variants, 0-1/5 seeds); entropy-min sharpens confidence around a wrong boundary. 4/4 unsupervised adaptations now fail (AdaBN/CORAL/DANN/TENT). Zero-label adaptation ruled out** |
 | E33 | **target-calibrated domain randomization** | calibrated 0.824 vs hand 0.783 | ✅ | **BREAKS the 0.80 plateau zero-shot: +0.042 (5/5), closes ~57% of gap w/ zero labels. Measure target stats (unlabeled) → build augmentation to COVER target. Label preserved (QRS-band corr 0.966, R-peak 0.976 — raw-Pearson guard was measuring baseline wander, corrected). New best zero-shot recipe** |
+| E33b | **calibrated DR + few-shot combo** | calib+k50 0.874 vs hand+k50 0.836 | ✅ | **the two best levers STACK: calibrated-DR base + 50 labels = 0.874 (vs hand-tuned+50 = 0.836); +100 labels → 0.894 (0.043 from oracle 0.937). Better zero-shot base ~doubles value of same labels. Full ladder: clean 0.68 → calib-zeroshot 0.82 → +50lbl 0.87 → +100lbl 0.89 → oracle 0.94** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -762,6 +763,27 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   E33c = target-blind wide-prior DR. Update src/aw_generator.py w/
   CalibratedAugmenter + QRS-band guard. Files: `results/33_calibrated_dr/`,
   `experiments/33_calibrated_dr.py`.
+
+## E33b — Calibrated DR + few-shot: best-of-both (2026-07-27)
+- **Hypothesis:** stack the two best levers — calibrated-DR pretrain (best zero-
+  shot base, E33) + few-shot labels (E30). Does a better base reach oracle with
+  fewer labels than hand-tuned pretrain?
+- **Setup:** calibrated-DR pretrain → finetune k∈{25,50,100} real CinC; vs hand-
+  tuned+k50 ref; 5 seeds. Oracle 0.937.
+- **Result:** calib k0 0.811 · +k25 0.836 · **+k50 0.874** · +k100 0.894 ·
+  hand+k50 0.836 · oracle 0.937.
+- **Verdict ✅:** levers STACK. calib+k50 (0.874) beats hand+k50 (0.836) by
+  +0.038 — a better zero-shot base ~doubles the value of the same 50 labels
+  (50% of remaining gap closed vs 19%). +k100 → 0.894, within 0.043 of oracle.
+- **Lesson — FINAL gap ladder:** clean 0.68 → hand-aug 0.80 → calibrated-DR
+  zero-shot 0.82 → +50 labels 0.87 → +100 labels 0.89 → oracle 0.94. Gap closes
+  by (a) covering the target in training + (b) a modest label budget; NOT by
+  test-time adaptation (E29/E32 all failed). Pure zero-shot tops ~0.82; near-
+  oracle needs ~100 labels. AF/NORM-specific (E31 caveat).
+- ⟲ **follow-up:** deployment recipe finalized (calibrated-DR + 50-100 labels);
+  package Phase C. E33c = richer coverage to lift the 0.82 zero-shot base; E34 =
+  generalization on a cleanly-mapping rhythm. Files:
+  `results/33b_calibrated_fewshot/`, `experiments/33b_calibrated_fewshot.py`.
 
 ---
 
