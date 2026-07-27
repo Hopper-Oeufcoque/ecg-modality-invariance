@@ -97,11 +97,14 @@ than lead-invariant ones, matching real clinical→watch transfer.
 - PTB-XL superclasses are coarse; finer pathology labels may show bigger gaps.
 
 ## Recommended recipe (what we'd ship)
-> **Lead-masking (C9) + matched-filter (A2) + watch-sim augmentation (A5) +
-> test-time BN adaptation (H3)**, all stacked. This closes the gap from 0.521 to
-> ~0.72+ on simulated watch with **zero target-domain labels** — ~75% of the way
-> to the 0.865 clinical ceiling, the residual being genuine single-lead
-> information loss.
+> **Lead-masking (C9) alone** — E16 showed no combination (matched-filter A2,
+> watch-aug A5, TTA H3, two-stage fine-tune) beats lead-masking alone at 100 Hz;
+> matched-filter actively hurts. So the simplest recipe wins: one training-time
+> lead-dropout augmentation, no preprocessing dance, no test-time adaptation.
+> Closes the gap from 0.521 to ~0.72 on simulated watch with zero target-domain
+> labels (~75% to the 0.865 ceiling; residual = genuine single-lead info loss).
+> The stacked recipe may regain value at 500 Hz (E4) or with real watch data
+> (E6) — both queued.
 
 ## Next experiments (queued, not run)
 - **E4:** 500 Hz rerun to surface the bandwidth axis properly.

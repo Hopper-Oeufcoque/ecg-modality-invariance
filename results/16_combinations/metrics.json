@@ -1,0 +1,32 @@
+{
+  "fs": 100.0,
+  "n_train": 1225,
+  "n_test": 497,
+  "classes": [
+    "NORM",
+    "MI",
+    "STTC",
+    "CD",
+    "HYP"
+  ],
+  "combinations": {
+    "C1_LeadMask": {
+      "macro_auroc": 0.7210626127871649
+    },
+    "C2_LeadMask+MF": {
+      "macro_auroc": 0.6900646553923695
+    },
+    "C3_LeadMask+TTA": {
+      "macro_auroc": 0.7154978418443634
+    },
+    "C4_LeadMask+MF+TTA": {
+      "macro_auroc": 0.6928913981146178
+    },
+    "C5_two_stage": {
+      "macro_auroc": 0.7138295350265891
+    },
+    "C6_LeadMask_p07": {
+      "macro_auroc": 0.7058672152473551
+    }
+  }
+}

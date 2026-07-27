@@ -30,6 +30,7 @@
 | E3-B | latent align, frozen+probe, +watch-sim | 0.700 | ⚠️ | watch-sim variant > clean; simulator useful for alignment training |
 | E3b | latent align, pretrain + end-to-end finetune | 0.690 | ❌ | contrastive pretrain adds NO value over lead-masking; slightly worse |
 | E5 | test-time BN adaptation (H3) on V2 | +0.007 (L4) | ⚠️ | marginal under shift; neutral/slight-hurt without; finishing move only |
+| E16 | combinations on top of lead-masking | — | ❌ | no combo beats lead-masking alone; matched-filter hurts, TTA neutral |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best stack:**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -123,6 +124,27 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   free, don't rely on it alone. Per-clip TTA on a single 30 s watch clip is
   under-powered for BN stats — entropy-min on a LoRA adapter (H4) is the stronger
   per-clip variant (queued).
+- ⟲ Follow-up E16 stacks TTA on lead-masking — confirms it's neutral.
+
+## E16 — Method combinations on top of lead-masking (2026-07-27)
+- **Hypothesis:** the synthesis report's "recommended recipe" (lead-masking +
+  matched-filter A2 + watch-aug A5 + TTA H3) and a two-stage fine-tune beat
+  lead-masking alone.
+- **Setup:** 6 combos, all on L4 full watch. C1 LeadMask (baseline) · C2 +matched-
+  filter · C3 +TTA · C4 +MF+TTA · C5 two-stage (lead-mask→sim-watch finetune) ·
+  C6 prob=0.7. `experiments/16_combinations.py`.
+- **Result:** C1 0.721 · C2 0.690 · C3 0.716 · C4 0.693 · C5 0.714 · C6 0.706.
+- **Verdict:** ❌. **No combination beats lead-masking alone.** Matched-filter
+  hurts (−0.031); TTA neutral (−0.005); two-stage slightly worse (−0.007);
+  prob=0.7 < prob=0.5.
+- **Lesson:** the simple method is robustly the winner; the stacked recipe adds
+  **no marginal value at 100 Hz**. Matched-filter's cure is worse than the
+  disease at 100 Hz (bandwidth mismatch already minor). Lead-masking alone is
+  the recommended deployment — one training-time augmentation, no preprocessing
+  dance, no TTA. The stack *may* earn its keep at 500 Hz (E4) or with real watch
+  data (E6), both queued.
+- ⟲ Follow-up E4 (500 Hz) tests whether matched-filter/TTA regain value when
+  the bandwidth axis is real.
 
 ---
 
