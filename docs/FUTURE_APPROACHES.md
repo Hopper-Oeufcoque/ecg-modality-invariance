@@ -24,19 +24,16 @@
   Lead-masking generalizes to 500 Hz (0.393→0.641). See E4 entry in
   `docs/EXPERIMENT_LOG.md`. Larger 500 Hz rerun is low-priority (axis is minor).
 
-## 🔴 E6 — Real single-lead validation against actual watch shift
+## 🔴 ~~E6 — Real single-lead validation against actual watch shift~~ (RUN — ⚠️⚠️ critical)
 - **Category:** external validation (biggest honesty flag)
-- **Why here:** all results are on *simulated* watch. The simulator is
-  validated by axis structure matching the literature, but real-watch validation
-  is the real test. PhysioNet has single-lead sets (e.g., Icentia11/ICBEB,
-  MIT-BIH single-lead, AF single-lead). Measure: does a clinical model's drop
-  on *real* single-lead match its drop on *simulated* single-lead? If yes →
-  simulator is trustworthy as a stand-in; if no → calibrate simulator params.
-- **How:** download a PhysioNet single-lead set, map labels to PTB-XL
-  superclasses where possible (rhythm classes like AFib map cleanly; spatial
-  less so), evaluate the E2 winner on real single-lead.
-- **Difficulty:** medium (label alignment). **Value:** critical — converts
-  "simulated" results into trustworthy claims.
+- **Status:** ✅ ran 2026-07-27. **The simulator OVER-DEGRADES relative to real
+  single-lead.** sim_vs_real distance (1.077) > real_vs_clinical (0.717) — the
+  sim pushes the signal AWAY from real watch, not toward it. Sim's added noise:
+  kurtosis 3.7× too low (4.77 vs real 17.71 — flattens QRS peakedness),
+  sample_entropy 2.9× too high, baseline_wander 2.3× too high. Reframes E17: the
+  0.742 win was on sim, may not transfer; lead-masking is the most realism-robust
+  result. See E6 entry in `docs/EXPERIMENT_LOG.md`. Follow-ups spawned: E6b
+  (classifier cross-over), E-sim-calib (→ E22).
 
 ## 🟠 E7 — LeadBridge learnable adapter (taxonomy E5, CogAdapt arXiv:2605.22774)
 - **Category:** architectural adapter (labelled-target path)
@@ -86,17 +83,14 @@
 - **Difficulty:** high (IRM is finicky). **Value:** high if it works — the
   principled shortcut-removal the report bet on. Mitigate fragility with REx/DRO.
 
-## 🔵 E10 — Modality-direction scrubbing of FM embeddings (I8)
-- **Category:** post-hoc invariance (no retraining)
-- **Why here:** cheapest possible invariance on top of a foundation model —
-  probe for a linear "device" direction, project it out before the classifier
-  (analogous to NLP debiasing). Tests whether a simple geometric intervention
-  closes residual shift.
-- **How:** take a frozen FM (or our ECGResNet1d), collect embeddings from
-  clinical + sim-watch, train a linear probe to predict modality, orthogonalize
-  embeddings away from that direction, re-evaluate.
-- **Difficulty:** low. **Value:** medium — cheap post-hoc layer; if it works,
-  stacks on any model.
+## 🔵 ~~E10 — Modality-direction scrubbing of FM embeddings (I8)~~ (RUNNING)
+- **Category:** post-hoc invariance (no retraining) — NOVEL cross-domain (NLP INLP)
+- **Status:** 🔄 running 2026-07-27. Iterative Nullspace Projection (Ravfogel et
+  al. 2020, NLP fairness) applied to ECG modality — fit a linear modality
+  adversary on penultimate features, project its direction(s) out, re-probe for
+  pathology. Baseline modality-adversary acc = 0.999 (modality nearly perfectly
+  linearly separable in 32-dim — strong signal to scrub). Ablates K=1..8 INLP
+  rounds; cross-domain (train clinical→test watch) and in-domain probes.
 
 ## 🔵 E11 — Forward-physics watch data as augmentation for a *foundation model*
 - **Category:** data generation (F10 + C)
@@ -139,16 +133,37 @@
 - **Difficulty:** high. **Value:** medium — elegant but risk: some pathologies
   *are* timing changes (AV block) — don't over-invariant.
 
-## 🔵 E15 — AdaIN modality-style swap (I2, arXiv:1703.06868)
-- **Category:** feature-space style transfer
-- **Why here:** treat clinical vs watch as image "styles"; AdaIN re-normalizes
-  watch features to clinical feature statistics (mean/var per channel) at train
-  or test — no labels. Style ≡ recording-modality signature (filter, noise color,
-  electrode response); content ≡ pathology.
-- **How:** adaptive instance norm on the E2 backbone's mid features; train with
-  style-aug, optionally apply at test.
-- **Difficulty:** medium. **Value:** medium — cheap style normalization; validate
-  pathology isn't correlated with "style" via ablation.
+## 🔵 ~~E15 — AdaIN modality-style swap / MixStyle~~ (SCRIPTED — variant: MixStyle)
+- **Category:** feature-space style mixing — NOVEL (image DG → ECG)
+- **Status:** 📝 scripted 2026-07-27 (queued after E10/E22). Pivoted from plain
+  AdaIN to **MixStyle** (Zhou et al. 2021, NeurIPS) — the principled version:
+  randomly mix per-sample per-channel feature statistics across the batch during
+  training to simulate novel modality styles, forcing style-invariant content.
+  The by-construction sibling of E10's post-hoc INLP. Variants: V1 lead-masking
+  baseline, V2 +MixStyle, V3 single-lead+sim +MixStyle, V4 prob sweep.
+- **Difficulty:** low. **Value:** medium-high — cheap, stacks on any backbone.
+
+## 🔴 E22 — Simulator recalibration + E17 rerun (spawned by E6) (RUNNING)
+- **Category:** simulator calibration (direct response to E6 over-degradation)
+- **Status:** 🔄 running 2026-07-27. Sweep a global noise multiplier
+  m∈{1.0,0.5,0.25,0.1,0.05} on baseline_wander/motion/EMG sigma to find the
+  config matching real CinC stats (target kurtosis ≥15, entropy ≤0.4). Then
+  re-run the E17 single-lead+sim winner at best-m vs default-m=1.0. Tests
+  whether the E17 edge survives recalibration (grows → over-degration was
+  hurting; vanishes → edge was a sim→sim artifact).
+- **Honesty:** CinC is handheld (cleaner than wrist dry-electrode); matching it
+  may under-model true Apple Watch noise. Distribution-match, not task-transfer.
+
+## 🔴 E6b — Classifier cross-over: train sim, test real CinC (spawned by E6)
+- **Category:** task-level sim/real validation (the missing E6 metric)
+- **Why here:** E6 was distribution-level only. E6b is the task-level test: train
+  a classifier on sim-watch, evaluate on REAL CinC → the AUROC drop vs
+  sim→sim quantifies the sim/real gap at the thing that matters (detection).
+  Determines whether E17's edge survives contact with real data.
+- **How:** build a binary NORM-vs-AF label (AFib maps cleanly in both PTB-XL
+  scp_codes and CinC REFERENCE), train on PTB-XL sim-watch, test on real CinC.
+- **Difficulty:** medium (label mapping). **Value:** critical — the definitive
+  sim-real transfer test.
 
 ---
 
