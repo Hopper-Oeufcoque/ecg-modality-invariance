@@ -1,0 +1,48 @@
+{
+  "fs": 100.0,
+  "task": "binary NORM vs AF",
+  "n_ptb_train": 524,
+  "n_cinc_ref": 700,
+  "n_cinc_test": 700,
+  "transfer_fn": {
+    "bins": 501,
+    "min": 0.3686397769659561,
+    "max": 2.422959146405749,
+    "mean": 0.7150844380171226
+  },
+  "variants": {
+    "V1_clean_leadI": {
+      "auroc": 0.6224132441897485,
+      "acc": 0.5714285714285714
+    },
+    "V2_old_heavy_sim": {
+      "auroc": 0.810324982244753,
+      "acc": 0.61
+    },
+    "V3_generated_AW": {
+      "auroc": 0.66894423627948,
+      "acc": 0.5971428571428572
+    },
+    "V4_clean+generated": {
+      "auroc": 0.7068547498346925,
+      "acc": 0.66
+    },
+    "V5_oracle_real": {
+      "auroc": 0.9276892056261683,
+      "acc": 0.85
+    }
+  },
+  "acceptance_bar": "V3/V4 must beat V1 (clean Lead-I) on real CinC to be worth using",
+  "e6b_reference": {
+    "clean": 0.753,
+    "old_sim": 0.737,
+    "oracle": 0.946
+  },
+  "honesty": [
+    "single seed",
+    "AF/NORM only",
+    "transfer fn fit toward CinC (validated real-AW proxy), not real AW directly",
+    "generator preserves morphology (zero-phase mag filter) so labels stay valid",
+    "CinC ref/test split prevents signal leakage; labels never used to fit generator"
+  ]
+}
