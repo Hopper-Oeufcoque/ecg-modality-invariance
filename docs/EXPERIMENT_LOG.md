@@ -57,8 +57,9 @@
 | E33 | **target-calibrated domain randomization** | calibrated 0.824 vs hand 0.783 | ✅ | **BREAKS the 0.80 plateau zero-shot: +0.042 (5/5), closes ~57% of gap w/ zero labels. Measure target stats (unlabeled) → build augmentation to COVER target. Label preserved (QRS-band corr 0.966, R-peak 0.976 — raw-Pearson guard was measuring baseline wander, corrected). New best zero-shot recipe** |
 | E33b | **calibrated DR + few-shot combo** | calib+k50 0.874 vs hand+k50 0.836 | ✅ | **the two best levers STACK: calibrated-DR base + 50 labels = 0.874 (vs hand-tuned+50 = 0.836); +100 labels → 0.894 (0.043 from oracle 0.937). Better zero-shot base ~doubles value of same labels. Full ladder: clean 0.68 → calib-zeroshot 0.82 → +50lbl 0.87 → +100lbl 0.89 → oracle 0.94** |
 | E34 | **REAL Apple Watch coverage check (n=20)** | clin→AW 0.253 < cinc→AW 0.477 | ❌⚠️ | **DEEP CAVEAT: real AW is CLEAN & closer to clinical (0.253) than to CinC (0.477); CinC-calibrated DR moved AWAY from real AW (1.136, over-injected baseline wander). Proxy misled the calibration — E33/E33b absolute numbers are vs a mediocre AW proxy. Mechanism sound, target wrong** |
-| E35 | **Recalibrate toward REAL AW (n=1000)** | gap is HF/bandwidth; aw-cal QRS 0.594 | ⚠️❌ | **n=1000 OVERTURNS n=20: real AW has HIGH hf_energy (0.165, ~8× clinical) + low baseline wander — gap is a FILTERING/bandwidth mismatch (clinical over-filtered; confirms E22 on real HW, no powerline artifact). Can't stat-match by noise: aw-calibrated DR hit the HF stat but DESTROYED morphology (QRS 0.594). Need morphology-preserving bandwidth match (E36)** |
-| E36 | **morphology-preserving bandwidth match (500Hz)** | dist 2.43→0.478, QRS 0.900 | ✅ | **zero-phase spectral transfer (clinical→real-AW magnitude, phase kept) closes 74% of HF gap, 5× closer to real AW (0.478), R-peak 0.985/QRS 0.900 — label PRESERVED (vs noise-injection 0.594). Correct real-AW recipe: match spectrum w/ FILTER not noise. Caveat: stats+morph only, no AUROC (needs labeled real AW)** |
+| E35 | **Recalibrate toward REAL AW (n=1000)** | ⚠️RETRACTED (fs bug) | ⚠️❌ | **RETRACTED by E37: used the 200Hz wide file as 500Hz. The "HF/bandwidth gap" was a 2.5× frequency-axis artifact. Correct finding (E37): real AW hf≈clinical, gap is small/mild baseline-wander** |
+| E36 | **morphology-preserving bandwidth match (500Hz)** | ❌RETRACTED (fs bug) | ❌ | **RETRACTED by E37: solved a non-existent HF gap (200Hz-as-500Hz artifact). Spectral transfer injected HF real AW doesn't have. No real bandwidth gap exists** |
+| E37 | **CORRECTED sampling-rate real-AW analysis** | clin→AW 0.25-0.50, hf≈equal | ✅ | **BUG FIX: HOME has 200Hz (wide) + 500Hz (data/ecg) files; E35/E36 mislabeled the 200Hz one. Corrected: real AW hf 0.015 ≈ clinical 0.019 (NO bandwidth gap); 2 AW sources agree (dist 0.200). Vindicates E6c — real AW is CLEAN, close to clinical; use LIGHT DR. Verify fs via HR sanity check** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -859,6 +860,27 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   add build_bandwidth_transfer/apply_spectral_transfer to src; E36b = gentler
   transfer for QRS>0.95; correct README/HANDOFF. Files:
   `results/36_bandwidth_match/`, `experiments/36_bandwidth_match.py`.
+
+## E37 — CORRECTED sampling rate: RETRACTS E35/E36 (2026-07-27)
+- **Bug:** HOME ships AW data in two files at DIFFERENT native rates —
+  `data/ecg/` (15000 samp) = 500 Hz; `data-for-predicting/Apple_Watch_waveform.csv`
+  (6000 samp, 1000 patients) = **200 Hz** (README + HR check: 66 bpm @200Hz).
+  E35/E36 processed the 200 Hz file as 500 Hz → 2.5× frequency-axis stretch.
+- **Result (correct rates, common 100 Hz):** real AW hf_energy 0.015 (AW-B) /
+  0.014 (AW-A) ≈ clinical 0.019 — NO HF excess (E36 wrongly saw 0.16). Two AW
+  sources agree (dist 0.200). clinical→AW dist 0.25-0.50; gap is small, mild
+  baseline wander + slightly lower kurtosis.
+- **Verdict ✅ (correction):** E35 & E36 RETRACTED — the "bandwidth/HF gap" and
+  its "spectral-transfer fix" were sampling-rate artifacts. Real AW is CLEAN and
+  close to clinical Lead-I (vindicates E6c; E34's n=20 was right, not the error).
+- **Lesson:** ALWAYS verify sampling rate from metadata AND a physiological
+  sanity check (heart rate must be ~50-100 bpm) before any spectral analysis. A
+  mislabeled fs silently corrupts every frequency-domain conclusion. The CinC-
+  proxy method results (E26-E33b) are unaffected (never touched HOME); E34's
+  "CinC is a so-so proxy, real AW is clean → use LIGHT DR" stands.
+- ⟲ **follow-up:** real-AW recipe = LIGHT DR (StochasticAWAugmenter strength≈0.5),
+  no HF transform. Still need labeled real AW for AUROC. Files:
+  `results/37_corrected_sampling/`, `experiments/37_corrected_sampling.py`.
 
 ---
 

@@ -1,5 +1,16 @@
 # E36 — Morphology-preserving bandwidth match: ✅ the correct real-AW fix
 
+> ⛔ **RETRACTED (2026-07-27, by E37).** This experiment treated the HOME
+> `data-for-predicting/Apple_Watch_waveform.csv` file as 500 Hz, but it is
+> **200 Hz** (confirmed by README + heart-rate sanity check). The 2.5×
+> frequency-axis error created a spurious "high-frequency / bandwidth gap." With
+> correct sampling rates (E37), real AW hf_energy ≈ clinical (0.015 vs 0.019) —
+> **there is no bandwidth gap and no need for this spectral transfer.** Read
+> `results/37_corrected_sampling/REPORT.md` instead. Kept below for the record.
+
+---
+
+
 **Question:** E35 found the real clinical→Apple-Watch gap is a BANDWIDTH mismatch
 (clinical over-filtered, hf_energy 0.018; real AW keeps HF, 0.161) and that
 broadband noise injection matches the stat but destroys QRS (corr 0.594). Can a

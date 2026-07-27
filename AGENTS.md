@@ -67,6 +67,11 @@ population/context.
   `mkdir -p results/<id> &&` in the launch command. Bit us twice on 2026-07-27.
 - Launch long chains as separate background jobs; avoid `(a) & (b) & wait`
   subshells (dropped a job once).
+- **Sampling-rate provenance:** HOME ships Apple Watch data at TWO rates —
+  `data/ecg/*.csv` (15000 samp) = 500 Hz; `data-for-predicting/Apple_Watch_waveform.csv`
+  (6000 samp, 1000 patients) = 200 Hz. ALWAYS verify fs from metadata AND a
+  heart-rate sanity check (R-peaks → 50-100 bpm) before spectral analysis. A
+  mislabeled fs silently invalidated E35/E36 (retracted by E37).
 
 ## Datasets
 - PTB-XL 100 Hz subset at `~/data/ptbxl/` (downloaded, ~21k records).

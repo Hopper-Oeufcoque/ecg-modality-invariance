@@ -1,5 +1,15 @@
 # E35 — Recalibrating toward REAL Apple Watch (n=1000): the honest picture
 
+> ⛔ **RETRACTED (2026-07-27, by E37).** The "real AW has high HF energy / the
+> gap is bandwidth" conclusion below is a **sampling-rate artifact**: the
+> 1000-waveform file is 200 Hz, not 500 Hz (README + heart-rate check). Every
+> frequency claim here is stretched 2.5×. Corrected analysis:
+> `results/37_corrected_sampling/REPORT.md` — real AW hf ≈ clinical, no bandwidth
+> gap. Kept below for the record.
+
+---
+
+
 **Setup:** the full HOME real Apple Watch cohort — **1000 patient waveforms**
 (vs E34's 20), 500→100 Hz, eval-only (statistics only, NO training). Profile
 clinical / CinC / real AW and test 3 augmentation strategies for coverage +

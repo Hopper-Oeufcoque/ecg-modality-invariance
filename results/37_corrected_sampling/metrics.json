@@ -1,0 +1,88 @@
+{
+  "fs_common": 100.0,
+  "n_clin": 277,
+  "n_awB": 1000,
+  "n_awA": 40,
+  "profiles": {
+    "clinical": {
+      "kurtosis": [
+        11.798027495411707,
+        7.385308072155469
+      ],
+      "bw_energy": [
+        0.1202126542727202,
+        0.16070933903390613
+      ],
+      "qrs_energy": [
+        0.3799875248096428,
+        0.11170280268170636
+      ],
+      "hf_energy": [
+        0.01868271769364682,
+        0.018081861873169926
+      ],
+      "mid_energy": [
+        0.3116075305968955,
+        0.14227132710211668
+      ]
+    },
+    "aw_B_200hz": {
+      "kurtosis": [
+        9.128739100249888,
+        7.9597912931692925
+      ],
+      "bw_energy": [
+        0.21270132601557395,
+        0.1844462274271726
+      ],
+      "qrs_energy": [
+        0.26788930515592463,
+        0.1418778381396806
+      ],
+      "hf_energy": [
+        0.014645452590733642,
+        0.014280818710127133
+      ],
+      "mid_energy": [
+        0.36109206761840257,
+        0.14118091992377227
+      ]
+    },
+    "aw_A_500hz": {
+      "kurtosis": [
+        9.389127984134591,
+        7.380813231518254
+      ],
+      "bw_energy": [
+        0.12663206852507586,
+        0.17020930262635528
+      ],
+      "qrs_energy": [
+        0.3395791886311753,
+        0.182433514218136
+      ],
+      "hf_energy": [
+        0.014355997905088102,
+        0.011235021522018922
+      ],
+      "mid_energy": [
+        0.3538012015715582,
+        0.17224800553647954
+      ]
+    }
+  },
+  "distances": {
+    "clinical_to_awB": 0.502314003802729,
+    "clinical_to_awA": 0.2527448691130689,
+    "awA_to_awB": 0.2004004196189837
+  },
+  "bug": "E35/E36 treated the 200Hz wide file as 500Hz (2.5x frequency-axis error); HF/bandwidth-gap conclusion RETRACTED",
+  "question": "with correct sampling rates, what/whether is the real clinical->AW gap?",
+  "honesty": [
+    "distribution study, no AUROC",
+    "HOME eval-only",
+    "two AW sources at genuinely different native rates (200 vs 500 Hz)",
+    "common 100 Hz (Nyquist 50)",
+    "AW_A only 20 recordings"
+  ]
+}
