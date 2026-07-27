@@ -1,0 +1,108 @@
+{
+  "n_sim": 256,
+  "n_cinc": 300,
+  "n_applewatch": 300,
+  "means": {
+    "sim_default": {
+      "baseline_wander": 0.4305661045139905,
+      "sample_entropy": 0.8314217258295333,
+      "kurtosis": 4.385537812842545,
+      "dfa_alpha": 0.8131285853973456,
+      "psd_bands": [
+        0.3925089955911736,
+        0.35507099575403184,
+        0.008519196558808971
+      ]
+    },
+    "sim_recalib_m0.05": {
+      "baseline_wander": 0.412504573207319,
+      "sample_entropy": 0.6056235715841274,
+      "kurtosis": 4.974024278962094,
+      "dfa_alpha": 0.7540435396493146,
+      "psd_bands": [
+        0.3742534627201851,
+        0.3623621863179244,
+        0.00760377966100574
+      ]
+    },
+    "clinical_LeadI": {
+      "baseline_wander": 0.3070850149726774,
+      "sample_entropy": 0.48039268908118893,
+      "kurtosis": 16.067648366093636,
+      "dfa_alpha": 0.6379024555790995,
+      "psd_bands": [
+        0.3222352437733207,
+        0.5659286208901904,
+        0.0023241289007103205
+      ]
+    },
+    "real_CinC_handheld": {
+      "baseline_wander": 0.1901177481286991,
+      "sample_entropy": 0.28164279461336234,
+      "kurtosis": 17.712106013659493,
+      "dfa_alpha": 0.9123829682362025,
+      "psd_bands": [
+        0.5569545499871414,
+        0.38353258665502704,
+        0.00039514679400792015
+      ]
+    },
+    "real_AppleWatch": {
+      "baseline_wander": 0.20544476197637987,
+      "sample_entropy": 0.31785439297449175,
+      "kurtosis": 11.932744609263748,
+      "dfa_alpha": 0.87247281621821,
+      "psd_bands": [
+        0.5282268474967289,
+        0.4366386649863252,
+        0.002340636619986258
+      ]
+    }
+  },
+  "distances_to_real_AppleWatch": {
+    "sim_default": {
+      "per_metric": {
+        "baseline_wander": 1.1399366807520728,
+        "sample_entropy": 1.6701559944829456,
+        "dfa_alpha": 0.30393718487264143,
+        "kurtosis": 1.1461620057571773
+      },
+      "mean": 1.0650479664662091
+    },
+    "sim_recalib_m0.05": {
+      "per_metric": {
+        "baseline_wander": 1.0057070840003788,
+        "sample_entropy": 1.126933592814117,
+        "dfa_alpha": 0.5637745138918931,
+        "kurtosis": 1.0678290355411777
+      },
+      "mean": 0.9410610565618917
+    },
+    "clinical_LeadI": {
+      "per_metric": {
+        "baseline_wander": 0.6059134610823894,
+        "sample_entropy": 0.775215263223543,
+        "dfa_alpha": 0.9693348173413288,
+        "kurtosis": 0.5320214964564104
+      },
+      "mean": 0.7206212595259179
+    },
+    "real_CinC_handheld": {
+      "per_metric": {
+        "baseline_wander": 0.1535048956178544,
+        "sample_entropy": 0.3194278310678951,
+        "dfa_alpha": 0.17401931662746328,
+        "kurtosis": 0.3393207792002425
+      },
+      "mean": 0.24656820562836382
+    }
+  },
+  "headline": "sim vs REAL Apple Watch (true target) \u2014 does over-degradation hold on wrist dry-electrode?",
+  "fs": 100.0,
+  "honesty": [
+    "HOME is evaluation-only \u2014 waveforms used for distribution analysis only, no labels, no training (license-compliant)",
+    "single seed, 300 records per distribution",
+    "HOME Apple Watch @ 200 Hz resampled to 100 Hz for comparison",
+    "HOME subjects are a clinical cohort linked to health records \u2014 may differ from general Apple Watch users"
+  ]
+}

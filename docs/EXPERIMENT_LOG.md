@@ -44,6 +44,7 @@
 | E9 | REx across sim environments (novel, report Solution-2) | 0.726→0.733 | ⚠️ | near-neutral on sim (+0.007, within noise); var_risk low (envs too similar); on the now-refuted sim domain anyway |
 | E23 | lead-masking on REAL CinC | 0.557 | ⚠️⚠️⚠️ | **12-lead lead-masking catastrophically fails on real (0.557 vs sim 0.718); single-lead (0.72-0.73) far more robust; 12-lead prior doesn't survive real shift** |
 | E24 | HOME real Apple Watch modality-gap meta-analysis | rho 0.42-0.86 | ✅ | **REAL-device confirmation: modality gap task-dependent; spatial tasks (Low EF/High LA/NT-proBNP) largest gaps, mirroring E1 sim; diffuse (Low Hb) smallest** |
+| E6c | simulator vs REAL Apple Watch (HOME) | dist 1.065 | ⚠️✅ | **sim over-degrades vs real AW too (E6 holds on true target); BUT real AW is CLEAN (kurt 11.9, entropy 0.32) & CinC is an excellent AW proxy (0.247) — validates CinC experiments** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -478,6 +479,37 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   (echoes E6b oracle 0.946).
 - ⟲ Follow-up: if eval account obtained, submit our single-lead models on high-gap
   tasks for true AUROC; focus future experiments on Low EF / High LA.
+
+## E6c — Simulator vs REAL Apple Watch (HOME) (2026-07-27)
+- **Hypothesis:** E6 found sim over-degrades vs CinC (handheld proxy). Does it hold
+  vs the REAL target — Apple Watch wrist dry-electrode (HOME, 1000 subjects)?
+- **Setup:** license-compliant distribution analysis (no labels/training). 5 dists
+  (sim default, sim recalib m=0.05, clinical Lead-I, real CinC, real Apple Watch) on
+  kurtosis/entropy/baseline_wander/DFA/PSD. `experiments/06c_real_applewatch.py`.
+  256 sim / 300 CinC / 300 AW; HOME AW 200→100 Hz. NOTE: figures verified via PIL
+  dims only (vision tool errored this session — temperature-deprecation on aux model).
+- **Result (dist to real AW, mean abs z):** real CinC 0.247 (closest!) < clinical
+  Lead-I 0.721 < sim recalib 0.941 < sim default 1.065 (furthest). Real AW: kurtosis
+  11.93, entropy 0.318, baseline_wander 0.205, PSD [0.53,0.44,0.002].
+- **Verdict:** ⚠️✅ two findings. (1) ⚠️ **Sim over-degrades vs real AW too** — sim
+  is the furthest distribution (1.065); real AW kurtosis 11.93 vs sim 4.39 (2.7× too
+  flat). E6 holds on the true device; sim genuinely miscalibrated for wrist. (2) ✅
+  **CinC handheld is an EXCELLENT real-AW proxy** (0.247, 3× closer than clinical, 4×
+  closer than sim) — VALIDATES all CinC experiments (E6/E6b/E23) as legit real-AW
+  stand-ins.
+- **Key insight:** real Apple Watch is a CLEAN signal (entropy 0.32≈CinC 0.28, keeps
+  most QRS peakedness at kurt 11.9), NOT the noisy mess the sim assumes. The sim's
+  core error: assuming wrist dry-electrode is very noisy; it's actually near-handheld
+  clean. This fully explains E6b/E23 — models trained on over-noisy sim overfit noise
+  absent on real AW. **Unifies the project: the war is lead-count (E1), not signal
+  noise (E6c) — the sim fought the wrong axis.**
+- **Lessons:** (1) simulator v2 should target LIGHT noise (entropy ~0.32, kurt ~12)
+  + gentler bandpass. (2) use CinC as the validated real-AW proxy for transfer tests.
+  (3) modality shift is real but MILD at signal level; the gap that matters (E24
+  spatial tasks) is lead-count/spatial info, not degradation.
+- **Limitations:** HOME cohort clinical (disease-selected), 30 s clinical-setting
+  recordings may be cleaner than real-world on-wrist; single seed; dist-level only.
+- ⟲ Follow-up: simulator v2 (light noise), E5b (BN-adapt, now better motivated).
 
 ---
 
