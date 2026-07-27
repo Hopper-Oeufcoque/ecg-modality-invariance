@@ -40,6 +40,7 @@
 | E10 | INLP modality scrubbing (novel, NLP→ECG) | 0.708→0.712 | ❌ | modality linearly separable (0.999) but scrubbing it is NEUTRAL — gap is info loss, not a removable shortcut |
 | E22 | simulator recalibration + E17 rerun | 0.711→0.723 | ⚠️✅ | less noise helps the model (+0.012) but kurtosis gap is FILTER-bound (bandpass), not noise-bound — stays ~5 vs real 17.7 |
 | E15 | MixStyle modality-style mixing (novel, image-DG→ECG) | 0.746 (V3) | ⚠️✅ | regime-dependent: HURTS lead-masking (confuses lead identity), HELPS single-lead+sim (new best 0.746, within noise); by-construction beats post-hoc E10 |
+| E6b | classifier cross-over: train sim → test REAL CinC | 0.993→0.737 | ⚠️⚠️⚠️ | **sim HURTS real transfer; clean Lead-I (0.753) > sim (0.737); E17 edge is a sim→sim artifact; sim/real debt = 0.256** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -368,6 +369,36 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   sim is miscalibrated). MixStyle after stem only; deeper placement untested.
 - ⟲ Follow-up E15b (MixStyle + recalibrated sim E22 m=0.05 — complementary or
   redundant?), E9 (REx — the other training-time invariance method).
+
+## E6b — Classifier cross-over: train sim → test REAL CinC (definitive sim/real) (2026-07-27)
+- **Hypothesis:** a model trained on simulated watch detects disease on REAL
+  single-lead ECG (the task-level test spawned by E6's distribution-level finding).
+- **Setup:** binary NORM-vs-AF (maps in both PTB-XL and CinC 2017). 4 variants:
+  V1 sim→sim · V2 sim→real CinC · V3 clean Lead-I→real CinC · V4 real CinC→real
+  CinC (oracle). `experiments/06b_classifier_crossover.py`. 20 ep, single seed.
+- **Result:** V1 0.993 (overfit sim) · V2 0.737 · **V3 0.753** · V4 0.946 (oracle).
+- **Verdict:** ⚠️⚠️⚠️ (critical). **The simulator HURTS real transfer.** (1) Sim/
+  real debt = 0.256 (V1 0.993→V2 0.737 — the 0.993 is a red flag: model overfit sim
+  artifacts). (2) **Clean Lead-I (V3 0.753) BEATS sim training (V2 0.737) on real
+  data** — the simulator is actively counterproductive for real deployment. (3)
+  Oracle (0.946) is far above both — 0.209 gap requires real target data, not sim.
+- **Reframe:** **E17's win (0.742 on sim) does not transfer — it's a sim→sim
+  artifact.** The simulator strategy (Solution 1 & 2 keystone) is refuted for real
+  deployment. Revised ranking: (1) lead-masking (real clinical, no sim noise to
+  overfit) — most realism-robust label-free; (2) clean Lead-I training — better
+  than sim for real; (3) simulator — valuable as eval probe (E1) + alignment
+  signal (E3-B), NOT as training distribution; (4) real watch data — the only
+  path to the 0.946 ceiling.
+- **Lesson:** a forward-physics simulator that doesn't match the real target
+  distribution is worse than no simulator — the model overfits the sim's specific
+  (wrong) noise/filter profile. The E6→E22→E6b chain: over-degradation (dist) →
+  filter-bound (kurtosis) → HURTS real transfer (task). No calibration fixes a
+  fundamentally mismatched simulator for from-scratch training.
+- **Limitations:** single seed; AF/rhythm only (spatial classes unmappable);
+  CinC handheld (cleaner than wrist — makes sim's failure MORE damning); PTB-XL
+  vs CinC population confound (V4 controls it).
+- ⟲ Follow-up: lead-masking on real CinC (does 12-lead prior beat V3 clean?);
+  E22b (bandpass redesign — likely limited by E6b regardless).
 
 ---
 

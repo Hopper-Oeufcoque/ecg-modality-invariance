@@ -1,0 +1,50 @@
+{
+  "fs": 100.0,
+  "task": "binary NORM vs AF",
+  "classes": [
+    "NORM",
+    "AF"
+  ],
+  "n_ptb_train": 524,
+  "n_ptb_test": 143,
+  "n_cinc_total": 1400,
+  "n_cinc_train": 1120,
+  "n_cinc_test": 280,
+  "variants": {
+    "V1_sim_to_sim": {
+      "auroc": 0.9934289127837514,
+      "acc": 0.951048951048951,
+      "n": 143,
+      "n_af": 62
+    },
+    "V2_sim_to_realCinC": {
+      "auroc": 0.7373918367346939,
+      "acc": 0.6935714285714286,
+      "n": 1400,
+      "n_af": 700
+    },
+    "V3_clean_to_realCinC": {
+      "auroc": 0.7530142857142857,
+      "acc": 0.6857142857142857,
+      "n": 1400,
+      "n_af": 700
+    },
+    "V4_realCinC_to_realCinC": {
+      "auroc": 0.9461920106388421,
+      "acc": 0.775,
+      "n": 280,
+      "n_af": 147
+    }
+  },
+  "interpretation": {
+    "sim_real_debt": "V1 - V2 (sim->sim vs sim->real gap)",
+    "sim_vs_clean_for_real": "V2 vs V3 (does simulation help or hurt real transfer?)",
+    "real_ceiling": "V4 (oracle upper bound with real target data)"
+  },
+  "honesty": [
+    "single seed",
+    "AF/rhythm only \u2014 spatial classes (MI/STTC/HYP) have no clean CinC mapping",
+    "CinC is handheld lead-I, cleaner than wrist dry-electrode",
+    "different populations (PTB-XL clinical vs CinC challenge cohort) confound the sim/real axis"
+  ]
+}
