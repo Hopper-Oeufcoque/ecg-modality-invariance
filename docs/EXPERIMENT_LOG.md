@@ -63,7 +63,8 @@
 | E38 | **REAL PAIRED clinical Lead-I ↔ Apple Watch profile (SJLIFE n=243)** | gain 8.25×, norm-dist 1.065, AW bw 0.202 vs clin 0.033 | ✅ | **First real PAIRED-hardware read (same patient, both devices). (1) Systematic ~8.25× amplitude gain (Apple µV vs clinical coarse units) — ALWAYS per-record normalize before cross-modality. (2) Real modality gap is LARGER than HOME suggested (norm-dist 1.065 vs E37's 0.25-0.50): AW has 6× more baseline wander (0.202 vs 0.033) + lower QRS-band energy — a mild-noise + wander shift, NOT HF. Confirms LIGHT-DR direction but says calibrate wander UP. Caveat: recordings ~64min apart → distributional only, not beat-aligned** |
 | E39 | **recalibrate augmenter to real Apple target (SJLIFE)** | open-loop overshoots: dist worsens 1.06→1.13-1.22 | ❌ | **Informative NEGATIVE: light-DR too gentle (no move); open-loop CalibratedAWAugmenter OVERSHOOTS bw (0.53 vs target 0.23) AND collapses kurtosis (11.9→3.6) → coverage worse than clean. Root cause: open-loop sqrt(gap)·4 heuristic never checks measured output. Calibration must be closed-loop** |
 | E40 | **closed-loop calibrator (binary-search to measured target)** | dist 1.06→0.659 (38% closer), morph safe | ✅ | **FIX: binary-search wander amp until MEASURED bw hits target + 1/f coloured wander (not sinusoids). First variant to beat clean floor: dist 0.659, bw 0.217 vs target 0.230, kurtosis 7.50 preserved (open-loop→0.08), QRS-corr 0.988/R-peak 0.963. Promoted ClosedLoopCalibrator to src/. Coverage necessary-not-sufficient — AUROC still needs labels** |
-| E41 | **END-TO-END AUROC: clinical→real labeled single-lead (CinC, 5 seeds)** | closed-loop 0.753 vs clean 0.681, +0.072 (5/5, p=0.086) | ⚠️✅ | **FIRST real end-to-end utility test. Closed-loop-calibrated clinical training LIFTS real single-lead AUROC: +0.072 over clean, wins 5/5 seeds, best zero-label arm (>light-DR 0.712), closes ~29% of clean→oracle(0.930) gap with ZERO test labels. Coverage→utility CONFIRMED (answers E25b). BUT p=0.086 not sig (needs more seeds) + cocktail REGRESSED (0.722<0.753, contradicts E26 — cocktail rule is target-dependent). CinC=finger not wrist; AF/NORM easy task** |
+| E41 | **END-TO-END AUROC: clinical→real labeled single-lead (CinC, 5 seeds)** | closed-loop 0.753 vs clean 0.681, +0.072 (5/5, p=0.086) | ⚠️✅ | **FIRST real end-to-end utility test. Closed-loop-calibrated clinical training LIFTS real single-lead AUROC. ⟲ E42 CORRECTION: 5-seed +0.072 was small-sample optimism; true effect at 20 seeds is +0.041 (see E42). Coverage→utility CONFIRMED (answers E25b). Cocktail REGRESSED (0.722<0.753, contradicts E26). CinC=finger not wrist; AF/NORM easy task** |
+| E42 | **20-seed significance (clean vs closed-loop vs oracle)** | closed 0.742 vs clean 0.701, +0.041, p=0.0088 | ✅ | **SETTLES E41: closed-loop calibration lift is REAL & SIGNIFICANT but MODEST — +0.041 (15/20 wins, paired t=2.92 p=0.0088, Wilcoxon p=0.0094, Cohen dz=0.65). E41's +0.072 was 5-seed optimism (halved at 20 seeds). Zero test labels. Closes ~18% of clean→oracle(0.931) gap. Strongest properly-powered zero-label result. Modest — real labels still dominate the 0.19 residual** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1021,6 +1022,33 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
 - ⟲ **follow-up:** E42 = 15–20 seeds to settle p<0.05; cocktail mixing-ratio
   sweep; multi-axis closed-loop. Files: `results/41_endtoend_auroc/`,
   `experiments/41_endtoend_auroc.py`.
+
+---
+
+## E42 — 20-seed significance: the E41 lift is real but modest (2026-07-27)
+- **Purpose:** settle E41's underpowered p=0.086. Rerun the two decisive arms
+  (clean, closed_loop) + oracle at 20 seeds, same protocol (train PTB-XL Lead-I
+  AFIB/NORM → test held-out real CinC AF/N, calibrate to unlabeled CinC bw).
+- **Result (AUROC on real CinC, 20 seeds):** clean 0.701±0.048 · closed_loop
+  0.742±0.047 · oracle 0.931±0.014. Δ closed−clean = **+0.041**, wins **15/20**.
+  paired t=2.92 **p=0.0088**, Wilcoxon p=0.0094, Cohen dz=0.65 (medium).
+- **Verdict ✅ (significant, modest):** the closed-loop calibration lift is REAL
+  and significant at 0.05 (both parametric + non-parametric agree). BUT the
+  effect **halved** vs E41's 5-seed headline (+0.072 → +0.041) — E41 was
+  small-sample optimism; 20 seeds is the trustworthy number.
+- **Honest correction:** E41's verdict downgraded — magnitude corrected to +0.041.
+  The mechanism holds (zero-label calibration lifts real transfer AUROC), but it's
+  a modest gain: it closes only ~18% of the clean→oracle gap. Real labels still
+  dominate the remaining 0.19.
+- **Lesson (methodological):** always power significance claims with ≥15-20 seeds
+  on CPU-cheap models; 5-seed p-values in the 0.05-0.10 band regress substantially.
+  Log the corrected effect, don't let the optimistic first number ride.
+- **Remaining honesty flags:** CinC finger ≠ AW wrist; AF/NORM easy task; single
+  fixed clinical train set across seeds (CI omits clinical-cohort variance —
+  optimistic on that axis); modest absolute effect.
+- ⟲ **follow-up:** vary clinical subset per seed (honest cohort CI); multi-axis
+  closed-loop; harder-task replication (Normal-vs-Other). Files:
+  `results/42_seeds20_significance/`, `experiments/42_seeds20_significance.py`.
 
 ---
 
