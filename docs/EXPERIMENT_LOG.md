@@ -50,6 +50,8 @@
 | E26 | **stochastic AW augmentation, 5-seed** | clean+stoch 0.733 vs clean 0.681 | ✅ | **FIRST method to BEAT clean w/ significance: clean+stochastic Δ+0.053, 5/5 seeds, paired t=3.62 p=0.022. Stochastic-alone n.s. (3/5). Confirms diversity>fidelity — north-star tool now has a validated core recipe (train on clean ∪ label-preserving stochastic augment)** |
 | E29 | **UDA (AdaBN/CORAL/DANN) to close 0.73→0.93 gap** | all < recipe 0.747 | ❌ | **feature-space alignment WIDENS the gap: AdaBN −0.041, CORAL −0.072, DANN −0.109 (all 0-1/5 seeds). Gap is NOT normalization/representation geometry — it's input-variation coverage + label info. UDA deprioritized** |
 | E27 | **augmentation recipe sweep (strength×expansion)** | s1.5_x3 0.791 vs clean 0.662 | ✅ | **augmentation SCALES, no plateau yet: best at grid corner (strength 1.5, 3× expansion), recovers ~46% of modality gap w/ zero target labels. Coherent w/ E29: gap closed by input diversity, NOT representation alignment** |
+| E27b | **augmentation plateau + morphology guard** | safe best 0.801 (s1.5_x5) | ⚠️✅ | **pure augmentation plateaus ~0.80 in the label-SAFE zone (strength≤2.0, morph corr≥0.85); strength 2.5 scores 0.83 but morph corr 0.826 = label-risk MIRAGE, rejected. Recipe LOCKED: strength 1.5, 5× expansion** |
+| E30 | **semi-supervised few-shot (labeled-data budget)** | k50 0.871, k200 0.903 vs oracle 0.934 | ✅ | **~50 real labels closes ~58% of remaining gap, 200 → ~79%; augment-pretrain worth ~150 labels vs scratch. k<25 HURTS (feature drift). Deployment recipe: augment-pretrain + finetune ≥50 real labels** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -649,6 +651,45 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   true plateau without buying AUROC by corrupting labels. E30 = semi-supervised
   k-shot. Phase C = lock tuned recipe into AWTrainingSetBuilder. Files:
   `results/27_recipe_sweep/`, `experiments/27_recipe_sweep.py`.
+
+---
+
+## E27b — Augmentation plateau + morphology guard (2026-07-27)
+- **Hypothesis:** E27's best was at the grid corner → push strength {1.5,2.0,2.5}
+  × expansion {3,5,7}, 5 seeds, WITH a morphology-preservation guard (augmented-
+  vs-source R-peak corr; flag < 0.85 = label-risk) to find the honest plateau.
+- **Result:** morph corr drops with strength (1.5→0.920, 2.0→0.875, 2.5→0.826).
+  AUROC: safe zone (strength≤2.0) plateaus ~0.80, best-safe s1.5_×5 = 0.801
+  (Δ+0.120, 5/5). strength 2.5 scores 0.828–0.830 BUT morph corr 0.826 < guard.
+- **Verdict ⚠️✅:** pure augmentation honestly tops out ~0.80 (~48% of the
+  clean→oracle gap). strength 2.5's higher score is a label-risk MIRAGE (QRS
+  distortion → partial label leakage), REJECTED by the guard. Recipe LOCKED at
+  strength 1.5, 5× expansion.
+- **Lesson:** the guard did its job — without it we'd have "found" 0.83 and
+  shipped a morphology-corrupting recipe. Augmentation alone cannot exceed ~0.80
+  without corrupting labels; beyond that needs real labels (E30).
+- ⟲ **follow-up:** recipe locked; go to E30 for the labeled-data budget. Files:
+  `results/27b_augment_plateau/`, `experiments/27b_augment_plateau.py`.
+
+## E30 — Semi-supervised few-shot: labeled-data budget (2026-07-27)
+- **Hypothesis:** augmentation tops ~0.80, UDA fails → how many LABELED real
+  samples on top of the augment-pretrained model close the rest, and does
+  pretrain beat from-scratch?
+- **Setup:** augment-pretrain (strength 1.5, 3×) → fine-tune on k∈{0,10,25,50,
+  100,200} balanced real CinC; vs from-scratch on same k. 5 seeds. Oracle=0.934.
+- **Result:** finetune k0 0.785 · k10 0.756 (HURTS) · k25 0.823 · **k50 0.871** ·
+  k100 0.871 · **k200 0.903**. Scratch always lower (k50: 0.788 vs 0.871).
+- **Verdict ✅:** knee at k≈50 (closes ~58% of remaining gap); k200 → 0.903
+  (~79%). Augment-pretrain worth ~150 real labels vs scratch. k<25 HURTS
+  (fine-tuning on too few labels drifts the good pretrained features).
+- **Lesson — the full gap ladder:** clean 0.68 → augmentation 0.80 (free, ~48%)
+  → +~50 real labels 0.87 → +~200 labels 0.90 → full real 0.93. The gap closes
+  with INPUT DIVERSITY + a SMALL amount of real labels, NOT unsupervised
+  adaptation (E29). Practical rule: augment always; fine-tune only with ≥25
+  (ideally ≥50) real labels. Deployment recipe FINALIZED.
+- ⟲ **follow-up:** package Phase C (AWTrainingSetBuilder + finetune helper);
+  E31 confirm k-knee on a 2nd pathology; consider active learning to lower k.
+  Files: `results/30_fewshot/`, `experiments/30_fewshot.py`.
 
 ---
 
