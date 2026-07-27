@@ -160,8 +160,14 @@
   bottleneck, the τ, or the objective preserving unhelpful lead-structure? An
   ablation (feature dim sweep, different positive-pair construction) would
   clarify whether latent alignment is genuinely unhelpful or just mis-tuned here.
-- Lead-masking prob (0.5) was not tuned — a sweep may push V2 higher.
-- The single-lead model (V5) underperforms on watch (0.690 vs V2 0.717) partly
+  *(Still open — promote to E18 if pursued.)*
+- ~~Lead-masking prob (0.5) was not tuned — a sweep may push V2 higher.~~
+  → **E17 ran the sweep [0.2–0.6].** Results in `results/17_prob_sweep_simlead/`.
+- ~~The single-lead model (V5) underperforms on watch (0.690 vs V2 0.717) partly
   because it trained on *clean* Lead-I. Train V5 on *sim-watch* Lead-I → does
-  it close the gap to V2? (Tests whether single-lead + sim-aug matches 12-lead
-  + lead-masking — a fairer single-lead reference.)
+  it close the gap to V2?~~ → **E17 ran this too.** Tests whether the simulator
+  alone (no 12-lead training) suffices.
+- **E16 finding to propagate:** no combination (matched-filter A2, TTA H3,
+  two-stage fine-tune) beats lead-masking alone at 100 Hz; matched-filter
+  actively hurts. The stacked recipe only *might* regain value at 500 Hz (E4) —
+  re-test combinations there once E4 data is in. *(→ add as E4b combo rerun.)*
