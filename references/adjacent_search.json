@@ -1,0 +1,722 @@
+[
+  {
+    "arxiv_id": "2204.02609",
+    "title": "A New Nonlinear speaker parameterization algorithm for speaker identification",
+    "year": "2022",
+    "authors": "Mohamed Chetouani, Marcos Faundez-Zanuy, Bruno Gas, Jean-Luc Zarader",
+    "abstract": "In this paper we propose a new parameterization algorithm based on nonlinear prediction, which is an extension of the classical LPC parameters. The parameters performances are estimated by two different methods: the Arithmetic-Harmonic Sphericity (AHS) and the Auto-Regressive Vector Model (ARVM). Two different methods are proposed for the parameterization based on the Neural Predictive Coding (NPC): classical neural networks initialization and linear initialization. We applied these two parameters to speaker identification. The fist parameters obtained smaller rates. We show for the first parameters how they can be combined with the classical parameters (LPCC, MFCC, etc.) in order to improve the results of only one classical parameterization (MFCC provides 97.55% and MFCC+NPC 98.78%). For the linear initialization, we obtain 100% which is great improvement. This study opens a new way towards different parameterization schemes that offer better accuracy on speaker recognition tasks.",
+    "url": "https://arxiv.org/abs/2204.02609",
+    "_query": "speaker recognition channel robustness microphone variability"
+  },
+  {
+    "arxiv_id": "2204.01294",
+    "title": "On The Model Size Selection For Speaker Identification",
+    "year": "2022",
+    "authors": "Marcos Faundez-Zanuy",
+    "abstract": "In this paper we evaluate the relevance of the model size for speaker identification. We show that it is possible to improve the identification rates if a different model size is used for each speaker. We also present some criteria for selecting the model size, and a new algorithm that outperforms the classical system with a fixed model size.",
+    "url": "https://arxiv.org/abs/2204.01294",
+    "_query": "speaker recognition channel robustness microphone variability"
+  },
+  {
+    "arxiv_id": "2002.03562",
+    "title": "NPLDA: A Deep Neural PLDA Model for Speaker Verification",
+    "year": "2020",
+    "authors": "Shreyas Ramoji, Prashant Krishnan, Sriram Ganapathy",
+    "abstract": "The state-of-art approach for speaker verification consists of a neural network based embedding extractor along with a backend generative model such as the Probabilistic Linear Discriminant Analysis (PLDA). In this work, we propose a neural network approach for backend modeling in speaker recognition. The likelihood ratio score of the generative PLDA model is posed as a discriminative similarity function and the learnable parameters of the score function are optimized using a verification cost. The proposed model, termed as neural PLDA (NPLDA), is initialized using the generative PLDA model parameters. The loss function for the NPLDA model is an approximation of the minimum detection cost function (DCF). The speaker recognition experiments using the NPLDA model are performed on the speaker verificiation task in the VOiCES datasets as well as the SITW challenge dataset. In these experiments, the NPLDA model optimized using the proposed loss function improves significantly over the state-of-art PLDA based speaker verification system.",
+    "url": "https://arxiv.org/abs/2002.03562",
+    "_query": "speaker recognition channel robustness microphone variability"
+  },
+  {
+    "arxiv_id": "2406.10598",
+    "title": "Double Multi-Head Attention Multimodal System for Odyssey 2024 Speech Emotion Recognition Challenge",
+    "year": "2024",
+    "authors": "Federico Costa, Miquel India, Javier Hernando",
+    "abstract": "As computer-based applications are becoming more integrated into our daily lives, the importance of Speech Emotion Recognition (SER) has increased significantly. Promoting research with innovative approaches in SER, the Odyssey 2024 Speech Emotion Recognition Challenge was organized as part of the Odyssey 2024 Speaker and Language Recognition Workshop. In this paper we describe the Double Multi-Head Attention Multimodal System developed for this challenge. Pre-trained self-supervised models were used to extract informative acoustic and text features. An early fusion strategy was adopted, where a Multi-Head Attention layer transforms these mixed features into complementary contextualized representations. A second attention mechanism is then applied to pool these representations into an utterance-level vector. Our proposed system achieved the third position in the categorical task ranking with a 34.41% Macro-F1 score, where 31 teams participated in total.",
+    "url": "https://arxiv.org/abs/2406.10598",
+    "_query": "speaker recognition channel robustness microphone variability"
+  },
+  {
+    "arxiv_id": "2606.06211",
+    "title": "FiLM-Based Speaker Conditioning of a SpeechLLM for Pathological Speech Recognition",
+    "year": "2026",
+    "authors": "Fernando L\u00f3pez, Santosh Kesiraju, Jordi Luque",
+    "abstract": "Automatic speech recognition (ASR) has advanced remarkably for standard speech; however, pathological speech from neurological conditions remains a significant challenge. We investigate speaker conditioning via Feature-wise Linear Modulation (FiLM), injecting x-vector-derived information into each transformer layer of a frozen ASR encoder to adapt internal representations to individual pathological speakers without modifying base model weights. We benchmark this for the ASR task against standard and parameter-efficient fine-tuning baselines, complemented by post-processing, on Spanish and English pathological speech. Additionally, we evaluate if the adapted model preserves the ability to answer speech-related questions. Results show that speaker-conditioned ASR is competitive with established adaptation strategies while retaining performance on non-conditioned speech.",
+    "url": "https://arxiv.org/abs/2606.06211",
+    "_query": "speaker recognition channel robustness microphone variability"
+  },
+  {
+    "arxiv_id": "2109.02052",
+    "title": "The Phonexia VoxCeleb Speaker Recognition Challenge 2021 System Description",
+    "year": "2021",
+    "authors": "Josef Slav\u00ed\u010dek, Albert Swart, Michal Kl\u010do, Niko Br\u00fcmmer",
+    "abstract": "We describe the Phonexia submission for the VoxCeleb Speaker Recognition Challenge 2021 (VoxSRC-21) in the unsupervised speaker verification track. Our solution was very similar to IDLab's winning submission for VoxSRC-20. An embedding extractor was bootstrapped using momentum contrastive learning, with input augmentations as the only source of supervision. This was followed by several iterations of clustering to assign pseudo-speaker labels that were then used for supervised embedding extractor training. Finally, a score fusion was done, by averaging the zt-normalized cosine scores of five different embedding extractors. We briefly also describe unsuccessful solutions involving i-vectors instead of DNN embeddings and PLDA instead of cosine scoring.",
+    "url": "https://arxiv.org/abs/2109.02052",
+    "_query": "speaker recognition channel robustness microphone variability"
+  },
+  {
+    "arxiv_id": "1111.0024",
+    "title": "Text-Independent Speaker Recognition for Low SNR Environments with Encryption",
+    "year": "2011",
+    "authors": "Aman Chadha, Divya Jyoti, M. Mani Roja",
+    "abstract": "Recognition systems are commonly designed to authenticate users at the access control levels of a system. A number of voice recognition methods have been developed using a pitch estimation process which are very vulnerable in low Signal to Noise Ratio (SNR) environments thus, these programs fail to provide the desired level of accuracy and robustness. Also, most text independent speaker recognition programs are incapable of coping with unauthorized attempts to gain access by tampering with the samples or reference database. The proposed text-independent voice recognition system makes use of multilevel cryptography to preserve data integrity while in transit or storage. Encryption and decryption follow a transform based approach layered with pseudorandom noise addition whereas for pitch detection, a modified version of the autocorrelation pitch extraction algorithm is used. The experimental results show that the proposed algorithm can decrypt the signal under test with exponentially reducing Mean Square Error over an increasing range of SNR. Further, it outperforms the conventional algorithms in actual identification tasks even in noisy environments. The recognition rate thus obtained using the proposed method is compared with other conventional methods used for speaker identification.",
+    "url": "https://arxiv.org/abs/1111.0024",
+    "_query": "speaker recognition channel robustness microphone variability"
+  },
+  {
+    "arxiv_id": "2404.14913",
+    "title": "Additive Margin in Contrastive Self-Supervised Frameworks to Learn Discriminative Speaker Representations",
+    "year": "2024",
+    "authors": "Theo Lepage, Reda Dehak",
+    "abstract": "Self-Supervised Learning (SSL) frameworks became the standard for learning robust class representations by benefiting from large unlabeled datasets. For Speaker Verification (SV), most SSL systems rely on contrastive-based loss functions. We explore different ways to improve the performance of these techniques by revisiting the NT-Xent contrastive loss. Our main contribution is the definition of the NT-Xent-AM loss and the study of the importance of Additive Margin (AM) in SimCLR and MoCo SSL methods to further separate positive from negative pairs. Despite class collisions, we show that AM enhances the compactness of same-speaker embeddings and reduces the number of false negatives and false positives on SV. Additionally, we demonstrate the effectiveness of the symmetric contrastive loss, which provides more supervision for the SSL task. Implementing these two modifications to SimCLR improves performance and results in 7.85% EER on VoxCeleb1-O, outperforming other equivalent methods.",
+    "url": "https://arxiv.org/abs/2404.14913",
+    "_query": "speaker recognition channel robustness microphone variability"
+  },
+  {
+    "arxiv_id": "2112.10474",
+    "title": "Reciprocal Normalization for Domain Adaptation",
+    "year": "2021",
+    "authors": "Zhiyong Huang, Kekai Sheng, Ke Li, Jian Liang, Taiping Yao, Weiming Dong, Dengwen Zhou, Xing Sun",
+    "abstract": "Batch normalization (BN) is widely used in modern deep neural networks, which has been shown to represent the domain-related knowledge, and thus is ineffective for cross-domain tasks like unsupervised domain adaptation (UDA). Existing BN variant methods aggregate source and target domain knowledge in the same channel in normalization module. However, the misalignment between the features of corresponding channels across domains often leads to a sub-optimal transferability. In this paper, we exploit the cross-domain relation and propose a novel normalization method, Reciprocal Normalization (RN). Specifically, RN first presents a Reciprocal Compensation (RC) module to acquire the compensatory for each channel in both domains based on the cross-domain channel-wise correlation. Then RN develops a Reciprocal Aggregation (RA) module to adaptively aggregate the feature with its cross-domain compensatory components. As an alternative to BN, RN is more suitable for UDA problems and can be easily integrated into popular domain adaptation methods. Experiments show that the proposed RN outperforms existing normalization counterparts by a large margin and helps state-of-the-art adaptation approaches achieve better results. The source code is available on https://github.com/Openning07/reciprocal-normalization-for-DA.",
+    "url": "https://arxiv.org/abs/2112.10474",
+    "_query": "domain adaptation speech acoustic environment mismatch cepstral mean normalization"
+  },
+  {
+    "arxiv_id": "2210.00721",
+    "title": "Efficient acoustic feature transformation in mismatched environments using a Guided-GAN",
+    "year": "2022",
+    "authors": "Walter Heymans, Marelie H. Davel, Charl van Heerden",
+    "abstract": "We propose a new framework to improve automatic speech recognition (ASR) systems in resource-scarce environments using a generative adversarial network (GAN) operating on acoustic input features. The GAN is used to enhance the features of mismatched data prior to decoding, or can optionally be used to fine-tune the acoustic model. We achieve improvements that are comparable to multi-style training (MTR), but at a lower computational cost. With less than one hour of data, an ASR system trained on good quality data, and evaluated on mismatched audio is improved by between 11.5% and 19.7% relative word error rate (WER). Experiments demonstrate that the framework can be very useful in under-resourced environments where training data and computational resources are limited. The GAN does not require parallel training data, because it utilises a baseline acoustic model to provide an additional loss term that guides the generator to create acoustic features that are better classified by the baseline.",
+    "url": "https://arxiv.org/abs/2210.00721",
+    "_query": "domain adaptation speech acoustic environment mismatch cepstral mean normalization"
+  },
+  {
+    "arxiv_id": "2411.03085",
+    "title": "Speech Separation with Pretrained Frontend to Minimize Domain Mismatch",
+    "year": "2024",
+    "authors": "Wupeng Wang, Zexu Pan, Xinke Li, Shuai Wang, Haizhou Li",
+    "abstract": "Speech separation seeks to separate individual speech signals from a speech mixture. Typically, most separation models are trained on synthetic data due to the unavailability of target reference in real-world cocktail party scenarios. As a result, there exists a domain gap between real and synthetic data when deploying speech separation models in real-world applications. In this paper, we propose a self-supervised domain-invariant pretrained (DIP) frontend that is exposed to mixture data without the need for target reference speech. The DIP frontend utilizes a Siamese network with two innovative pretext tasks, mixture predictive coding (MPC) and mixture invariant coding (MIC), to capture shared contextual cues between real and synthetic unlabeled mixtures. Subsequently, we freeze the DIP frontend as a feature extractor when training the downstream speech separation models on synthetic data. By pretraining the DIP frontend with the contextual cues, we expect that the speech separation skills learned from synthetic data can be effectively transferred to real data. To benefit from the DIP frontend, we introduce a novel separation pipeline to align the feature resolution of the separation models. We evaluate the speech separation quality on standard benchmarks and real-world datasets. The results confirm the superiority of our DIP frontend over existing speech separation models. This study underscores the potential of large-scale pretraining to enhance the quality and intelligibility of speech separation in real-world applications.",
+    "url": "https://arxiv.org/abs/2411.03085",
+    "_query": "domain adaptation speech acoustic environment mismatch cepstral mean normalization"
+  },
+  {
+    "arxiv_id": "2203.16085",
+    "title": "Combination of Time-domain, Frequency-domain, and Cepstral-domain Acoustic Features for Speech Commands Classification",
+    "year": "2022",
+    "authors": "Yikang Wang, Hiromitsu Nishizaki",
+    "abstract": "In speech-related classification tasks, frequency-domain acoustic features such as logarithmic Mel-filter bank coefficients (FBANK) and cepstral-domain acoustic features such as Mel-frequency cepstral coefficients (MFCC) are often used. However, time-domain features perform more effectively in some sound classification tasks which contain non-vocal or weakly speech-related sounds. We previously proposed a feature called bit sequence representation (BSR), which is a time-domain binary acoustic feature based on the raw waveform. Compared with MFCC, BSR performed better in environmental sound detection and showed comparable accuracy performance in limited-vocabulary speech recognition tasks. In this paper, we propose a novel improvement BSR feature called BSR-float16 to represent floating-point values more precisely. We experimentally demonstrated the complementarity among time-domain, frequency-domain, and cepstral-domain features using a dataset called Speech Commands proposed by Google. Therefore, we used a simple back-end score fusion method to improve the final classification accuracy. The fusion results also showed better noise robustness.",
+    "url": "https://arxiv.org/abs/2203.16085",
+    "_query": "domain adaptation speech acoustic environment mismatch cepstral mean normalization"
+  },
+  {
+    "arxiv_id": "1807.06736",
+    "title": "Forward Attention in Sequence-to-sequence Acoustic Modelling for Speech Synthesis",
+    "year": "2018",
+    "authors": "Jing-Xuan Zhang, Zhen-Hua Ling, Li-Rong Dai",
+    "abstract": "This paper proposes a forward attention method for the sequenceto- sequence acoustic modeling of speech synthesis. This method is motivated by the nature of the monotonic alignment from phone sequences to acoustic sequences. Only the alignment paths that satisfy the monotonic condition are taken into consideration at each decoder timestep. The modified attention probabilities at each timestep are computed recursively using a forward algorithm. A transition agent for forward attention is further proposed, which helps the attention mechanism to make decisions whether to move forward or stay at each decoder timestep. Experimental results show that the proposed forward attention method achieves faster convergence speed and higher stability than the baseline attention method. Besides, the method of forward attention with transition agent can also help improve the naturalness of synthetic speech and control the speed of synthetic speech effectively.",
+    "url": "https://arxiv.org/abs/1807.06736",
+    "_query": "domain adaptation speech acoustic environment mismatch cepstral mean normalization"
+  },
+  {
+    "arxiv_id": "2601.03684",
+    "title": "Domain Adaptation of the Pyannote Diarization Pipeline for Conversational Indonesian Audio",
+    "year": "2026",
+    "authors": "Muhammad Daffa'i Rafi Prasetyo, Ramadhan Andika Putra, Zaidan Naufal Ilmi, Kurniawati Azizah",
+    "abstract": "This study presents a domain adaptation approach for speaker diarization targeting conversational Indonesian audio. We address the challenge of adapting an English-centric diarization pipeline to a low-resource language by employing synthetic data generation using neural Text-to-Speech technology. Experiments were conducted with varying training configurations, a small dataset (171 samples) and a large dataset containing 25 hours of synthetic speech. Results demonstrate that the baseline \\texttt{pyannote/segmentation-3.0} model, trained on the AMI Corpus, achieves a Diarization Error Rate (DER) of 53.47\\% when applied zero-shot to Indonesian. Domain adaptation significantly improves performance, with the small dataset models reducing DER to 34.31\\% (1 epoch) and 34.81\\% (2 epochs). The model trained on the 25-hour dataset achieves the best performance with a DER of 29.24\\%, representing a 13.68\\% absolute improvement over the baseline while maintaining 99.06\\% Recall and 87.14\\% F1-Score.",
+    "url": "https://arxiv.org/abs/2601.03684",
+    "_query": "domain adaptation speech acoustic environment mismatch cepstral mean normalization"
+  },
+  {
+    "arxiv_id": "2405.11078",
+    "title": "Acoustic modeling for Overlapping Speech Recognition: JHU Chime-5 Challenge System",
+    "year": "2024",
+    "authors": "Vimal Manohar, Szu-Jui Chen, Zhiqi Wang, Yusuke Fujita, Shinji Watanabe, Sanjeev Khudanpur",
+    "abstract": "This paper summarizes our acoustic modeling efforts in the Johns Hopkins University speech recognition system for the CHiME-5 challenge to recognize highly-overlapped dinner party speech recorded by multiple microphone arrays. We explore data augmentation approaches, neural network architectures, front-end speech dereverberation, beamforming and robust i-vector extraction with comparisons of our in-house implementations and publicly available tools. We finally achieved a word error rate of 69.4% on the development set, which is a 11.7% absolute improvement over the previous baseline of 81.1%, and release this improved baseline with refined techniques/tools as an advanced CHiME-5 recipe.",
+    "url": "https://arxiv.org/abs/2405.11078",
+    "_query": "domain adaptation speech acoustic environment mismatch cepstral mean normalization"
+  },
+  {
+    "arxiv_id": "2111.04040",
+    "title": "Meta-TTS: Meta-Learning for Few-Shot Speaker Adaptive Text-to-Speech",
+    "year": "2021",
+    "authors": "Sung-Feng Huang, Chyi-Jiunn Lin, Da-Rong Liu, Yi-Chen Chen, Hung-yi Lee",
+    "abstract": "Personalizing a speech synthesis system is a highly desired application, where the system can generate speech with the user's voice with rare enrolled recordings. There are two main approaches to build such a system in recent works: speaker adaptation and speaker encoding. On the one hand, speaker adaptation methods fine-tune a trained multi-speaker text-to-speech (TTS) model with few enrolled samples. However, they require at least thousands of fine-tuning steps for high-quality adaptation, making it hard to apply on devices. On the other hand, speaker encoding methods encode enrollment utterances into a speaker embedding. The trained TTS model can synthesize the user's speech conditioned on the corresponding speaker embedding. Nevertheless, the speaker encoder suffers from the generalization gap between the seen and unseen speakers.   In this paper, we propose applying a meta-learning algorithm to the speaker adaptation method. More specifically, we use Model Agnostic Meta-Learning (MAML) as the training algorithm of a multi-speaker TTS model, which aims to find a great meta-initialization to adapt the model to any few-shot speaker adaptation tasks quickly. Therefore, we can also adapt the meta-trained TTS model to unseen speakers efficiently. Our experiments compare the proposed method (Meta-TTS) with two baselines: a speaker adaptation method baseline and a speaker encoding method baseline. The evaluation results show that Meta-TTS can synthesize high speaker-similarity speech from few enrollment samples with fewer adaptation steps than the speaker adaptation baseline and outperforms the speaker encoding baseline under the same training scheme. When the speaker encoder of the baseline is pre-trained with extra 8371 speakers of data, Meta-TTS can still outperform the baseline on LibriTTS dataset and achieve comparable results on VCTK dataset.",
+    "url": "https://arxiv.org/abs/2111.04040",
+    "_query": "domain adaptation speech acoustic environment mismatch cepstral mean normalization"
+  },
+  {
+    "arxiv_id": "2303.14295",
+    "title": "Clustering Multivariate Time Series using Energy Distance",
+    "year": "2023",
+    "authors": "Richard A. Davis, Leon Fernandes, Konstantinos Fokianos",
+    "abstract": "A novel methodology is proposed for clustering multivariate time series data using energy distance defined in Sz\u00e9kely and Rizzo (2013). Specifically, a dissimilarity matrix is formed using the energy distance statistic to measure separation between the finite dimensional distributions for the component time series. Once the pairwise dissimilarity matrix is calculated, a hierarchical clustering method is then applied to obtain the dendrogram. This procedure is completely nonparametric as the dissimilarities between stationary distributions are directly calculated without making any model assumptions. In order to justify this procedure, asymptotic properties of the energy distance estimates are derived for general stationary and ergodic time series. The method is illustrated in a simulation study for various component time series that are either linear or nonlinear. Finally the methodology is applied to two examples; one involves GDP of selected countries and the other is population size of various states in the U.S.A. in the years 1900 -1999.",
+    "url": "https://arxiv.org/abs/2303.14295",
+    "_query": "scattering transform time series classification invariant"
+  },
+  {
+    "arxiv_id": "2302.12721",
+    "title": "LightTS: Lightweight Time Series Classification with Adaptive Ensemble Distillation -- Extended Version",
+    "year": "2023",
+    "authors": "David Campos, Miao Zhang, Bin Yang, Tung Kieu, Chenjuan Guo, Christian S. Jensen",
+    "abstract": "Due to the sweeping digitalization of processes, increasingly vast amounts of time series data are being produced. Accurate classification of such time series facilitates decision making in multiple domains. State-of-the-art classification accuracy is often achieved by ensemble learning where results are synthesized from multiple base models. This characteristic implies that ensemble learning needs substantial computing resources, preventing their use in resource-limited environments, such as in edge devices. To extend the applicability of ensemble learning, we propose the LightTS framework that compresses large ensembles into lightweight models while ensuring competitive accuracy. First, we propose adaptive ensemble distillation that assigns adaptive weights to different base models such that their varying classification capabilities contribute purposefully to the training of the lightweight model. Second, we propose means of identifying Pareto optimal settings w.r.t. model accuracy and model size, thus enabling users with a space budget to select the most accurate lightweight model. We report on experiments using 128 real-world time series sets and different types of base models that justify key decisions in the design of LightTS and provide evidence that LightTS is able to outperform competitors.",
+    "url": "https://arxiv.org/abs/2302.12721",
+    "_query": "scattering transform time series classification invariant"
+  },
+  {
+    "arxiv_id": "2202.07125",
+    "title": "Transformers in Time Series: A Survey",
+    "year": "2022",
+    "authors": "Qingsong Wen, Tian Zhou, Chaoli Zhang, Weiqi Chen, Ziqing Ma, Junchi Yan, Liang Sun",
+    "abstract": "Transformers have achieved superior performances in many tasks in natural language processing and computer vision, which also triggered great interest in the time series community. Among multiple advantages of Transformers, the ability to capture long-range dependencies and interactions is especially attractive for time series modeling, leading to exciting progress in various time series applications. In this paper, we systematically review Transformer schemes for time series modeling by highlighting their strengths as well as limitations. In particular, we examine the development of time series Transformers in two perspectives. From the perspective of network structure, we summarize the adaptations and modifications that have been made to Transformers in order to accommodate the challenges in time series analysis. From the perspective of applications, we categorize time series Transformers based on common tasks including forecasting, anomaly detection, and classification. Empirically, we perform robust analysis, model size analysis, and seasonal-trend decomposition analysis to study how Transformers perform in time series. Finally, we discuss and suggest future directions to provide useful research guidance. To the best of our knowledge, this paper is the first work to comprehensively and systematically summarize the recent advances of Transformers for modeling time series data. We hope this survey will ignite further research interests in time series Transformers.",
+    "url": "https://arxiv.org/abs/2202.07125",
+    "_query": "scattering transform time series classification invariant"
+  },
+  {
+    "arxiv_id": "0903.0041",
+    "title": "Learning DTW Global Constraint for Time Series Classification",
+    "year": "2009",
+    "authors": "Vit Niennattrakul, Chotirat Ann Ratanamahatana",
+    "abstract": "1-Nearest Neighbor with the Dynamic Time Warping (DTW) distance is one of the most effective classifiers on time series domain. Since the global constraint has been introduced in speech community, many global constraint models have been proposed including Sakoe-Chiba (S-C) band, Itakura Parallelogram, and Ratanamahatana-Keogh (R-K) band. The R-K band is a general global constraint model that can represent any global constraints with arbitrary shape and size effectively. However, we need a good learning algorithm to discover the most suitable set of R-K bands, and the current R-K band learning algorithm still suffers from an 'overfitting' phenomenon. In this paper, we propose two new learning algorithms, i.e., band boundary extraction algorithm and iterative learning algorithm. The band boundary extraction is calculated from the bound of all possible warping paths in each class, and the iterative learning is adjusted from the original R-K band learning. We also use a Silhouette index, a well-known clustering validation technique, as a heuristic function, and the lower bound function, LB_Keogh, to enhance the prediction speed. Twenty datasets, from the Workshop and Challenge on Time Series Classification, held in conjunction of the SIGKDD 2007, are used to evaluate our approach.",
+    "url": "https://arxiv.org/abs/0903.0041",
+    "_query": "scattering transform time series classification invariant"
+  },
+  {
+    "arxiv_id": "gr-qc/9810059",
+    "title": "Space-time distributions",
+    "year": "1998",
+    "authors": "Mihaela Time",
+    "abstract": "The space-time foliation Sigma compatible with the gravitational field g on a 4-manifold M determines a fibration pi of M, pi : M -> N is a surjective submersion over the 1-dimensional leaves space N. M is then written as a disjoint union of the leaves of Sigma, which are 3-dimensional spacelike surfaces on M.   The decomposition, TM=Sigma + T^0 M, also implies that we can define a lift of the curves on N to curves (non-spacelike) on M.   The stable causality condition M coincides with Sigma being a causal space-time distribution, generated by an exact timelike 1-form omega^0 = dt where t is some real function on M. In this case M is written as a disjoint union of a family of spacelike 3-surfaces of constant t, which cover D^+(S) of a initial 3-surface S of M.",
+    "url": "https://arxiv.org/abs/gr-qc/9810059",
+    "_query": "scattering transform time series classification invariant"
+  },
+  {
+    "arxiv_id": "2208.09300",
+    "title": "Expressing Multivariate Time Series as Graphs with Time Series Attention Transformer",
+    "year": "2022",
+    "authors": "William T. Ng, K. Siu, Albert C. Cheung, Michael K. Ng",
+    "abstract": "A reliable and efficient representation of multivariate time series is crucial in various downstream machine learning tasks. In multivariate time series forecasting, each variable depends on its historical values and there are inter-dependencies among variables as well. Models have to be designed to capture both intra- and inter-relationships among the time series. To move towards this goal, we propose the Time Series Attention Transformer (TSAT) for multivariate time series representation learning. Using TSAT, we represent both temporal information and inter-dependencies of multivariate time series in terms of edge-enhanced dynamic graphs. The intra-series correlations are represented by nodes in a dynamic graph; a self-attention mechanism is modified to capture the inter-series correlations by using the super-empirical mode decomposition (SMD) module. We applied the embedded dynamic graphs to times series forecasting problems, including two real-world datasets and two benchmark datasets. Extensive experiments show that TSAT clearly outerperforms six state-of-the-art baseline methods in various forecasting horizons. We further visualize the embedded dynamic graphs to illustrate the graph representation power of TSAT. We share our code at https://github.com/RadiantResearch/TSAT.",
+    "url": "https://arxiv.org/abs/2208.09300",
+    "_query": "scattering transform time series classification invariant"
+  },
+  {
+    "arxiv_id": "2406.06518",
+    "title": "Data Augmentation for Multivariate Time Series Classification: An Experimental Study",
+    "year": "2024",
+    "authors": "Romain Ilbert, Thai V. Hoang, Zonghua Zhang",
+    "abstract": "Our study investigates the impact of data augmentation on the performance of multivariate time series models, focusing on datasets from the UCR archive. Despite the limited size of these datasets, we achieved classification accuracy improvements in 10 out of 13 datasets using the Rocket and InceptionTime models. This highlights the essential role of sufficient data in training effective models, paralleling the advancements seen in computer vision. Our work delves into adapting and applying existing methods in innovative ways to the domain of multivariate time series classification. Our comprehensive exploration of these techniques sets a new standard for addressing data scarcity in time series analysis, emphasizing that diverse augmentation strategies are crucial for unlocking the potential of both traditional and deep learning models. Moreover, by meticulously analyzing and applying a variety of augmentation techniques, we demonstrate that strategic data enrichment can enhance model accuracy. This not only establishes a benchmark for future research in time series analysis but also underscores the importance of adopting varied augmentation approaches to improve model performance in the face of limited data availability.",
+    "url": "https://arxiv.org/abs/2406.06518",
+    "_query": "scattering transform time series classification invariant"
+  },
+  {
+    "arxiv_id": "2009.04796",
+    "title": "XCM: An Explainable Convolutional Neural Network for Multivariate Time Series Classification",
+    "year": "2020",
+    "authors": "Kevin Fauvel, Tao Lin, V\u00e9ronique Masson, \u00c9lisa Fromont, Alexandre Termier",
+    "abstract": "Multivariate Time Series (MTS) classification has gained importance over the past decade with the increase in the number of temporal datasets in multiple domains. The current state-of-the-art MTS classifier is a heavyweight deep learning approach, which outperforms the second-best MTS classifier only on large datasets. Moreover, this deep learning approach cannot provide faithful explanations as it relies on post hoc model-agnostic explainability methods, which could prevent its use in numerous applications. In this paper, we present XCM, an eXplainable Convolutional neural network for MTS classification. XCM is a new compact convolutional neural network which extracts information relative to the observed variables and time directly from the input data. Thus, XCM architecture enables a good generalization ability on both large and small datasets, while allowing the full exploitation of a faithful post hoc model-specific explainability method (Gradient-weighted Class Activation Mapping) by precisely identifying the observed variables and timestamps of the input data that are important for predictions. We first show that XCM outperforms the state-of-the-art MTS classifiers on both the large and small public UEA datasets. Then, we illustrate how XCM reconciles performance and explainability on a synthetic dataset and show that XCM enables a more precise identification of the regions of the input data that are important for predictions compared to the current deep learning MTS classifier also providing faithful explainability. Finally, we present how XCM can outperform the current most accurate state-of-the-art algorithm on a real-world application while enhancing explainability by providing faithful and more informative explanations.",
+    "url": "https://arxiv.org/abs/2009.04796",
+    "_query": "scattering transform time series classification invariant"
+  },
+  {
+    "arxiv_id": "1710.05204",
+    "title": "Sequential Design and Spatial Modeling for Portfolio Tail Risk Measurement",
+    "year": "2017",
+    "authors": "Michael Ludkovski, James Risk",
+    "abstract": "We consider calculation of capital requirements when the underlying economic scenarios are determined by simulatable risk factors. In the respective nested simulation framework, the goal is to estimate portfolio tail risk, quantified via VaR or TVaR of a given collection of future economic scenarios representing factor levels at the risk horizon. Traditionally, evaluating portfolio losses of an outer scenario is done by computing a conditional expectation via inner-level Monte Carlo and is computationally expensive. We introduce several inter-related machine learning techniques to speed up this computation, in particular by properly accounting for the simulation noise. Our main workhorse is an advanced Gaussian Process (GP) regression approach which uses nonparametric spatial modeling to efficiently learn the relationship between the stochastic factors defining scenarios and corresponding portfolio value. Leveraging this emulator, we develop sequential algorithms that adaptively allocate inner simulation budgets to target the quantile region. The GP framework also yields better uncertainty quantification for the resulting VaR/TVaR estimators that reduces bias and variance compared to existing methods. We illustrate the proposed strategies with two case-studies in two and six dimensions.",
+    "url": "https://arxiv.org/abs/1710.05204",
+    "_query": "invariant risk minimization environment out of distribution"
+  },
+  {
+    "arxiv_id": "2107.03979",
+    "title": "On the Selection of Loss Severity Distributions to Model Operational Risk",
+    "year": "2021",
+    "authors": "Daniel Hadley, Harry Joe, Natalia Nolde",
+    "abstract": "Accurate modeling of operational risk is important for a bank and the finance industry as a whole to prepare for potentially catastrophic losses. One approach to modeling operational is the loss distribution approach, which requires a bank to group operational losses into risk categories and select a loss frequency and severity distribution for each category. This approach estimates the annual operational loss distribution, and a bank must set aside capital, called regulatory capital, equal to the 0.999 quantile of this estimated distribution. In practice, this approach may produce unstable regulatory capital calculations from year-to-year as selected loss severity distribution families change. This paper presents truncation probability estimates for loss severity data and a consistent quantile scoring function on annual loss data as useful severity distribution selection criteria that may lead to more stable regulatory capital. Additionally, the Sinh-arcSinh distribution is another flexible candidate family for modeling loss severities that can be easily estimated using the maximum likelihood approach. Finally, we recommend that loss frequencies below the minimum reporting threshold be collected so that loss severity data can be treated as censored data.",
+    "url": "https://arxiv.org/abs/2107.03979",
+    "_query": "invariant risk minimization environment out of distribution"
+  },
+  {
+    "arxiv_id": "1508.00310",
+    "title": "Statistical Emulators for Pricing and Hedging Longevity Risk Products",
+    "year": "2015",
+    "authors": "James Risk, Michael Ludkovski",
+    "abstract": "We propose the use of statistical emulators for the purpose of valuing mortality-linked contracts in stochastic mortality models. Such models typically require (nested) evaluation of expected values of nonlinear functionals of multi-dimensional stochastic processes. Except in the simplest cases, no closed-form expressions are available, necessitating numerical approximation. Rather than building ad hoc analytic approximations, we advocate the use of modern statistical tools from machine learning to generate a flexible, non-parametric surrogate for the true mappings. This method allows performance guarantees regarding approximation accuracy and removes the need for nested simulation. We illustrate our approach with case studies involving (i) a Lee-Carter model with mortality shocks, (ii) index-based static hedging with longevity basis risk; (iii) a Cairns-Blake-Dowd stochastic survival probability model.",
+    "url": "https://arxiv.org/abs/1508.00310",
+    "_query": "invariant risk minimization environment out of distribution"
+  },
+  {
+    "arxiv_id": "1902.04489",
+    "title": "Evaluating Range Value at Risk Forecasts",
+    "year": "2019",
+    "authors": "Tobias Fissler, Johanna F. Ziegel",
+    "abstract": "The debate of what quantitative risk measure to choose in practice has mainly focused on the dichotomy between Value at Risk (VaR) -- a quantile -- and Expected Shortfall (ES) -- a tail expectation. Range Value at Risk (RVaR) is a natural interpolation between these two prominent risk measures, which constitutes a tradeoff between the sensitivity of the latter and the robustness of the former, turning it into a practically relevant risk measure on its own. As such, there is a need to statistically validate RVaR forecasts and to compare and rank the performance of different RVaR models, tasks subsumed under the term 'backtesting' in finance. The predictive performance is best evaluated and compared in terms of strictly consistent loss or scoring functions. That is, functions which are minimised in expectation by the correct RVaR forecast. Much like ES, it has been shown recently that RVaR does not admit strictly consistent scoring functions, i.e., it is not elicitable. Mitigating this negative result, this paper shows that a triplet of RVaR with two VaR components at different levels is elicitable. We characterise the class of strictly consistent scoring functions for this triplet. Additional properties of these scoring functions are examined, including the diagnostic tool of Murphy diagrams. The results are illustrated with a simulation study, and we put our approach in perspective with respect to the classical approach of trimmed least squares in robust regression.",
+    "url": "https://arxiv.org/abs/1902.04489",
+    "_query": "invariant risk minimization environment out of distribution"
+  },
+  {
+    "arxiv_id": "2307.11972",
+    "title": "Out-of-Distribution Optimality of Invariant Risk Minimization",
+    "year": "2023",
+    "authors": "Shoji Toyota, Kenji Fukumizu",
+    "abstract": "Deep Neural Networks often inherit spurious correlations embedded in training data and hence may fail to generalize to unseen domains, which have different distributions from the domain to provide training data. M. Arjovsky et al. (2019) introduced the concept out-of-distribution (o.o.d.) risk, which is the maximum risk among all domains, and formulated the issue caused by spurious correlations as a minimization problem of the o.o.d. risk. Invariant Risk Minimization (IRM) is considered to be a promising approach to minimize the o.o.d. risk: IRM estimates a minimum of the o.o.d. risk by solving a bi-level optimization problem. While IRM has attracted considerable attention with empirical success, it comes with few theoretical guarantees. Especially, a solid theoretical guarantee that the bi-level optimization problem gives the minimum of the o.o.d. risk has not yet been established. Aiming at providing a theoretical justification for IRM, this paper rigorously proves that a solution to the bi-level optimization problem minimizes the o.o.d. risk under certain conditions. The result also provides sufficient conditions on distributions providing training data and on a dimension of feature space for the bi-leveled optimization problem to minimize the o.o.d. risk.",
+    "url": "https://arxiv.org/abs/2307.11972",
+    "_query": "invariant risk minimization environment out of distribution"
+  },
+  {
+    "arxiv_id": "2404.18029",
+    "title": "Value-at-Risk- and Expectile-based Systemic Risk Measures and Second-order Asymptotics: With Applications to Diversification",
+    "year": "2024",
+    "authors": "Bingzhen Geng, Yang Liu, Yimiao Zhao",
+    "abstract": "Systemic risk measures play a crucial role in analyzing individual losses conditional on extreme system-wide disasters. In this paper, we provide a unified asymptotic treatment for systemic risk measures. First, we classify them into two families of Value-at-Risk- (VaR-) and expectile-based systemic risk measures. While VaR-based risk measures have been extensively studied, in the latter family, we propose two new systemic risk measures named the Individual Conditional Expectile (ICE) and the Systemic Individual Conditional Expectile (SICE), as alternatives to Marginal Expected Shortfall (MES) and Systemic Expected Shortfall (SES). Second, to characterize general mutually dependent and heavy-tailed risks, we consider a multivariate loss system following a multivariate Sarmanov distribution with common marginal distributions exhibiting second-order regular variation. Third, within this setting, we provide second-order asymptotic results for both families of systemic risk measures. These results extend standard first-order asymptotics and allow for more accurate tail approximations. Through numerical and analytical examples, we demonstrate the superiority of second-order asymptotics in accurately assessing systemic risk. We further conduct a comprehensive comparison between expectile-based and VaR-based systemic risk measures. The results indicate that expectile-based measures often yield higher asymptotic accuracy than VaR-based ones, emphasizing the former's potential advantages in reporting extreme events and tail risk. As a financial application, we use the asymptotic treatment to discuss the diversification benefits associated with various risk measures. Finally, we extend and obtain the second-order asymptotic formulas for generalized-quantile-based systemic risk measures with power functions.",
+    "url": "https://arxiv.org/abs/2404.18029",
+    "_query": "invariant risk minimization environment out of distribution"
+  },
+  {
+    "arxiv_id": "2007.02931",
+    "title": "Adaptive Risk Minimization: Learning to Adapt to Domain Shift",
+    "year": "2020",
+    "authors": "Marvin Zhang, Henrik Marklund, Nikita Dhawan, Abhishek Gupta, Sergey Levine, Chelsea Finn",
+    "abstract": "A fundamental assumption of most machine learning algorithms is that the training and test data are drawn from the same underlying distribution. However, this assumption is violated in almost all practical applications: machine learning systems are regularly tested under distribution shift, due to changing temporal correlations, atypical end users, or other factors. In this work, we consider the problem setting of domain generalization, where the training data are structured into domains and there may be multiple test time shifts, corresponding to new domains or domain distributions. Most prior methods aim to learn a single robust model or invariant feature space that performs well on all domains. In contrast, we aim to learn models that adapt at test time to domain shift using unlabeled test points. Our primary contribution is to introduce the framework of adaptive risk minimization (ARM), in which models are directly optimized for effective adaptation to shift by learning to adapt on the training domains. Compared to prior methods for robustness, invariance, and adaptation, ARM methods provide performance gains of 1-4% test accuracy on a number of image classification problems exhibiting domain shift.",
+    "url": "https://arxiv.org/abs/2007.02931",
+    "_query": "invariant risk minimization environment out of distribution"
+  },
+  {
+    "arxiv_id": "2601.22944",
+    "title": "Environment-Conditioned Tail Reweighting for Total Variation Invariant Risk Minimization",
+    "year": "2026",
+    "authors": "Yuanchao Wang, Zhao-Rong Lai, Tianqi Zhong, Fengnan Li",
+    "abstract": "Out-of-distribution (OOD) generalization remains challenging when models simultaneously encounter correlation shifts across environments and diversity shifts driven by rare or hard samples. Existing invariant risk minimization (IRM) methods primarily address spurious correlations at the environment level, but often overlook sample-level heterogeneity within environments, which can critically impact OOD performance. In this work, we propose Environment-Conditioned Tail Reweighting for Total Variation Invariant Risk Minimization (ECTR), a unified framework that augments TV-based invariant learning with environment-conditioned tail reweighting to jointly address both types of distribution shift. By integrating environment-level invariance with within-environment robustness, the proposed approach makes these two mechanisms complementary under mixed distribution shifts. We further extend the framework to scenarios without explicit environment annotations by inferring latent environments through a minimax formulation. Experiments across regression, tabular, time-series, and image classification benchmarks under mixed distribution shifts demonstrate consistent improvements in both worst-environment and average OOD performance.",
+    "url": "https://arxiv.org/abs/2601.22944",
+    "_query": "invariant risk minimization environment out of distribution"
+  },
+  {
+    "arxiv_id": "2112.10474",
+    "title": "Reciprocal Normalization for Domain Adaptation",
+    "year": "2021",
+    "authors": "Zhiyong Huang, Kekai Sheng, Ke Li, Jian Liang, Taiping Yao, Weiming Dong, Dengwen Zhou, Xing Sun",
+    "abstract": "Batch normalization (BN) is widely used in modern deep neural networks, which has been shown to represent the domain-related knowledge, and thus is ineffective for cross-domain tasks like unsupervised domain adaptation (UDA). Existing BN variant methods aggregate source and target domain knowledge in the same channel in normalization module. However, the misalignment between the features of corresponding channels across domains often leads to a sub-optimal transferability. In this paper, we exploit the cross-domain relation and propose a novel normalization method, Reciprocal Normalization (RN). Specifically, RN first presents a Reciprocal Compensation (RC) module to acquire the compensatory for each channel in both domains based on the cross-domain channel-wise correlation. Then RN develops a Reciprocal Aggregation (RA) module to adaptively aggregate the feature with its cross-domain compensatory components. As an alternative to BN, RN is more suitable for UDA problems and can be easily integrated into popular domain adaptation methods. Experiments show that the proposed RN outperforms existing normalization counterparts by a large margin and helps state-of-the-art adaptation approaches achieve better results. The source code is available on https://github.com/Openning07/reciprocal-normalization-for-DA.",
+    "url": "https://arxiv.org/abs/2112.10474",
+    "_query": "optimal transport domain adaptation feature alignment"
+  },
+  {
+    "arxiv_id": "2406.04295",
+    "title": "Everything to the Synthetic: Diffusion-driven Test-time Adaptation via Synthetic-Domain Alignment",
+    "year": "2024",
+    "authors": "Jiayi Guo, Junhao Zhao, Chaoqun Du, Yulin Wang, Chunjiang Ge, Zanlin Ni, Shiji Song, Humphrey Shi, Gao Huang",
+    "abstract": "Test-time adaptation (TTA) aims to improve the performance of source-domain pre-trained models on previously unseen, shifted target domains. Traditional TTA methods primarily adapt model weights based on target data streams, making model performance sensitive to the amount and order of target data. The recently proposed diffusion-driven TTA methods mitigate this by adapting model inputs instead of weights, where an unconditional diffusion model, trained on the source domain, transforms target-domain data into a synthetic domain that is expected to approximate the source domain. However, in this paper, we reveal that although the synthetic data in diffusion-driven TTA seems indistinguishable from the source data, it is unaligned with, or even markedly different from the latter for deep networks. To address this issue, we propose a \\textbf{S}ynthetic-\\textbf{D}omain \\textbf{A}lignment (SDA) framework. Our key insight is to fine-tune the source model with synthetic data to ensure better alignment. Specifically, we first employ a conditional diffusion model to generate labeled samples, creating a synthetic dataset. Subsequently, we use the aforementioned unconditional diffusion model to add noise to and denoise each sample before fine-tuning. This Mix of Diffusion (MoD) process mitigates the potential domain misalignment between the conditional and unconditional models. Extensive experiments across classifiers, segmenters, and multimodal large language models (MLLMs, \\eg, LLaVA) demonstrate that SDA achieves superior domain alignment and consistently outperforms existing diffusion-driven TTA methods. Our code is available at https://github.com/SHI-Labs/Diffusion-Driven-Test-Time-Adaptation-via-Synthetic-Domain-Alignment.",
+    "url": "https://arxiv.org/abs/2406.04295",
+    "_query": "optimal transport domain adaptation feature alignment"
+  },
+  {
+    "arxiv_id": "2508.13823",
+    "title": "Self-Aware Adaptive Alignment: Enabling Accurate Perception for Intelligent Transportation Systems",
+    "year": "2025",
+    "authors": "Tong Xiang, Hongxia Zhao, Fenghua Zhu, Yuanyuan Chen, Yisheng Lv",
+    "abstract": "Achieving top-notch performance in Intelligent Transportation detection is a critical research area. However, many challenges still need to be addressed when it comes to detecting in a cross-domain scenario. In this paper, we propose a Self-Aware Adaptive Alignment (SA3), by leveraging an efficient alignment mechanism and recognition strategy. Our proposed method employs a specified attention-based alignment module trained on source and target domain datasets to guide the image-level features alignment process, enabling the local-global adaptive alignment between the source domain and target domain. Features from both domains, whose channel importance is re-weighted, are fed into the region proposal network, which facilitates the acquisition of salient region features. Also, we introduce an instance-to-image level alignment module specific to the target domain to adaptively mitigate the domain gap. To evaluate the proposed method, extensive experiments have been conducted on popular cross-domain object detection benchmarks. Experimental results show that SA3 achieves superior results to the previous state-of-the-art methods.",
+    "url": "https://arxiv.org/abs/2508.13823",
+    "_query": "optimal transport domain adaptation feature alignment"
+  },
+  {
+    "arxiv_id": "2104.10376",
+    "title": "Towards Corruption-Agnostic Robust Domain Adaptation",
+    "year": "2021",
+    "authors": "Yifan Xu, Kekai Sheng, Weiming Dong, Baoyuan Wu, Changsheng Xu, Bao-Gang Hu",
+    "abstract": "Big progress has been achieved in domain adaptation in decades. Existing works are always based on an ideal assumption that testing target domain are i.i.d. with training target domains. However, due to unpredictable corruptions (e.g., noise and blur) in real data like web images, domain adaptation methods are increasingly required to be corruption robust on target domains. In this paper, we investigate a new task, Corruption-agnostic Robust Domain Adaptation (CRDA): to be accurate on original data and robust against unavailable-for-training corruptions on target domains. This task is non-trivial due to large domain discrepancy and unsupervised target domains. We observe that simple combinations of popular methods of domain adaptation and corruption robustness have sub-optimal CRDA results. We propose a new approach based on two technical insights into CRDA: 1) an easy-to-plug module called Domain Discrepancy Generator (DDG) that generates samples that enlarge domain discrepancy to mimic unpredictable corruptions; 2) a simple but effective teacher-student scheme with contrastive loss to enhance the constraints on target domains. Experiments verify that DDG keeps or even improves performance on original data and achieves better corruption robustness that baselines.",
+    "url": "https://arxiv.org/abs/2104.10376",
+    "_query": "optimal transport domain adaptation feature alignment"
+  },
+  {
+    "arxiv_id": "2308.13515",
+    "title": "Robust Core-Periphery Constrained Transformer for Domain Adaptation",
+    "year": "2023",
+    "authors": "Xiaowei Yu, Zeyu Zhang, Dajiang Zhu, Tianming Liu",
+    "abstract": "Unsupervised domain adaptation (UDA) aims to learn transferable representation across domains. Recently a few UDA works have successfully applied Transformer-based methods and achieved state-of-the-art (SOTA) results. However, it remains challenging when there exists a large domain gap between the source and target domain. Inspired by humans' exceptional transferability abilities to adapt knowledge from familiar to uncharted domains, we try to apply the universally existing organizational structure in the human functional brain networks, i.e., the core-periphery principle to design the Transformer and improve its UDA performance. In this paper, we propose a novel brain-inspired robust core-periphery constrained transformer (RCCT) for unsupervised domain adaptation, which brings a large margin of performance improvement on various datasets. Specifically, in RCCT, the self-attention operation across image patches is rescheduled by an adaptively learned weighted graph with the Core-Periphery structure (CP graph), where the information communication and exchange between images patches are manipulated and controlled by the connection strength, i.e., edge weight of the learned weighted CP graph. Besides, since the data in domain adaptation tasks can be noisy, to improve the model robustness, we intentionally add perturbations to the patches in the latent space to ensure generating robust learned weighted core-periphery graphs. Extensive evaluations are conducted on several widely tested UDA benchmarks. Our proposed RCCT consistently performs best compared to existing works, including 88.3\\% on Office-Home, 95.0\\% on Office-31, 90.7\\% on VisDA-2017, and 46.0\\% on DomainNet.",
+    "url": "https://arxiv.org/abs/2308.13515",
+    "_query": "optimal transport domain adaptation feature alignment"
+  },
+  {
+    "arxiv_id": "2109.14219",
+    "title": "Unsupervised Domain Adaptation in Semantic Segmentation Based on Pixel Alignment and Self-Training",
+    "year": "2021",
+    "authors": "Hexin Dong, Fei Yu, Jie Zhao, Bin Dong, Li Zhang",
+    "abstract": "This paper proposes an unsupervised cross-modality domain adaptation approach based on pixel alignment and self-training. Pixel alignment transfers ceT1 scans to hrT2 modality, helping to reduce domain shift in the training segmentation model. Self-training adapts the decision boundary of the segmentation network to fit the distribution of hrT2 scans. Experiment results show that PAST has outperformed the non-UDA baseline significantly, and it received rank-2 on CrossMoDA validation phase Leaderboard with a mean Dice score of 0.8395.",
+    "url": "https://arxiv.org/abs/2109.14219",
+    "_query": "optimal transport domain adaptation feature alignment"
+  },
+  {
+    "arxiv_id": "1910.03548",
+    "title": "Multi-Source Domain Adaptation and Semi-Supervised Domain Adaptation with Focus on Visual Domain Adaptation Challenge 2019",
+    "year": "2019",
+    "authors": "Yingwei Pan, Yehao Li, Qi Cai, Yang Chen, Ting Yao",
+    "abstract": "This notebook paper presents an overview and comparative analysis of our systems designed for the following two tasks in Visual Domain Adaptation Challenge (VisDA-2019): multi-source domain adaptation and semi-supervised domain adaptation.   Multi-Source Domain Adaptation: We investigate both pixel-level and feature-level adaptation for multi-source domain adaptation task, i.e., directly hallucinating labeled target sample via CycleGAN and learning domain-invariant feature representations through self-learning. Moreover, the mechanism of fusing features from different backbones is further studied to facilitate the learning of domain-invariant classifiers. Source code and pre-trained models are available at \\url{https://github.com/Panda-Peter/visda2019-multisource}.   Semi-Supervised Domain Adaptation: For this task, we adopt a standard self-learning framework to construct a classifier based on the labeled source and target data, and generate the pseudo labels for unlabeled target data. These target data with pseudo labels are then exploited to re-training the classifier in a following iteration. Furthermore, a prototype-based classification module is additionally utilized to strengthen the predictions. Source code and pre-trained models are available at \\url{https://github.com/Panda-Peter/visda2019-semisupervised}.",
+    "url": "https://arxiv.org/abs/1910.03548",
+    "_query": "optimal transport domain adaptation feature alignment"
+  },
+  {
+    "arxiv_id": "2003.00820",
+    "title": "MADAN: Multi-source Adversarial Domain Aggregation Network for Domain Adaptation",
+    "year": "2020",
+    "authors": "Sicheng Zhao, Bo Li, Xiangyu Yue, Pengfei Xu, Kurt Keutzer",
+    "abstract": "Domain adaptation aims to learn a transferable model to bridge the domain shift between one labeled source domain and another sparsely labeled or unlabeled target domain. Since the labeled data may be collected from multiple sources, multi-source domain adaptation (MDA) has attracted increasing attention. Recent MDA methods do not consider the pixel-level alignment between sources and target or the misalignment across different sources. In this paper, we propose a novel MDA framework to address these challenges. Specifically, we design an end-to-end Multi-source Adversarial Domain Aggregation Network (MADAN). First, an adapted domain is generated for each source with dynamic semantic consistency while aligning towards the target at the pixel-level cycle-consistently. Second, sub-domain aggregation discriminator and cross-domain cycle discriminator are proposed to make different adapted domains more closely aggregated. Finally, feature-level alignment is performed between the aggregated domain and the target domain while training the task network. For the segmentation adaptation, we further enforce category-level alignment and incorporate context-aware generation, which constitutes MADAN+. We conduct extensive MDA experiments on digit recognition, object classification, and simulation-to-real semantic segmentation. The results demonstrate that the proposed MADAN and MANDA+ models outperform state-of-the-art approaches by a large margin.",
+    "url": "https://arxiv.org/abs/2003.00820",
+    "_query": "optimal transport domain adaptation feature alignment"
+  },
+  {
+    "arxiv_id": "1703.06868",
+    "title": "Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization",
+    "year": "2017",
+    "authors": "Xun Huang, Serge Belongie",
+    "abstract": "Gatys et al. recently introduced a neural algorithm that renders a content image in the style of another image, achieving so-called style transfer. However, their framework requires a slow iterative optimization process, which limits its practical application. Fast approximations with feed-forward neural networks have been proposed to speed up neural style transfer. Unfortunately, the speed improvement comes at a cost: the network is usually tied to a fixed set of styles and cannot adapt to arbitrary new styles. In this paper, we present a simple yet effective approach that for the first time enables arbitrary style transfer in real-time. At the heart of our method is a novel adaptive instance normalization (AdaIN) layer that aligns the mean and variance of the content features with those of the style features. Our method achieves speed comparable to the fastest existing approach, without the restriction to a pre-defined set of styles. In addition, our approach allows flexible user controls such as content-style trade-off, style interpolation, color & spatial controls, all using a single feed-forward neural network.",
+    "url": "https://arxiv.org/abs/1703.06868",
+    "_query": "adaptive instance normalization style transfer signal"
+  },
+  {
+    "arxiv_id": "1702.06762",
+    "title": "Style Transfer Generative Adversarial Networks: Learning to Play Chess Differently",
+    "year": "2017",
+    "authors": "Muthuraman Chidambaram, Yanjun Qi",
+    "abstract": "The idea of style transfer has largely only been explored in image-based tasks, which we attribute in part to the specific nature of loss functions used for style transfer. We propose a general formulation of style transfer as an extension of generative adversarial networks, by using a discriminator to regularize a generator with an otherwise separate loss function. We apply our approach to the task of learning to play chess in the style of a specific player, and present empirical evidence for the viability of our approach.",
+    "url": "https://arxiv.org/abs/1702.06762",
+    "_query": "adaptive instance normalization style transfer signal"
+  },
+  {
+    "arxiv_id": "2507.00482",
+    "title": "Physics-Aware Style Transfer for Adaptive Holographic Reconstruction",
+    "year": "2025",
+    "authors": "Chanseok Lee, Fakhriyya Mammadova, Jiseong Barg, Mooseok Jang",
+    "abstract": "Inline holographic imaging presents an ill-posed inverse problem of reconstructing objects' complex amplitude from recorded diffraction patterns. Although recent deep learning approaches have shown promise over classical phase retrieval algorithms, they often require high-quality ground truth datasets of complex amplitude maps to achieve a statistical inverse mapping operation between the two domains. Here, we present a physics-aware style transfer approach that interprets the object-to-sensor distance as an implicit style within diffraction patterns. Using the style domain as the intermediate domain to construct cyclic image translation, we show that the inverse mapping operation can be learned in an adaptive manner only with datasets composed of intensity measurements. We further demonstrate its biomedical applicability by reconstructing the morphology of dynamically flowing red blood cells, highlighting its potential for real-time, label-free imaging. As a framework that leverages physical cues inherently embedded in measurements, the presented method offers a practical learning strategy for imaging applications where ground truth is difficult or impossible to obtain.",
+    "url": "https://arxiv.org/abs/2507.00482",
+    "_query": "adaptive instance normalization style transfer signal"
+  },
+  {
+    "arxiv_id": "2010.02560",
+    "title": "Arbitrary Style Transfer using Graph Instance Normalization",
+    "year": "2020",
+    "authors": "Dongki Jung, Seunghan Yang, Jaehoon Choi, Changick Kim",
+    "abstract": "Style transfer is the image synthesis task, which applies a style of one image to another while preserving the content. In statistical methods, the adaptive instance normalization (AdaIN) whitens the source images and applies the style of target images through normalizing the mean and variance of features. However, computing feature statistics for each instance would neglect the inherent relationship between features, so it is hard to learn global styles while fitting to the individual training dataset. In this paper, we present a novel learnable normalization technique for style transfer using graph convolutional networks, termed Graph Instance Normalization (GrIN). This algorithm makes the style transfer approach more robust by taking into account similar information shared between instances. Besides, this simple module is also applicable to other tasks like image-to-image translation or domain adaptation.",
+    "url": "https://arxiv.org/abs/2010.02560",
+    "_query": "adaptive instance normalization style transfer signal"
+  },
+  {
+    "arxiv_id": "2203.02574",
+    "title": "Style-ERD: Responsive and Coherent Online Motion Style Transfer",
+    "year": "2022",
+    "authors": "Tianxin Tao, Xiaohang Zhan, Zhongquan Chen, Michiel van de Panne",
+    "abstract": "Motion style transfer is a common method for enriching character animation. Motion style transfer algorithms are often designed for offline settings where motions are processed in segments. However, for online animation applications, such as realtime avatar animation from motion capture, motions need to be processed as a stream with minimal latency. In this work, we realize a flexible, high-quality motion style transfer method for this setting. We propose a novel style transfer model, Style-ERD, to stylize motions in an online manner with an Encoder-Recurrent-Decoder structure, along with a novel discriminator that combines feature attention and temporal attention. Our method stylizes motions into multiple target styles with a unified model. Although our method targets online settings, it outperforms previous offline methods in motion realism and style expressiveness and provides significant gains in runtime efficiency",
+    "url": "https://arxiv.org/abs/2203.02574",
+    "_query": "adaptive instance normalization style transfer signal"
+  },
+  {
+    "arxiv_id": "2108.04441",
+    "title": "Domain-Aware Universal Style Transfer",
+    "year": "2021",
+    "authors": "Kibeom Hong, Seogkyu Jeon, Huan Yang, Jianlong Fu, Hyeran Byun",
+    "abstract": "Style transfer aims to reproduce content images with the styles from reference images. Existing universal style transfer methods successfully deliver arbitrary styles to original images either in an artistic or a photo-realistic way. However, the range of 'arbitrary style' defined by existing works is bounded in the particular domain due to their structural limitation. Specifically, the degrees of content preservation and stylization are established according to a predefined target domain. As a result, both photo-realistic and artistic models have difficulty in performing the desired style transfer for the other domain. To overcome this limitation, we propose a unified architecture, Domain-aware Style Transfer Networks (DSTN) that transfer not only the style but also the property of domain (i.e., domainness) from a given reference image. To this end, we design a novel domainness indicator that captures the domainness value from the texture and structural features of reference images. Moreover, we introduce a unified framework with domain-aware skip connection to adaptively transfer the stroke and palette to the input contents guided by the domainness indicator. Our extensive experiments validate that our model produces better qualitative results and outperforms previous methods in terms of proxy metrics on both artistic and photo-realistic stylizations.",
+    "url": "https://arxiv.org/abs/2108.04441",
+    "_query": "adaptive instance normalization style transfer signal"
+  },
+  {
+    "arxiv_id": "2302.03875",
+    "title": "Neural Artistic Style Transfer with Conditional Adversaria",
+    "year": "2023",
+    "authors": "P. N. Deelaka",
+    "abstract": "A neural artistic style transformation (NST) model can modify the appearance of a simple image by adding the style of a famous image. Even though the transformed images do not look precisely like artworks by the same artist of the respective style images, the generated images are appealing. Generally, a trained NST model specialises in a style, and a single image represents that style. However, generating an image under a new style is a tedious process, which includes full model training. In this paper, we present two methods that step toward the style image independent neural style transfer model. In other words, the trained model could generate semantically accurate generated image under any content, style image input pair. Our novel contribution is a unidirectional-GAN model that ensures the Cyclic consistency by the model architecture.Furthermore, this leads to much smaller model size and an efficient training and validation phase.",
+    "url": "https://arxiv.org/abs/2302.03875",
+    "_query": "adaptive instance normalization style transfer signal"
+  },
+  {
+    "arxiv_id": "1911.06953",
+    "title": "Dynamic Instance Normalization for Arbitrary Style Transfer",
+    "year": "2019",
+    "authors": "Yongcheng Jing, Xiao Liu, Yukang Ding, Xinchao Wang, Errui Ding, Mingli Song, Shilei Wen",
+    "abstract": "Prior normalization methods rely on affine transformations to produce arbitrary image style transfers, of which the parameters are computed in a pre-defined way. Such manually-defined nature eventually results in the high-cost and shared encoders for both style and content encoding, making style transfer systems cumbersome to be deployed in resource-constrained environments like on the mobile-terminal side. In this paper, we propose a new and generalized normalization module, termed as Dynamic Instance Normalization (DIN), that allows for flexible and more efficient arbitrary style transfers. Comprising an instance normalization and a dynamic convolution, DIN encodes a style image into learnable convolution parameters, upon which the content image is stylized. Unlike conventional methods that use shared complex encoders to encode content and style, the proposed DIN introduces a sophisticated style encoder, yet comes with a compact and lightweight content encoder for fast inference. Experimental results demonstrate that the proposed approach yields very encouraging results on challenging style patterns and, to our best knowledge, for the first time enables an arbitrary style transfer using MobileNet-based lightweight architecture, leading to a reduction factor of more than twenty in computational cost as compared to existing approaches. Furthermore, the proposed DIN provides flexible support for state-of-the-art convolutional operations, and thus triggers novel functionalities, such as uniform-stroke placement for non-natural images and automatic spatial-stroke control.",
+    "url": "https://arxiv.org/abs/1911.06953",
+    "_query": "adaptive instance normalization style transfer signal"
+  },
+  {
+    "arxiv_id": "hep-ph/0610012",
+    "title": "Tevatron-for-LHC Report of the QCD Working Group",
+    "year": "2006",
+    "authors": " TeV4LHC QCD Working Group, M. Albrow, M. Begel, D. Bourilkov, M. Campanelli, F. Chlebana, A. De Roeck, J. R. Dittmann, S. D. Ellis, B. Field, R. Field, M. Gallinaro, W. Giele, K. Goulianos, R. C. Group, K. Hatakeyama, Z. Hubacek, J. Huston, W. Kilgore, T. Kluge, S. W. Lee, A. Moraes, S. Mrenna, F. Olness, J. Proudfoot, K. Rabbertz, C. Royon, T. Sjostrand, P. Skands, J. Smith, W. K. Tung, M. R. Whalley, M. Wobisch, M. Zielinski",
+    "abstract": "The experiments at Run 2 of the Tevatron have each accumulated over 1 inverse femtobarn of high-transverse momentum data. Such a dataset allows for the first precision (i.e. comparisons between theory and experiment at the few percent level) tests of QCD at a hadron collider. While the Large Hadron Collider has been designed as a discovery machine, basic QCD analyses will still need to be performed to understand the working environment. The Tevatron-for-LHC workshop was conceived as a communication link to pass on the expertise of the Tevatron and to test new analysis ideas coming from the LHC community. The TeV4LHC QCD Working Group focussed on important aspects of QCD at hadron colliders: jet definitions, extraction and use of Parton Distribution Functions, the underlying event, Monte Carlo tunes, and diffractive physics. This report summarizes some of the results achieved during this workshop.",
+    "url": "https://arxiv.org/abs/hep-ph/0610012",
+    "_query": "group equivariant convolutional network translation invariance"
+  },
+  {
+    "arxiv_id": "2108.03494",
+    "title": "Rotational and Reflectional Equivariant Convolutional Neural Network for data-limited applications: Multiphase Flow demonstration",
+    "year": "2021",
+    "authors": "Bhargav Sriram Siddani, S. Balachandar, Ruogu Fang",
+    "abstract": "This article deals with approximating steady-state particle-resolved fluid flow around a fixed particle of interest under the influence of randomly distributed stationary particles in a dispersed multiphase setup using Convolutional Neural Network (CNN). The considered problem involves rotational symmetry about the mean velocity (streamwise) direction. Thus, this work enforces this symmetry using $\\mathbf{\\textbf{SE(3)-equivariant}}$, special Euclidean group of dimension 3, CNN architecture, which is translation and three-dimensional rotation equivariant. This study mainly explores the generalization capabilities and benefits of SE(3)-equivariant network. Accurate synthetic flow fields for Reynolds number and particle volume fraction combinations spanning over a range of [86.22, 172.96] and [0.11, 0.45] respectively are produced with careful application of symmetry-aware data-driven approach.",
+    "url": "https://arxiv.org/abs/2108.03494",
+    "_query": "group equivariant convolutional network translation invariance"
+  },
+  {
+    "arxiv_id": "2209.14719",
+    "title": "In Search of Projectively Equivariant Networks",
+    "year": "2022",
+    "authors": "Georg B\u00f6kman, Axel Flinth, Fredrik Kahl",
+    "abstract": "Equivariance of linear neural network layers is well studied. In this work, we relax the equivariance condition to only be true in a projective sense. We propose a way to construct a projectively equivariant neural network through building a standard equivariant network where the linear group representations acting on each intermediate feature space are \"multiplicatively modified lifts\" of projective group representations. By theoretically studying the relation of projectively and linearly equivariant linear layers, we show that our approach is the most general possible when building a network out of linear layers. The theory is showcased in two simple experiments.",
+    "url": "https://arxiv.org/abs/2209.14719",
+    "_query": "group equivariant convolutional network translation invariance"
+  },
+  {
+    "arxiv_id": "1602.07576",
+    "title": "Group Equivariant Convolutional Networks",
+    "year": "2016",
+    "authors": "Taco S. Cohen, Max Welling",
+    "abstract": "We introduce Group equivariant Convolutional Neural Networks (G-CNNs), a natural generalization of convolutional neural networks that reduces sample complexity by exploiting symmetries. G-CNNs use G-convolutions, a new type of layer that enjoys a substantially higher degree of weight sharing than regular convolution layers. G-convolutions increase the expressive capacity of the network without increasing the number of parameters. Group convolution layers are easy to use and can be implemented with negligible computational overhead for discrete groups generated by translations, reflections and rotations. G-CNNs achieve state of the art results on CIFAR10 and rotated MNIST.",
+    "url": "https://arxiv.org/abs/1602.07576",
+    "_query": "group equivariant convolutional network translation invariance"
+  },
+  {
+    "arxiv_id": "1909.11193",
+    "title": "Scaling-Translation-Equivariant Networks with Decomposed Convolutional Filters",
+    "year": "2019",
+    "authors": "Wei Zhu, Qiang Qiu, Robert Calderbank, Guillermo Sapiro, Xiuyuan Cheng",
+    "abstract": "Encoding the scale information explicitly into the representation learned by a convolutional neural network (CNN) is beneficial for many computer vision tasks especially when dealing with multiscale inputs. We study, in this paper, a scaling-translation-equivariant (ST-equivariant) CNN with joint convolutions across the space and the scaling group, which is shown to be both sufficient and necessary to achieve equivariance for the regular representation of the scaling-translation group ST . To reduce the model complexity and computational burden, we decompose the convolutional filters under two pre-fixed separable bases and truncate the expansion to low-frequency components. A further benefit of the truncated filter expansion is the improved deformation robustness of the equivariant representation, a property which is theoretically analyzed and empirically verified. Numerical experiments demonstrate that the proposed scaling-translation-equivariant network with decomposed convolutional filters (ScDCFNet) achieves significantly improved performance in multiscale image classification and better interpretability than regular CNNs at a reduced model size.",
+    "url": "https://arxiv.org/abs/1909.11193",
+    "_query": "group equivariant convolutional network translation invariance"
+  },
+  {
+    "arxiv_id": "1702.01806",
+    "title": "Beam Search Strategies for Neural Machine Translation",
+    "year": "2017",
+    "authors": "Markus Freitag, Yaser Al-Onaizan",
+    "abstract": "The basic concept in Neural Machine Translation (NMT) is to train a large Neural Network that maximizes the translation performance on a given parallel corpus. NMT is then using a simple left-to-right beam-search decoder to generate new translations that approximately maximize the trained conditional probability. The current beam search strategy generates the target sentence word by word from left-to- right while keeping a fixed amount of active candidates at each time step. First, this simple search is less adaptive as it also expands candidates whose scores are much worse than the current best. Secondly, it does not expand hypotheses if they are not within the best scoring candidates, even if their scores are close to the best one. The latter one can be avoided by increasing the beam size until no performance improvement can be observed. While you can reach better performance, this has the draw- back of a slower decoding speed. In this paper, we concentrate on speeding up the decoder by applying a more flexible beam search strategy whose candidate size may vary at each time step depending on the candidate scores. We speed up the original decoder by up to 43% for the two language pairs German-English and Chinese-English without losing any translation quality.",
+    "url": "https://arxiv.org/abs/1702.01806",
+    "_query": "group equivariant convolutional network translation invariance"
+  },
+  {
+    "arxiv_id": "1908.06409",
+    "title": "Schur multipliers of special p-groups of rank 2",
+    "year": "2019",
+    "authors": "Sumana Hatui",
+    "abstract": "A group G is called special p-group of rank k if the commutator subgroup [G,G] and centre Z(G) are equal, which is elementary abelian p-group of rank k and G/[G,G] is also elementary abelian p-group. In this article we determine the Schur multiplier of special p-groups of rank 2 explicitly.",
+    "url": "https://arxiv.org/abs/1908.06409",
+    "_query": "group equivariant convolutional network translation invariance"
+  },
+  {
+    "arxiv_id": "2002.03830",
+    "title": "Attentive Group Equivariant Convolutional Networks",
+    "year": "2020",
+    "authors": "David W. Romero, Erik J. Bekkers, Jakub M. Tomczak, Mark Hoogendoorn",
+    "abstract": "Although group convolutional networks are able to learn powerful representations based on symmetry patterns, they lack explicit means to learn meaningful relationships among them (e.g., relative positions and poses). In this paper, we present attentive group equivariant convolutions, a generalization of the group convolution, in which attention is applied during the course of convolution to accentuate meaningful symmetry combinations and suppress non-plausible, misleading ones. We indicate that prior work on visual attention can be described as special cases of our proposed framework and show empirically that our attentive group equivariant convolutional networks consistently outperform conventional group convolutional networks on benchmark image datasets. Simultaneously, we provide interpretability to the learned concepts through the visualization of equivariant attention maps.",
+    "url": "https://arxiv.org/abs/2002.03830",
+    "_query": "group equivariant convolutional network translation invariance"
+  },
+  {
+    "arxiv_id": "2007.04964",
+    "title": "Improving Style-Content Disentanglement in Image-to-Image Translation",
+    "year": "2020",
+    "authors": "Aviv Gabbay, Yedid Hoshen",
+    "abstract": "Unsupervised image-to-image translation methods have achieved tremendous success in recent years. However, it can be easily observed that their models contain significant entanglement which often hurts the translation performance. In this work, we propose a principled approach for improving style-content disentanglement in image-to-image translation. By considering the information flow into each of the representations, we introduce an additional loss term which serves as a content-bottleneck. We show that the results of our method are significantly more disentangled than those produced by current methods, while further improving the visual quality and translation diversity.",
+    "url": "https://arxiv.org/abs/2007.04964",
+    "_query": "disentangled representation domain content style"
+  },
+  {
+    "arxiv_id": "2108.04441",
+    "title": "Domain-Aware Universal Style Transfer",
+    "year": "2021",
+    "authors": "Kibeom Hong, Seogkyu Jeon, Huan Yang, Jianlong Fu, Hyeran Byun",
+    "abstract": "Style transfer aims to reproduce content images with the styles from reference images. Existing universal style transfer methods successfully deliver arbitrary styles to original images either in an artistic or a photo-realistic way. However, the range of 'arbitrary style' defined by existing works is bounded in the particular domain due to their structural limitation. Specifically, the degrees of content preservation and stylization are established according to a predefined target domain. As a result, both photo-realistic and artistic models have difficulty in performing the desired style transfer for the other domain. To overcome this limitation, we propose a unified architecture, Domain-aware Style Transfer Networks (DSTN) that transfer not only the style but also the property of domain (i.e., domainness) from a given reference image. To this end, we design a novel domainness indicator that captures the domainness value from the texture and structural features of reference images. Moreover, we introduce a unified framework with domain-aware skip connection to adaptively transfer the stroke and palette to the input contents guided by the domainness indicator. Our extensive experiments validate that our model produces better qualitative results and outperforms previous methods in terms of proxy metrics on both artistic and photo-realistic stylizations.",
+    "url": "https://arxiv.org/abs/2108.04441",
+    "_query": "disentangled representation domain content style"
+  },
+  {
+    "arxiv_id": "2302.09795",
+    "title": "Simple Disentanglement of Style and Content in Visual Representations",
+    "year": "2023",
+    "authors": "Lilian Ngweta, Subha Maity, Alex Gittens, Yuekai Sun, Mikhail Yurochkin",
+    "abstract": "Learning visual representations with interpretable features, i.e., disentangled representations, remains a challenging problem. Existing methods demonstrate some success but are hard to apply to large-scale vision datasets like ImageNet. In this work, we propose a simple post-processing framework to disentangle content and style in learned representations from pre-trained vision models. We model the pre-trained features probabilistically as linearly entangled combinations of the latent content and style factors and develop a simple disentanglement algorithm based on the probabilistic model. We show that the method provably disentangles content and style features and verify its efficacy empirically. Our post-processed features yield significant domain generalization performance improvements when the distribution shift occurs due to style changes or style-related spurious correlations.",
+    "url": "https://arxiv.org/abs/2302.09795",
+    "_query": "disentangled representation domain content style"
+  },
+  {
+    "arxiv_id": "2412.14496",
+    "title": "WikiStyle+: A Multimodal Approach to Content-Style Representation Disentanglement for Artistic Image Stylization",
+    "year": "2024",
+    "authors": "Ma Zhuoqi, Zhang Yixuan, You Zejun, Tian Long, Liu Xiyang",
+    "abstract": "Artistic image stylization aims to render the content provided by text or image with the target style, where content and style decoupling is the key to achieve satisfactory results. However, current methods for content and style disentanglement primarily rely on image supervision, which leads to two problems: 1) models can only support one modality for style or content input;2) incomplete disentanglement resulting in content leakage from the reference image. To address the above issues, this paper proposes a multimodal approach to content-style disentanglement for artistic image stylization. We construct a \\textit{WikiStyle+} dataset consists of artworks with corresponding textual descriptions for style and content. Based on the multimodal dataset, we propose a disentangled representations-guided diffusion model. The disentangled representations are first learned by Q-Formers and then injected into a pre-trained diffusion model using learnable multi-step cross-attention layers. Experimental results show that our method achieves a thorough disentanglement of content and style in reference images under multimodal supervision, thereby enabling more refined stylization that aligns with the artistic characteristics of the reference style. The code of our method will be available upon acceptance.",
+    "url": "https://arxiv.org/abs/2412.14496",
+    "_query": "disentangled representation domain content style"
+  },
+  {
+    "arxiv_id": "2602.02334",
+    "title": "VQ-Style: Disentangling Style and Content in Motion with Residual Quantized Representations",
+    "year": "2026",
+    "authors": "Fatemeh Zargarbashi, Dhruv Agrawal, Jakob Buhmann, Martin Guay, Stelian Coros, Robert W. Sumner",
+    "abstract": "Human motion data is inherently rich and complex, containing both semantic content and subtle stylistic features that are challenging to model. We propose a novel method for effective disentanglement of the style and content in human motion data to facilitate style transfer. Our approach is guided by the insight that content corresponds to coarse motion attributes while style captures the finer, expressive details. To model this hierarchy, we employ Residual Vector Quantized Variational Autoencoders (RVQ-VAEs) to learn a coarse-to-fine representation of motion. We further enhance the disentanglement by integrating codebook learning with contrastive learning and a novel information leakage loss to organize the content and the style across different codebooks. We harness this disentangled representation using our simple and effective inference-time technique Quantized Code Swapping, which enables motion style transfer without requiring any fine-tuning for unseen styles. Our framework demonstrates strong versatility across multiple inference applications, including style transfer, style removal, and motion blending.",
+    "url": "https://arxiv.org/abs/2602.02334",
+    "_query": "disentangled representation domain content style"
+  },
+  {
+    "arxiv_id": "1811.05621",
+    "title": "Style and Content Disentanglement in Generative Adversarial Networks",
+    "year": "2018",
+    "authors": "Hadi Kazemi, Seyed Mehdi Iranmanesh, Nasser M. Nasrabadi",
+    "abstract": "Disentangling factors of variation within data has become a very challenging problem for image generation tasks. Current frameworks for training a Generative Adversarial Network (GAN), learn to disentangle the representations of the data in an unsupervised fashion and capture the most significant factors of the data variations. However, these approaches ignore the principle of content and style disentanglement in image generation, which means their learned latent code may alter the content and style of the generated images at the same time. This paper describes the Style and Content Disentangled GAN (SC-GAN), a new unsupervised algorithm for training GANs that learns disentangled style and content representations of the data. We assume that the representation of an image can be decomposed into a content code that represents the geometrical information of the data, and a style code that captures textural properties. Consequently, by fixing the style portion of the latent representation, we can generate diverse images in a particular style. Reversely, we can set the content code and generate a specific scene in a variety of styles. The proposed SC-GAN has two components: a content code which is the input to the generator, and a style code which modifies the scene style through modification of the Adaptive Instance Normalization (AdaIN) layers' parameters. We evaluate the proposed SC-GAN framework on a set of baseline datasets.",
+    "url": "https://arxiv.org/abs/1811.05621",
+    "_query": "disentangled representation domain content style"
+  },
+  {
+    "arxiv_id": "1712.09025",
+    "title": "Domain Adaptation Meets Disentangled Representation Learning and Style Transfer",
+    "year": "2017",
+    "authors": "Hoang Tran Vu, Ching-Chun Huang",
+    "abstract": "Many methods have been proposed to solve the domain adaptation problem recently. However, the success of them implicitly funds on the assumption that the information of domains are fully transferrable. If the assumption is not satisfied, the effect of negative transfer may degrade domain adaptation. In this paper, a better learning network has been proposed by considering three tasks - domain adaptation, disentangled representation, and style transfer simultaneously. Firstly, the learned features are disentangled into common parts and specific parts. The common parts represent the transferrable features, which are suitable for domain adaptation with less negative transfer. Conversely, the specific parts characterize the unique style of each individual domain. Based on this, the new concept of feature exchange across domains, which can not only enhance the transferability of common features but also be useful for image style transfer, is introduced. These designs allow us to introduce five types of training objectives to realize the three challenging tasks at the same time. The experimental results show that our architecture can be adaptive well to full transfer learning and partial transfer learning upon a well-learned disentangled representation. Besides, the trained network also demonstrates high potential to generate style-transferred images.",
+    "url": "https://arxiv.org/abs/1712.09025",
+    "_query": "disentangled representation domain content style"
+  },
+  {
+    "arxiv_id": "2304.05755",
+    "title": "ALADIN-NST: Self-supervised disentangled representation learning of artistic style through Neural Style Transfer",
+    "year": "2023",
+    "authors": "Dan Ruta, Gemma Canet Tarres, Alexander Black, Andrew Gilbert, John Collomosse",
+    "abstract": "Representation learning aims to discover individual salient features of a domain in a compact and descriptive form that strongly identifies the unique characteristics of a given sample respective to its domain. Existing works in visual style representation literature have tried to disentangle style from content during training explicitly. A complete separation between these has yet to be fully achieved. Our paper aims to learn a representation of visual artistic style more strongly disentangled from the semantic content depicted in an image. We use Neural Style Transfer (NST) to measure and drive the learning signal and achieve state-of-the-art representation learning on explicitly disentangled metrics. We show that strongly addressing the disentanglement of style and content leads to large gains in style-specific metrics, encoding far less semantic information and achieving state-of-the-art accuracy in downstream multimodal applications.",
+    "url": "https://arxiv.org/abs/2304.05755",
+    "_query": "disentangled representation domain content style"
+  },
+  {
+    "arxiv_id": "2402.09604",
+    "title": "Medical Image Segmentation with InTEnt: Integrated Entropy Weighting for Single Image Test-Time Adaptation",
+    "year": "2024",
+    "authors": "Haoyu Dong, Nicholas Konz, Hanxue Gu, Maciej A. Mazurowski",
+    "abstract": "Test-time adaptation (TTA) refers to adapting a trained model to a new domain during testing. Existing TTA techniques rely on having multiple test images from the same domain, yet this may be impractical in real-world applications such as medical imaging, where data acquisition is expensive and imaging conditions vary frequently. Here, we approach such a task, of adapting a medical image segmentation model with only a single unlabeled test image. Most TTA approaches, which directly minimize the entropy of predictions, fail to improve performance significantly in this setting, in which we also observe the choice of batch normalization (BN) layer statistics to be a highly important yet unstable factor due to only having a single test domain example. To overcome this, we propose to instead integrate over predictions made with various estimates of target domain statistics between the training and test statistics, weighted based on their entropy statistics. Our method, validated on 24 source/target domain splits across 3 medical image datasets surpasses the leading method by 2.9% Dice coefficient on average.",
+    "url": "https://arxiv.org/abs/2402.09604",
+    "_query": "test time adaptation entropy minimization"
+  },
+  {
+    "arxiv_id": "2506.23424",
+    "title": "Accurate Parameter-Efficient Test-Time Adaptation for Time Series Forecasting",
+    "year": "2025",
+    "authors": "Heitor R. Medeiros, Hossein Sharifi-Noghabi, Gabriel L. Oliveira, Saghar Irandoust",
+    "abstract": "Real-world time series often exhibit a non-stationary nature, degrading the performance of pre-trained forecasting models. Test-Time Adaptation (TTA) addresses this by adjusting models during inference, but existing methods typically update the full model, increasing memory and compute costs. We propose PETSA, a parameter-efficient method that adapts forecasters at test time by only updating small calibration modules on the input and output. PETSA uses low-rank adapters and dynamic gating to adjust representations without retraining. To maintain accuracy despite limited adaptation capacity, we introduce a specialized loss combining three components: (1) a robust term, (2) a frequency-domain term to preserve periodicity, and (3) a patch-wise structural term for structural alignment. PETSA improves the adaptability of various forecasting backbones while requiring fewer parameters than baselines. Experimental results on benchmark datasets show that PETSA achieves competitive or better performance across all horizons. Our code is available at: https://github.com/BorealisAI/PETSA",
+    "url": "https://arxiv.org/abs/2506.23424",
+    "_query": "test time adaptation entropy minimization"
+  },
+  {
+    "arxiv_id": "2303.15361",
+    "title": "A Comprehensive Survey on Test-Time Adaptation under Distribution Shifts",
+    "year": "2023",
+    "authors": "Jian Liang, Ran He, Tieniu Tan",
+    "abstract": "Machine learning methods strive to acquire a robust model during the training process that can effectively generalize to test samples, even in the presence of distribution shifts. However, these methods often suffer from performance degradation due to unknown test distributions. Test-time adaptation (TTA), an emerging paradigm, has the potential to adapt a pre-trained model to unlabeled data during testing, before making predictions. Recent progress in this paradigm has highlighted the significant benefits of using unlabeled data to train self-adapted models prior to inference. In this survey, we categorize TTA into several distinct groups based on the form of test data, namely, test-time domain adaptation, test-time batch adaptation, and online test-time adaptation. For each category, we provide a comprehensive taxonomy of advanced algorithms and discuss various learning scenarios. Furthermore, we analyze relevant applications of TTA and discuss open challenges and promising areas for future research. For a comprehensive list of TTA methods, kindly refer to \\url{https://github.com/tim-learn/awesome-test-time-adaptation}.",
+    "url": "https://arxiv.org/abs/2303.15361",
+    "_query": "test time adaptation entropy minimization"
+  },
+  {
+    "arxiv_id": "2606.28719",
+    "title": "ComMem: Complementary Memory Systems for Test-Time Adaptation of Vision-Language Models",
+    "year": "2026",
+    "authors": "Guanglong Sun, Shuang Cui, Bo Lei, Liyuan Wang, Zihan Zhai, Hongwei Yan, Hang Su, Jun Zhu, Yi Zhong",
+    "abstract": "Test-time adaptation (TTA) of vision-language models (VLMs) is essential for their robust deployment in dynamic, real-world environments. However, existing TTA methods often adapt locally without accumulating knowledge over time, or operating within a single modality without exploiting VLMs' inherently multi-modal nature. Inspired by the \\textbf{Com}plementary \\textbf{Mem}ory systems of the biological brain, we propose \\textbf{ComMem}, an innovative approach that mimics the distinct but cooperative roles of the hippocampus and neocortex to enable effective TTA for VLMs. ComMem consists of two key components: a fast-adapting detailed memory, akin to the hippocampus, that forms a dynamic visual cache from high-confidence test samples; and a slow-integrating abstract memory, akin to the neocortex, that continually refines global textual prototypes. For each test instance, ComMem jointly optimizes both memory systems to ensure cross-modal consistency. Extensive experiments on 15 benchmark datasets show that ComMem significantly outperforms state-of-the-art methods under both natural distribution shifts and cross-dataset generalization, offering a promising direction for enhancing VLMs' practical adaptability.",
+    "url": "https://arxiv.org/abs/2606.28719",
+    "_query": "test time adaptation entropy minimization"
+  },
+  {
+    "arxiv_id": "gr-qc/9810059",
+    "title": "Space-time distributions",
+    "year": "1998",
+    "authors": "Mihaela Time",
+    "abstract": "The space-time foliation Sigma compatible with the gravitational field g on a 4-manifold M determines a fibration pi of M, pi : M -> N is a surjective submersion over the 1-dimensional leaves space N. M is then written as a disjoint union of the leaves of Sigma, which are 3-dimensional spacelike surfaces on M.   The decomposition, TM=Sigma + T^0 M, also implies that we can define a lift of the curves on N to curves (non-spacelike) on M.   The stable causality condition M coincides with Sigma being a causal space-time distribution, generated by an exact timelike 1-form omega^0 = dt where t is some real function on M. In this case M is written as a disjoint union of a family of spacelike 3-surfaces of constant t, which cover D^+(S) of a initial 3-surface S of M.",
+    "url": "https://arxiv.org/abs/gr-qc/9810059",
+    "_query": "test time adaptation entropy minimization"
+  },
+  {
+    "arxiv_id": "2505.16441",
+    "title": "Ranked Entropy Minimization for Continual Test-Time Adaptation",
+    "year": "2025",
+    "authors": "Jisu Han, Jaemin Na, Wonjun Hwang",
+    "abstract": "Test-time adaptation aims to adapt to realistic environments in an online manner by learning during test time. Entropy minimization has emerged as a principal strategy for test-time adaptation due to its efficiency and adaptability. Nevertheless, it remains underexplored in continual test-time adaptation, where stability is more important. We observe that the entropy minimization method often suffers from model collapse, where the model converges to predicting a single class for all images due to a trivial solution. We propose ranked entropy minimization to mitigate the stability problem of the entropy minimization method and extend its applicability to continuous scenarios. Our approach explicitly structures the prediction difficulty through a progressive masking strategy. Specifically, it gradually aligns the model's probability distributions across different levels of prediction difficulty while preserving the rank order of entropy. The proposed method is extensively evaluated across various benchmarks, demonstrating its effectiveness through empirical results. Our code is available at https://github.com/pilsHan/rem",
+    "url": "https://arxiv.org/abs/2505.16441",
+    "_query": "test time adaptation entropy minimization"
+  },
+  {
+    "arxiv_id": "2508.12690",
+    "title": "TTA-DAME: Test-Time Adaptation with Domain Augmentation and Model Ensemble for Dynamic Driving Conditions",
+    "year": "2025",
+    "authors": "Dongjae Jeon, Taeheon Kim, Seongwon Cho, Minhyuk Seo, Jonghyun Choi",
+    "abstract": "Test-time Adaptation (TTA) poses a challenge, requiring models to dynamically adapt and perform optimally on shifting target domains. This task is particularly emphasized in real-world driving scenes, where weather domain shifts occur frequently. To address such dynamic changes, our proposed method, TTA-DAME, leverages source domain data augmentation into target domains. Additionally, we introduce a domain discriminator and a specialized domain detector to mitigate drastic domain shifts, especially from daytime to nighttime conditions. To further improve adaptability, we train multiple detectors and consolidate their predictions through Non-Maximum Suppression (NMS). Our empirical validation demonstrates the effectiveness of our method, showing significant performance enhancements on the SHIFT Benchmark.",
+    "url": "https://arxiv.org/abs/2508.12690",
+    "_query": "test time adaptation entropy minimization"
+  },
+  {
+    "arxiv_id": "quant-ph/0408192",
+    "title": "Differential entropy and time",
+    "year": "2004",
+    "authors": "Piotr Garbaczewski",
+    "abstract": "We give a detailed analysis of the Gibbs-type entropy notion and its dynamical behavior in case of time-dependent continuous probability distributions of varied origins: related to classical and quantum systems. The purpose-dependent usage of conditional Kullback-Leibler and Gibbs (Shannon) entropies is explained in case of non-equilibrium Smoluchowski processes. A very different temporal behavior of Gibbs and Kullback entropies is confronted. A specific conceptual niche is addressed, where quantum von Neumann, classical Kullback-Leibler and Gibbs entropies can be consistently introduced as information measures for the same physical system. If the dynamics of probability densities is driven by the Schr\u00f6dinger picture wave-packet evolution, Gibbs-type and related Fisher information functionals appear to quantify nontrivial power transfer processes in the mean. This observation is found to extend to classical dissipative processes and supports the view that the Shannon entropy dynamics provides an insight into physically relevant non-equilibrium phenomena, which are inaccessible in terms of the Kullback-Leibler entropy and typically ignored in the literature.",
+    "url": "https://arxiv.org/abs/quant-ph/0408192",
+    "_query": "test time adaptation entropy minimization"
+  },
+  {
+    "arxiv_id": "2112.10474",
+    "title": "Reciprocal Normalization for Domain Adaptation",
+    "year": "2021",
+    "authors": "Zhiyong Huang, Kekai Sheng, Ke Li, Jian Liang, Taiping Yao, Weiming Dong, Dengwen Zhou, Xing Sun",
+    "abstract": "Batch normalization (BN) is widely used in modern deep neural networks, which has been shown to represent the domain-related knowledge, and thus is ineffective for cross-domain tasks like unsupervised domain adaptation (UDA). Existing BN variant methods aggregate source and target domain knowledge in the same channel in normalization module. However, the misalignment between the features of corresponding channels across domains often leads to a sub-optimal transferability. In this paper, we exploit the cross-domain relation and propose a novel normalization method, Reciprocal Normalization (RN). Specifically, RN first presents a Reciprocal Compensation (RC) module to acquire the compensatory for each channel in both domains based on the cross-domain channel-wise correlation. Then RN develops a Reciprocal Aggregation (RA) module to adaptively aggregate the feature with its cross-domain compensatory components. As an alternative to BN, RN is more suitable for UDA problems and can be easily integrated into popular domain adaptation methods. Experiments show that the proposed RN outperforms existing normalization counterparts by a large margin and helps state-of-the-art adaptation approaches achieve better results. The source code is available on https://github.com/Openning07/reciprocal-normalization-for-DA.",
+    "url": "https://arxiv.org/abs/2112.10474",
+    "_query": "feature normalization domain generalization biosignal sensor"
+  },
+  {
+    "arxiv_id": "2101.00588",
+    "title": "Style Normalization and Restitution for Domain Generalization and Adaptation",
+    "year": "2021",
+    "authors": "Xin Jin, Cuiling Lan, Wenjun Zeng, Zhibo Chen",
+    "abstract": "For many practical computer vision applications, the learned models usually have high performance on the datasets used for training but suffer from significant performance degradation when deployed in new environments, where there are usually style differences between the training images and the testing images. An effective domain generalizable model is expected to be able to learn feature representations that are both generalizable and discriminative. In this paper, we design a novel Style Normalization and Restitution module (SNR) to simultaneously ensure both high generalization and discrimination capability of the networks. In the SNR module, particularly, we filter out the style variations (e.g, illumination, color contrast) by performing Instance Normalization (IN) to obtain style normalized features, where the discrepancy among different samples and domains is reduced. However, such a process is task-ignorant and inevitably removes some task-relevant discriminative information, which could hurt the performance. To remedy this, we propose to distill task-relevant discriminative features from the residual (i.e, the difference between the original feature and the style normalized feature) and add them back to the network to ensure high discrimination. Moreover, for better disentanglement, we enforce a dual causality loss constraint in the restitution step to encourage the better separation of task-relevant and task-irrelevant features. We validate the effectiveness of our SNR on different computer vision tasks, including classification, semantic segmentation, and object detection. Experiments demonstrate that our SNR module is capable of improving the performance of networks for domain generalization (DG) and unsupervised domain adaptation (UDA) on many tasks. Code are available at https://github.com/microsoft/SNR.",
+    "url": "https://arxiv.org/abs/2101.00588",
+    "_query": "feature normalization domain generalization biosignal sensor"
+  },
+  {
+    "arxiv_id": "1109.5944",
+    "title": "Recent progress of the ATLAS Planar Pixel Sensor R&D Project",
+    "year": "2011",
+    "authors": "The ATLAS Planar Pixel Sensor R&D Project,  :, M. Bomben",
+    "abstract": "The foreseen luminosity upgrade for the LHC (a factor of 5-10 more in peak luminosity by 2021) poses serious constraints on the technology for the ATLAS tracker in this High Luminosity era (HL-LHC). In fact, such luminosity increase leads to increased occupancy and radiation damage of the tracking detectors.   To investigate the suitability of pixel sensors using the proven planar technology for the upgraded tracker, the ATLAS Planar Pixel Sensor R&D Project was established comprising 17 institutes and more than 80 scientists. Main areas of research are the performance of planar pixel sensors at highest fluences, the exploration of possibilities for cost reduction to enable the instrumentation of large areas, the achievement of slim or active edge designs to provide low geometric inefficiencies without the need for shingling of modules and the investigation of the operation of highly irradiated sensors at low thresholds to increase the efficiency.   In the following I will present results from the group, concerning mainly irradiated-devices performance, together with studies for new sensors, including detailed simulations.",
+    "url": "https://arxiv.org/abs/1109.5944",
+    "_query": "feature normalization domain generalization biosignal sensor"
+  },
+  {
+    "arxiv_id": "2011.06207",
+    "title": "Domain Generalization in Biosignal Classification",
+    "year": "2020",
+    "authors": "Theekshana Dissanayake, Tharindu Fernando, Simon Denman, Houman Ghaemmaghami, Sridha Sridharan, Clinton Fookes",
+    "abstract": "Objective: When training machine learning models, we often assume that the training data and evaluation data are sampled from the same distribution. However, this assumption is violated when the model is evaluated on another unseen but similar database, even if that database contains the same classes. This problem is caused by domain-shift and can be solved using two approaches: domain adaptation and domain generalization. Simply, domain adaptation methods can access data from unseen domains during training; whereas in domain generalization, the unseen data is not available during training. Hence, domain generalization concerns models that perform well on inaccessible, domain-shifted data. Method: Our proposed domain generalization method represents an unseen domain using a set of known basis domains, afterwhich we classify the unseen domain using classifier fusion. To demonstrate our system, we employ a collection of heart sound databases that contain normal and abnormal sounds (classes). Results: Our proposed classifier fusion method achieves accuracy gains of up to 16% for four completely unseen domains. Conclusion: Recognizing the complexity induced by the inherent temporal nature of biosignal data, the two-stage method proposed in this study is able to effectively simplify the whole process of domain generalization while demonstrating good results on unseen domains and the adopted basis domains. Significance: To our best knowledge, this is the first study that investigates domain generalization for biosignal data. Our proposed learning strategy can be used to effectively learn domain-relevant features while being aware of the class differences in the data.",
+    "url": "https://arxiv.org/abs/2011.06207",
+    "_query": "feature normalization domain generalization biosignal sensor"
+  },
+  {
+    "arxiv_id": "2504.03704",
+    "title": "OPC UA for IO-Link Wireless in a Cyber Physical Finite Element Sensor Network for Shape Measurement",
+    "year": "2025",
+    "authors": "Henry Beuster, Lars-Michel Bretthauer, Gerd Scholl",
+    "abstract": "This paper presents the integration of OPC UA as a communication protocol in a wireless sensor network and the associated companion specifications as a semantic template for an information model. The Cyber Physical Finite Element Sensor Network (CPFEN ) for Shape Measurements, a distributed wireless system, uses IO-Link Wireless for data transmission at the sensor level, OPC UA provides a unified interface for data access, configuration, monitoring, and calibration tailored to the needs of the CPFEN for all level above. This opens up additional possibilities, such as integrated quality assurance or creating a digital twin, while improving scalability.",
+    "url": "https://arxiv.org/abs/2504.03704",
+    "_query": "feature normalization domain generalization biosignal sensor"
+  },
+  {
+    "arxiv_id": "2303.07771",
+    "title": "Imbalanced Domain Generalization for Robust Single Cell Classification in Hematological Cytomorphology",
+    "year": "2023",
+    "authors": "Rao Muhammad Umer, Armin Gruber, Sayedali Shetab Boushehri, Christian Metak, Carsten Marr",
+    "abstract": "Accurate morphological classification of white blood cells (WBCs) is an important step in the diagnosis of leukemia, a disease in which nonfunctional blast cells accumulate in the bone marrow. Recently, deep convolutional neural networks (CNNs) have been successfully used to classify leukocytes by training them on single-cell images from a specific domain. Most CNN models assume that the distributions of the training and test data are similar, i.e., the data are independently and identically distributed. Therefore, they are not robust to different staining procedures, magnifications, resolutions, scanners, or imaging protocols, as well as variations in clinical centers or patient cohorts. In addition, domain-specific data imbalances affect the generalization performance of classifiers. Here, we train a robust CNN for WBC classification by addressing cross-domain data imbalance and domain shifts. To this end, we use two loss functions and demonstrate their effectiveness in out-of-distribution (OOD) generalization. Our approach achieves the best F1 macro score compared to other existing methods and is able to consider rare cell types. This is the first demonstration of imbalanced domain generalization in hematological cytomorphology and paves the way for robust single cell classification methods for the application in laboratories and clinics.",
+    "url": "https://arxiv.org/abs/2303.07771",
+    "_query": "feature normalization domain generalization biosignal sensor"
+  },
+  {
+    "arxiv_id": "2304.01973",
+    "title": "ERM++: An Improved Baseline for Domain Generalization",
+    "year": "2023",
+    "authors": "Piotr Teterwak, Kuniaki Saito, Theodoros Tsiligkaridis, Kate Saenko, Bryan A. Plummer",
+    "abstract": "Domain Generalization (DG) aims to develop classifiers that can generalize to new, unseen data distributions, a critical capability when collecting new domain-specific data is impractical. A common DG baseline minimizes the empirical risk on the source domains. Recent studies have shown that this approach, known as Empirical Risk Minimization (ERM), can outperform most more complex DG methods when properly tuned. However, these studies have primarily focused on a narrow set of hyperparameters, neglecting other factors that can enhance robustness and prevent overfitting and catastrophic forgetting, properties which are critical for strong DG performance. In our investigation of training data utilization (i.e., duration and setting validation splits), initialization, and additional regularizers, we find that tuning these previously overlooked factors significantly improves model generalization across diverse datasets without adding much complexity. We call this improved, yet simple baseline ERM++. Despite its ease of implementation, ERM++ improves DG performance by over 5\\% compared to prior ERM baselines on a standard benchmark of 5 datasets with a ResNet-50 and over 15\\% with a ViT-B/16. It also outperforms all state-of-the-art methods on DomainBed datasets with both architectures. Importantly, ERM++ is easy to integrate into existing frameworks like DomainBed, making it a practical and powerful tool for researchers and practitioners. Overall, ERM++ challenges the need for more complex DG methods by providing a stronger, more reliable baseline that maintains simplicity and ease of use. Code is available at \\url{https://github.com/piotr-teterwak/erm_plusplus}",
+    "url": "https://arxiv.org/abs/2304.01973",
+    "_query": "feature normalization domain generalization biosignal sensor"
+  },
+  {
+    "arxiv_id": "1411.2188",
+    "title": "Semantic-based Detection of Segment Outliers and Unusual Events for Wireless Sensor Networks",
+    "year": "2014",
+    "authors": "Lianli Gao, Michael Bruenig, Jane Hunter",
+    "abstract": "Environmental scientists have increasingly been deploying wireless sensor networks to capture valuable data that measures and records precise information about our environment. One of the major challenges associated with wireless sensor networks is the quality of the data and more specifically the detection of segment outliers and unusual events. Most previous research has focused on detecting outliers that are errors that are caused by unreliable sensors and sensor nodes. However, there is an urgent need for the development of new tools capable of identifying, tagging and visualizing erroneous segment outliers and unusual events from sensor data streams. In this paper, we present a SOUE Detector (Segment Outlier and Unusual Event-Detector) system for wireless sensor networks that combines statistical analyses using Dynamic Time Warping (DTW) with domain expert knowledge (captured via an ontology and semantic inferencing rules). The resulting Web portal enables scientist to efficiently search across a collection of wireless sensor data streams and identify, retrieve and display segment outliers (both erroneous and genuine) within the data streams. In this paper, we firstly describe the detection algorithms, the implementation details and the functionality of the SOUE Detector system. Secondly we evaluate our approach using data that comprises sensor observations collected from a sensor network deployed in the Springbrook National Park in Queensland, Australia. The experimental results show that the SOUE-Detector can efficiently detect segment outliers and unusual events with high levels of precision and recall.",
+    "url": "https://arxiv.org/abs/1411.2188",
+    "_query": "feature normalization domain generalization biosignal sensor"
+  }
+]
