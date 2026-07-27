@@ -1,0 +1,25 @@
+{
+  "n_train": 1225,
+  "n_test": 497,
+  "classes": [
+    "NORM",
+    "MI",
+    "STTC",
+    "CD",
+    "HYP"
+  ],
+  "variants": {
+    "V1_raw_waveform": {
+      "macro_auroc": 0.7331313982646052
+    },
+    "V2_cepstral": {
+      "macro_auroc": 0.6904621588629499
+    },
+    "V3_cepstral_CMVN": {
+      "macro_auroc": 0.5891967467072348
+    },
+    "V4_cepstral_CMVN_RASTA": {
+      "macro_auroc": 0.5392386514998544
+    }
+  }
+}
