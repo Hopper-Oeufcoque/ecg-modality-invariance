@@ -35,8 +35,10 @@
 | E4 | 500 Hz rerun (directional, small-N) | 0.641 (LeadMask) | ⚠️ | bandwidth axis shows no clear drop at 500Hz either; minor at both rates |
 | E8 | speech-channel features (novel cross-domain) | 0.539–0.691 | ❌ | cepstral features hurt; speech analogy fails — ECG content is time-domain not spectral-envelope |
 | E18 | scattering transforms (novel, deformation-stable) | 0.661 | ⚠️ | training-free modality-robustness beats naive; underperforms learned but complementary |
+| E20 | set-invariant DeepSet over leads (architectural novelty) | 0.708 | ⚠️ | competitive but mean-pool discards lead identity; < lead-masking (0.718) / sim-trained (0.742) |
+| E6 | real single-lead simulator validation | (dist, n/a) | ⚠️⚠️ | **simulator over-degrades; sim_vs_real gap > real_vs_clinical; E17 win carries realism debt** |
 
-**Ceiling:** L0 clinical 12-lead = **0.865**. **Current best stack:**
+**Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
 target-domain labels (~75% to ceiling; residual = genuine single-lead info loss).
 
@@ -232,16 +234,70 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   free, modality-robust feature extractor or a *complement* to learned features
   (the F6/SignalMC-MED complementarity thesis — ensemble queued as E18b).
 
+## E20 — Set-invariant DeepSet over leads (architectural novelty) (2026-07-27)
+- **Hypothesis:** treating the 12 leads as an *unordered set* (permutation-
+  invariant pooling, borrowed from point-cloud literature — never applied to ECG
+  modality invariance) makes the model robust to lead count by construction, since
+  a single lead is just a 1-element set.
+- **Setup:** DeepSet encoder over leads (per-lead MLP → mean-pool → classify),
+  two regimes: V1 +lead-masking (mask leads to 1), V2 +sim-watch training.
+  `experiments/20_deepset_leads.py`.
+- **Result:** V1 DeepSet+leadmask @ L4 = 0.698 · V2 DeepSet+sim @ L1=0.737, @ L4=0.708.
+- **Verdict:** ⚠️. Competitive (0.708) but does not beat lead-masking (0.718) or
+  single-lead+sim (E17, 0.742). Mean-pooling across leads discards *lead
+  identity*, which is useful when leads are present (the 12-lead prior E2 exploited).
+- **Lesson:** set-invariance is elegant but over-invariants for this task — when
+  a lead IS available, its identity carries signal (V2 vs V6 in MI/STTC). The
+  DeepSet's value is for a *unified* clinic+watch model with truly variable lead
+  counts, not the watch-only transfer task.
+
+## E6 — Real single-lead validation: simulator over-degrades (2026-07-27)
+- **Hypothesis:** the forward-physics simulator's output distribution matches
+  real single-lead ECG (CinC 2017) — the foundational trust check on every
+  sim-based result (E1–E17).
+- **Setup:** compare 3 distributions (256 clinical Lead-I / 256 sim-watch / 300
+  real CinC) on PSD bands, baseline-wander, sample entropy, DFA α, kurtosis.
+  Distance = mean abs z-score (lower=closer). `experiments/06_sim_validation.py`.
+- **Result (pairwise mean abs z-score):** sim_vs_real = **1.077** ·
+  sim_vs_clinical = 0.995 · real_vs_clinical = **0.717**. Sim over-shoots:
+  sample_entropy 2.9× too high (0.818 vs real 0.282), kurtosis 3.7× too low
+  (4.77 vs real 17.71 — added noise flattens sharp-QRS morphology), baseline_
+  wander 2.3× too high. Real single-lead is *closer to clinical* than to the sim.
+- **Verdict:** ⚠️⚠️ (critical honesty flag). **The simulator over-degrades
+  relative to real single-lead.** sim_vs_real is the *largest* pairwise gap —
+  the sim's transforms push the signal *away* from real watch, not toward it.
+  Real watch's defining trait is *peakiness* (kurtosis 17.7, nearly = clinical
+  16.1), which additive broadband noise destroys (sim kurtosis 4.77).
+- **Reframe of E17:** E17's win (0.742 > 0.718) was *on simulated* watch; because
+  the sim doesn't match real watch, E17 may over-fit the sim's over-aggressive
+  noise profile — the edge may not transfer. E17 is downgraded from "best method"
+  to "best on a sim needing recalibration." Lead-masking (trains on real clinical,
+  no simulated noise) is paradoxically the most *realism-robust* result.
+- **Lesson:** a forward-physics simulator must be *calibrated* against real target
+  data, not just validated for axis structure. Kurtosis is the sharpest
+  discriminator — the sim should preserve QRS peakedness, not flatten it.
+- **Limitations:** CinC 2017 is handheld lead-I (finger contact), cleaner than
+  wrist dry-electrode — sim targeting more noise is *partially* defensible, but
+  the 2.9–3.7× over-shoot exceeds the dry-electrode justification. Classifier
+  cross-over (train sim → test real) NOT yet run — queued as E6b.
+- ⟲ Follow-up E6b (classifier cross-over), E-sim-calib (recalibrate noise →
+  kurtosis ≥ 15 / entropy ≤ 0.4, re-run E17), E-sim-dryelec (wrist dry-electrode
+  reference data).
+
 ---
 
 ## Standing TODOs / open questions
-- **E4 (500 Hz rerun):** surface the bandwidth axis properly — currently muted.
-- **E6 (real single-lead data):** validate the simulator against *real* watch
-  shift (PhysioNet single-lead sets); biggest honesty flag remaining.
+- **E6b (classifier cross-over):** train on sim, test on *real* CinC → quantify
+  the sim/real gap at the task level (the missing E6 metric; determines whether
+  E17's edge survives real data). **Now the top priority after E6's over-degradation finding.**
+- **E-sim-calib:** recalibrate simulator noise/baseline-wander to match real
+  stats (target kurtosis ≥ 15, entropy ≤ 0.4); re-run E17 to test edge robustness.
 - **E7 (LeadBridge adapter, E5 in taxonomy):** the labelled-target path — does
   an adapter beat lead-masking when some watch labels exist?
-- **E8 (scattering / speech-channel features, I4/I3):** modality-robust inputs
-  as a complement, not replacement (per F6 ensemble finding).
+- **E10 (INLP modality scrubbing):** running — post-hoc nullspace projection of
+  the device direction (novel cross-domain from NLP fairness).
+- **E18b (scattering ensemble):** test F6 complementarity — scattering + learned
+  features concat.
 - **Signal-synthesis baseline (B1):** confirm SelfMIS "synthesis < latent
   alignment" on this data.
 - **Bootstrap CIs / multi-seed:** current results are directional, not
