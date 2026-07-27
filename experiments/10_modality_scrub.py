@@ -192,7 +192,7 @@ def inlp_project(Z_train_mod, mod_train, Z_apply, n_rounds, lr_C=1.0):
 def pathology_probe(Ztr, ytr, Zte, yte):
     from sklearn.linear_model import LogisticRegression
     from sklearn.metrics import roc_auc_score
-    clf = LogisticRegression(max_iter=2000, C=1.0, solver="lbfgs", multi_class="multinomial")
+    clf = LogisticRegression(max_iter=2000, C=1.0, solver="lbfgs")
     clf.fit(Ztr, ytr)
     proba = clf.predict_proba(Zte)
     aucs = []
