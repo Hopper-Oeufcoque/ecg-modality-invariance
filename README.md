@@ -24,12 +24,20 @@ A model trained on clinical data typically **degrades sharply** on watch data du
 
 ## Structure
 
-- `docs/` — synthesis reports, findings, method taxonomy
-- `literature/` — annotated papers, per-method notes
-- `notes/` — working notes, idea log
-- `references/` — extracted data, citation lists, datasets
-- `src/` — any code (prototypes, feature extractors)
+- `docs/method_taxonomy.md` — 9 categories (A–I), ~50 methods tagged proven/adjacent/novel
+- `docs/synthesis_report.md` — 3 ranked solutions + validation plan
+- `docs/EXPERIMENT_LOG.md` — **living lab notebook**: what's been tried, what worked, what didn't (negative results included)
+- `docs/FUTURE_APPROACHES.md` — actionable backlog of approaches not yet tried (growing)
+- `notes/idea_log.md` — 13 frontier ideas with adjacent-field grounding
+- `results/` — per-experiment REPORT.md + metrics.json + figures; `EXPERIMENT_SYNTHESIS.md` ties them into a method ladder
+- `src/` — `watch_simulator.py` (forward-physics F10), `dataset.py`, `model.py` (1D ResNet)
+- `experiments/` — numbered, reproducible experiment scripts
+- `references/` — 155-paper searchable corpus + priority abstracts
 
 ## Status
 
-Bootstrapped 2026-07-26. Literature survey in progress.
+Bootstrapped 2026-07-26 (literature survey). Experimental phase 2026-07-27:
+forward-physics watch simulator validated; **lead-masking (K-MERL) is the
+decisive winner** (closes the lead-count gap from 0.52→0.72 on simulated watch
+with zero target-domain labels). See `docs/EXPERIMENT_LOG.md` for the full
+trial-and-error record and `results/method_ladder.png` for the ranking.
