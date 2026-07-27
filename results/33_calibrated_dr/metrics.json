@@ -1,0 +1,128 @@
+{
+  "fs": 100.0,
+  "task": "binary NORM vs AF",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "clinical_stats": {
+    "kurtosis": [
+      10.67398163319048,
+      7.1711598430957615
+    ],
+    "bw_energy": [
+      0.1245382353760149,
+      0.16615778515790497
+    ],
+    "qrs_energy": [
+      0.37659482541306377,
+      0.11708721810565498
+    ],
+    "hf_energy": [
+      0.018835226202818824,
+      0.019360104030000935
+    ],
+    "mid_energy": [
+      0.32501270648902686,
+      0.1551680466652127
+    ]
+  },
+  "aggregate": {
+    "clean": {
+      "mean": 0.6806399560027249,
+      "std": 0.051580251642142416,
+      "vals": [
+        0.6224132441897485,
+        0.695823521716379,
+        0.6663755102040816,
+        0.771888347175605,
+        0.6466991567278101
+      ]
+    },
+    "augment_handtuned": {
+      "mean": 0.7825090483444406,
+      "std": 0.020514937706252925,
+      "vals": [
+        0.8053208597621205,
+        0.7868344453165882,
+        0.7978285714285714,
+        0.7759307804754554,
+        0.7466305847394673
+      ]
+    },
+    "augment_calibrated": {
+      "mean": 0.8243365094804801,
+      "std": 0.015716629511508106,
+      "vals": [
+        0.8498110188654602,
+        0.80694826007326,
+        0.8192857142857143,
+        0.8115572759716132,
+        0.8340802782063528
+      ],
+      "delta_vs_handtuned_mean": 0.04182746113603952,
+      "delta_positive_in_seeds": 5
+    },
+    "oracle": {
+      "mean": 0.9306284142031732,
+      "std": 0.00592996787984621,
+      "vals": [
+        0.9301218785459475,
+        0.933403649921507,
+        0.9384734693877551,
+        0.9203191480673902,
+        0.930823925093266
+      ]
+    },
+    "_calibrated_morph_corr": 0.730284838900306
+  },
+  "per_seed": {
+    "0": {
+      "clean": 0.6224132441897485,
+      "augment_handtuned": 0.8053208597621205,
+      "augment_calibrated": 0.8498110188654602,
+      "_calibrated_morph_corr": 0.7221779058431016,
+      "oracle": 0.9301218785459475
+    },
+    "1": {
+      "clean": 0.695823521716379,
+      "augment_handtuned": 0.7868344453165882,
+      "augment_calibrated": 0.80694826007326,
+      "_calibrated_morph_corr": 0.7548797945787429,
+      "oracle": 0.933403649921507
+    },
+    "2": {
+      "clean": 0.6663755102040816,
+      "augment_handtuned": 0.7978285714285714,
+      "augment_calibrated": 0.8192857142857143,
+      "_calibrated_morph_corr": 0.7333902031530706,
+      "oracle": 0.9384734693877551
+    },
+    "3": {
+      "clean": 0.771888347175605,
+      "augment_handtuned": 0.7759307804754554,
+      "augment_calibrated": 0.8115572759716132,
+      "_calibrated_morph_corr": 0.7259772398657474,
+      "oracle": 0.9203191480673902
+    },
+    "4": {
+      "clean": 0.6466991567278101,
+      "augment_handtuned": 0.7466305847394673,
+      "augment_calibrated": 0.8340802782063528,
+      "_calibrated_morph_corr": 0.7149990510608679,
+      "oracle": 0.930823925093266
+    }
+  },
+  "question": "Does target-COVERAGE-calibrated domain randomization beat hand-tuned augmentation toward zero-shot oracle?",
+  "honesty": [
+    "5 seeds",
+    "n=700 CinC",
+    "AF/NORM only",
+    "CinC = E6c AW proxy",
+    "calibration uses unlabeled target SIGNAL STATS only (no labels)",
+    "coverage measured on summary stats, not full-manifold guarantee"
+  ]
+}

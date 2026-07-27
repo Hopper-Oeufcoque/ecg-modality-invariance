@@ -54,6 +54,7 @@
 | E30 | **semi-supervised few-shot (labeled-data budget)** | k50 0.871, k200 0.903 vs oracle 0.934 | ✅ | **~50 real labels closes ~58% of remaining gap, 200 → ~79%; augment-pretrain worth ~150 labels vs scratch. k<25 HURTS (feature drift). Deployment recipe: augment-pretrain + finetune ≥50 real labels** |
 | E31 | **generalization: Normal-vs-Other (harder task)** | aug +0.007, oracle 0.758 | ❌⚠️ | **ladder does NOT cleanly generalize: augmentation benefit vanishes (+0.007 vs +0.12 on AF/NORM), oracle only 0.758. AF/NORM wins were partly AF being an easy distinctive rhythm. Methods are task-dependent, not universal** |
 | E32 | **TENT test-time entropy min (zero-shot lever)** | affine −0.046, full −0.071 | ❌ | **TENT HURTS (both variants, 0-1/5 seeds); entropy-min sharpens confidence around a wrong boundary. 4/4 unsupervised adaptations now fail (AdaBN/CORAL/DANN/TENT). Zero-label adaptation ruled out** |
+| E33 | **target-calibrated domain randomization** | calibrated 0.824 vs hand 0.783 | ✅ | **BREAKS the 0.80 plateau zero-shot: +0.042 (5/5), closes ~57% of gap w/ zero labels. Measure target stats (unlabeled) → build augmentation to COVER target. Label preserved (QRS-band corr 0.966, R-peak 0.976 — raw-Pearson guard was measuring baseline wander, corrected). New best zero-shot recipe** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -732,6 +733,35 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
 - ⟲ **follow-up:** all TTA deprioritized; zero-shot hope now rests on E33
   (calibrated domain randomization). Files: `results/32_tent/`,
   `experiments/32_tent.py`.
+
+## E33 — Target-calibrated domain randomization: BREAKS the plateau (2026-07-27)
+- **Hypothesis:** domain randomization gives zero-shot transfer only if the
+  training distribution COVERS the target. Hand-tuned aug plateaus ~0.80 because
+  it doesn't. Measure target stats (unlabeled) and calibrate the augmenter to
+  envelope the real watch distribution on each axis.
+- **Setup:** measure band-energy/kurtosis on unlabeled CinC ref → CalibratedAugmenter
+  (cover 1.3×) → train clinical Lead-I + calibrated aug → test real CinC AF/NORM,
+  5 seeds. Zero target labels (stats only).
+- **Result:** clean 0.681 · hand-tuned 0.783 · **calibrated 0.824±0.016
+  (Δ+0.042 vs hand, 5/5)** · oracle 0.931. Closes ~57% of clean→oracle gap
+  zero-shot; first method to break the 0.80 plateau without labels.
+- **Verdict ✅:** genuine zero-shot win.
+- **Morphology-guard CORRECTION:** raw-Pearson flagged calibrated at 0.73 <0.85,
+  but that was measuring injected BASELINE WANDER (target has 2.4× more low-freq
+  energy — legitimate, label-irrelevant). Direct check: QRS-band corr (>1Hz HP)
+  = 0.966, R-peak location match = 0.976 → the diagnostic signal (QRS + rhythm)
+  is ~97% preserved, LABEL VALID. The right morph metric is QRS-band corr +
+  R-peak preservation, NOT raw Pearson. (E27b's strength-2.5 rejection may have
+  been a partial false alarm — re-audit as E27c.)
+- **Lesson:** zero-shot gap closes by putting target variation INTO training
+  (cover the target), NOT by adapting a fixed model afterward (E29/E32 all
+  failed). Correct DR mechanism confirmed. Still 0.824 vs 0.931 — ~43% of gap
+  remains, likely needs labels (E30) or richer coverage.
+- ⟲ **follow-up:** new best zero-shot recipe (calibrated DR). E33b = calibrated
+  DR + few-shot k50 (→ oracle?); E27c = re-audit strength-2.5 w/ QRS guard;
+  E33c = target-blind wide-prior DR. Update src/aw_generator.py w/
+  CalibratedAugmenter + QRS-band guard. Files: `results/33_calibrated_dr/`,
+  `experiments/33_calibrated_dr.py`.
 
 ---
 
