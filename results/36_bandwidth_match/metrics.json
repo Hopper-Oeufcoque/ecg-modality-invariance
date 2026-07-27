@@ -1,0 +1,119 @@
+{
+  "fs_native": 500.0,
+  "n_clinical": 250,
+  "n_aw": 1000,
+  "profiles": {
+    "clinical": {
+      "kurtosis": [
+        11.260288804249543,
+        8.149584661251176
+      ],
+      "bw_energy": [
+        0.13648240894553174,
+        0.13002707306379463
+      ],
+      "qrs_energy": [
+        0.3429258744123197,
+        0.09938650946776607
+      ],
+      "hf_energy": [
+        0.01822634390948608,
+        0.014365985554403852
+      ],
+      "mid_energy": [
+        0.32058998265763095,
+        0.10601399486047132
+      ]
+    },
+    "real_aw": {
+      "kurtosis": [
+        11.823651704641193,
+        9.74103220465751
+      ],
+      "bw_energy": [
+        0.014148472929747668,
+        0.024121696984052535
+      ],
+      "qrs_energy": [
+        0.2272956737647741,
+        0.08689040613615617
+      ],
+      "hf_energy": [
+        0.16075808697785857,
+        0.08849891931272841
+      ],
+      "mid_energy": [
+        0.31435263577561445,
+        0.2162720698168821
+      ]
+    },
+    "spectral_transfer": {
+      "kurtosis": [
+        12.841224088536396,
+        10.879647969798713
+      ],
+      "bw_energy": [
+        0.031629052037473904,
+        0.03905049426595227
+      ],
+      "qrs_energy": [
+        0.19335271982217087,
+        0.08004995491618719
+      ],
+      "hf_energy": [
+        0.12365056895847101,
+        0.08011003137456035
+      ],
+      "mid_energy": [
+        0.4435222095674184,
+        0.13407629212588845
+      ]
+    },
+    "light_DR": {
+      "kurtosis": [
+        11.745654764564955,
+        8.376337064377111
+      ],
+      "bw_energy": [
+        0.1439212742264051,
+        0.1292666059753852
+      ],
+      "qrs_energy": [
+        0.3405022338904725,
+        0.09863521330482082
+      ],
+      "hf_energy": [
+        0.018084611628374696,
+        0.014196742249248285
+      ],
+      "mid_energy": [
+        0.3171713121898406,
+        0.10483037093261016
+      ]
+    }
+  },
+  "distances_to_aw": {
+    "clinical": 2.430741906348454,
+    "spectral_transfer": 0.4783605689014543,
+    "light_DR": 2.4475155670414503
+  },
+  "morphology": {
+    "spectral_transfer": {
+      "qrs_corr": 0.8998332594059104,
+      "rpeak_match": 0.985125082936105
+    },
+    "light_DR": {
+      "qrs_corr": 0.9866661718805667,
+      "rpeak_match": 0.9639775174573992
+    }
+  },
+  "hf_gap_closed_frac": 0.739654358948048,
+  "question": "can a phase-preserving spectral transfer match real-AW HF content while keeping QRS morphology?",
+  "honesty": [
+    "500 Hz native",
+    "stats+morphology (no AUROC)",
+    "HOME eval-only, transfer built on held-out AW half",
+    "distance dominated by HF axis \u2014 read per-axis + QRS",
+    "HF>250Hz beyond Nyquist not modeled"
+  ]
+}

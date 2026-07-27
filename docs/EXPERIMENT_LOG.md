@@ -58,6 +58,7 @@
 | E33b | **calibrated DR + few-shot combo** | calib+k50 0.874 vs hand+k50 0.836 | ✅ | **the two best levers STACK: calibrated-DR base + 50 labels = 0.874 (vs hand-tuned+50 = 0.836); +100 labels → 0.894 (0.043 from oracle 0.937). Better zero-shot base ~doubles value of same labels. Full ladder: clean 0.68 → calib-zeroshot 0.82 → +50lbl 0.87 → +100lbl 0.89 → oracle 0.94** |
 | E34 | **REAL Apple Watch coverage check (n=20)** | clin→AW 0.253 < cinc→AW 0.477 | ❌⚠️ | **DEEP CAVEAT: real AW is CLEAN & closer to clinical (0.253) than to CinC (0.477); CinC-calibrated DR moved AWAY from real AW (1.136, over-injected baseline wander). Proxy misled the calibration — E33/E33b absolute numbers are vs a mediocre AW proxy. Mechanism sound, target wrong** |
 | E35 | **Recalibrate toward REAL AW (n=1000)** | gap is HF/bandwidth; aw-cal QRS 0.594 | ⚠️❌ | **n=1000 OVERTURNS n=20: real AW has HIGH hf_energy (0.165, ~8× clinical) + low baseline wander — gap is a FILTERING/bandwidth mismatch (clinical over-filtered; confirms E22 on real HW, no powerline artifact). Can't stat-match by noise: aw-calibrated DR hit the HF stat but DESTROYED morphology (QRS 0.594). Need morphology-preserving bandwidth match (E36)** |
+| E36 | **morphology-preserving bandwidth match (500Hz)** | dist 2.43→0.478, QRS 0.900 | ✅ | **zero-phase spectral transfer (clinical→real-AW magnitude, phase kept) closes 74% of HF gap, 5× closer to real AW (0.478), R-peak 0.985/QRS 0.900 — label PRESERVED (vs noise-injection 0.594). Correct real-AW recipe: match spectrum w/ FILTER not noise. Caveat: stats+morph only, no AUROC (needs labeled real AW)** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -831,6 +832,33 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   noise; verify QRS>0.95 while HF→0.165); re-profile at native 500 Hz; correct
   external-validity claims. Files: `results/35_real_aw_recalibration/`,
   `experiments/35_real_aw_recalibration.py`.
+
+## E36 — Morphology-preserving bandwidth match: the correct real-AW fix (2026-07-27)
+- **Hypothesis:** E35 found the real gap is bandwidth (clinical over-filtered,
+  hf 0.018; AW keeps HF 0.161) and noise-injection breaks QRS. Can a ZERO-PHASE
+  spectral transfer (magnitude reshaped to AW, phase kept) close the HF gap while
+  preserving morphology? Native 500 Hz.
+- **Setup:** learn H(f)=|AW|/|clinical| on held-out half of 1000-waveform HOME
+  cohort; apply to clinical PTB-XL 500Hz NORM (phase preserved); profile vs other
+  AW half. License-compliant (spectra only, no training on HOME).
+- **Result:** spectral transfer closes **74% of HF gap** (0.018→0.124 vs AW
+  0.161), distance to AW **2.431→0.478** (5× closer), **QRS corr 0.900, R-peak
+  0.985** (label preserved). vs E35 broadband-noise QRS 0.594 (destroyed). light
+  DR does nothing for HF (0.018).
+- **Verdict ✅:** correct mechanism confirmed — match the spectrum with a FILTER
+  (phase kept), not noise. Real-AW recipe = morphology-preserving spectral
+  bandwidth match, superseding CinC-calibrated DR (E33) for real deployment.
+- **Lesson:** the original E33 zero-phase spectral-transfer IDEA was right for
+  the bandwidth axis all along; it just needed to target REAL AW (not CinC) and
+  be measured at native 500 Hz. Stat-matching only works when done with a
+  structure-preserving transform.
+- **Honest gap:** stats+morphology only, NO AUROC (needs a LABELED real-AW test
+  set — HOME cohort is unlabeled). Shows clinical made to *look like* real AW
+  spectrally w/ label intact; downstream accuracy unproven.
+- ⟲ **follow-up:** E37 = AUROC on labeled real AW (data gap — Apple Heart Study);
+  add build_bandwidth_transfer/apply_spectral_transfer to src; E36b = gentler
+  transfer for QRS>0.95; correct README/HANDOFF. Files:
+  `results/36_bandwidth_match/`, `experiments/36_bandwidth_match.py`.
 
 ---
 
