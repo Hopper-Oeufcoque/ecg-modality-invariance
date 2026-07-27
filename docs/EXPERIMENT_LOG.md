@@ -48,6 +48,8 @@
 | E25 | **AW-generator (Phase A) acceptance, single-seed** | gen 0.669 vs clean 0.622 | ⚠️ | single-seed hinted generator beats clean, but split unrepresentative (clean 0.622 vs E6b 0.753) — flagged for multi-seed |
 | E25b | **AW-generator (Phase A) acceptance, 5-seed** | gen 0.676 vs clean 0.681 | ❌⚠️ | **generator-alone NEUTRAL (Δ−0.005, 3/5); clean+gen aug modest+stable (Δ+0.028, var collapses 0.052→0.012); heavy sim biggest winner (+0.049) → fidelity≠utility, win = augmentation diversity. Downgrades E6b's single-seed "sim hurts" claim** |
 | E26 | **stochastic AW augmentation, 5-seed** | clean+stoch 0.733 vs clean 0.681 | ✅ | **FIRST method to BEAT clean w/ significance: clean+stochastic Δ+0.053, 5/5 seeds, paired t=3.62 p=0.022. Stochastic-alone n.s. (3/5). Confirms diversity>fidelity — north-star tool now has a validated core recipe (train on clean ∪ label-preserving stochastic augment)** |
+| E29 | **UDA (AdaBN/CORAL/DANN) to close 0.73→0.93 gap** | all < recipe 0.747 | ❌ | **feature-space alignment WIDENS the gap: AdaBN −0.041, CORAL −0.072, DANN −0.109 (all 0-1/5 seeds). Gap is NOT normalization/representation geometry — it's input-variation coverage + label info. UDA deprioritized** |
+| E27 | **augmentation recipe sweep (strength×expansion)** | s1.5_x3 0.791 vs clean 0.662 | ✅ | **augmentation SCALES, no plateau yet: best at grid corner (strength 1.5, 3× expansion), recovers ~46% of modality gap w/ zero target labels. Coherent w/ E29: gap closed by input diversity, NOT representation alignment** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -603,6 +605,50 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   (neural CycleGAN) deprioritized — a simple augmenter already clears the bar.
   Files: `results/26_stochastic_augment/`, `src/aw_generator.py`
   (`StochasticAWAugmenter`), `experiments/26_stochastic_augment.py`.
+
+---
+
+## E29 — Unsupervised Domain Adaptation: all methods HURT (2026-07-27)
+- **Hypothesis:** the 0.73→0.93 gap is pure recording-modality shift (single-lead
+  vs single-lead), so UDA using UNLABELED real target should close it. Test
+  AdaBN, Deep CORAL, DANN on top of the E26 recipe (source = clinical Lead-I +
+  stochastic aug), aligning to unlabeled real CinC.
+- **Setup:** NORM/AF, PTB-XL Lead-I → real CinC, 5 seeds, 1D ResNet. UDA uses
+  cinc_ref SIGNALS only (no labels); 32-d penultimate features for CORAL/DANN.
+- **Result:** A1 recipe 0.747±0.040 · A2 AdaBN 0.706 (Δ−0.041, 0/5) · A3 CORAL
+  0.675 (Δ−0.072, 0/5) · A4 DANN 0.638 (Δ−0.109, 1/5) · V5 oracle 0.941±0.004.
+- **Verdict ❌:** all three UDA methods HURT, monotonically with aggressiveness
+  (AdaBN < CORAL < DANN damage). Feature-space alignment WIDENS the gap.
+- **Lesson:** AdaBN hurting ⇒ source/target BN stats already matched by the
+  augmentation (gap is not a normalization problem). CORAL/DANN hurting ⇒
+  forcing feature-distribution alignment destroys class-discriminative structure
+  (conditional shift, not just covariate shift). **The gap is NOT representation
+  geometry — it's input-variation coverage + label information.** Closed by
+  augmentation (E27) or real labels (E30), not unsupervised alignment.
+- ⟲ **follow-up:** UDA deprioritized (3 methods, consistent negative). Redirect
+  to E27 (augmentation scaling) + E30 (semi-supervised few-shot). Files:
+  `results/29_uda/`, `experiments/29_uda.py` (forward_feat/coral/DANN/adabn).
+
+## E27 — Augmentation recipe sweep: scales, no plateau yet (2026-07-27)
+- **Hypothesis:** how far can pure stochastic augmentation go? Sweep strength
+  {0.5,1.0,1.5} × expansion {1×,2×,3×} on the E26 cocktail; find best ratio and
+  whether it saturates.
+- **Setup:** NORM/AF, PTB-XL Lead-I → real CinC, 3 seeds (compute), 1D ResNet.
+  clean-only = 0.662.
+- **Result (mean AUROC):** monotonic in both knobs. s0.5: 0.694/0.733/0.737 ·
+  s1.0: 0.763/0.770/0.758 · s1.5: 0.766/0.788/**0.791**. Best = strength 1.5,
+  3× expansion = 0.791 (Δ+0.130, 3/3), at the GRID CORNER (not yet plateaued).
+- **Verdict ✅:** augmentation scales strongly; biggest gap-closer so far —
+  recovers ~46% of the clean→oracle (0.94) modality gap with zero target labels.
+- **Lesson (coherent with E29):** the residual modality gap is dominated by
+  INPUT-VARIATION COVERAGE, not representation geometry. Show the model enough
+  realistic label-preserving single-lead variation → it closes. We're still on
+  the rising part of the curve.
+- ⟲ **follow-up:** E27b = extend sweep up (strength 2.0/2.5, expansion 4-6×) at
+  5 seeds WITH a morphology-preservation guard (source corr > 0.85) to find the
+  true plateau without buying AUROC by corrupting labels. E30 = semi-supervised
+  k-shot. Phase C = lock tuned recipe into AWTrainingSetBuilder. Files:
+  `results/27_recipe_sweep/`, `experiments/27_recipe_sweep.py`.
 
 ---
 
