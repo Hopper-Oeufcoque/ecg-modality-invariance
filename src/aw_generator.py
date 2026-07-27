@@ -126,3 +126,100 @@ class AWGenerator:
 
     def generate_batch(self, clinical_sigs, rng=None):
         return np.stack([self.generate(s, rng=rng) for s in clinical_sigs])
+
+
+class StochasticAWAugmenter:
+    """Phase-A' generator: label-preserving STOCHASTIC augmentation.
+
+    E25b lesson: a faithful, near-information-preserving spectral transfer is
+    NEUTRAL as training data (fidelity != utility). The utility of synthetic
+    data came from augmentation DIVERSITY / noise-robustness, and the crude
+    heavy sim actually gained the most. So instead of trying to look like the
+    target, we inject the kinds of *label-preserving* variation that real
+    single-lead wearable recordings have but clinical Lead-I lacks:
+
+      - electrode-contact DROPOUTS (brief low-amplitude / flat segments)
+      - MOTION bursts (transient localized high-amplitude wander)
+      - dry-electrode GAIN WANDER (slow multiplicative amplitude drift)
+      - variable BASELINE dynamics (multi-tone low-freq wander)
+      - mild broadband noise + random global amplitude scale
+      - optional light spectral shaping via a supplied transfer function H
+
+    Every perturbation is morphology-order-preserving in the QRS band (we never
+    time-warp or invert), so the source clinical label stays valid. Each call is
+    RANDOM -> use to expand a small clinical set into a diverse training corpus.
+
+    Parameters are randomized per-sample within ranges; `strength` scales them.
+    """
+
+    def __init__(self, fs=100.0, siglen=1000, H=None, strength=1.0, seed=None):
+        self.fs = fs
+        self.siglen = siglen
+        self.H = None if H is None else np.asarray(H, dtype=np.float64)
+        self.strength = strength
+        self.rng = np.random.default_rng(seed)
+
+    def _apply_H(self, x):
+        X = np.fft.rfft(x)
+        mag = np.abs(X) * self.H[: X.size]
+        return np.fft.irfft(mag * np.exp(1j * np.angle(X)), n=self.siglen)
+
+    def generate(self, clinical_leadI, rng=None):
+        rng = rng or self.rng
+        s = self.strength
+        x = _fix_norm(clinical_leadI, self.siglen)
+        t = np.arange(self.siglen) / self.fs
+
+        # optional light spectral shaping toward the wearable band
+        if self.H is not None and rng.random() < 0.5:
+            x = self._apply_H(x)
+
+        # 1) dry-electrode GAIN WANDER: slow multiplicative amplitude drift
+        n_tones = rng.integers(1, 4)
+        gain = np.ones(self.siglen)
+        for _ in range(n_tones):
+            f = rng.uniform(0.05, 0.5); phi = rng.uniform(0, 2 * np.pi)
+            gain = gain + s * rng.uniform(0.05, 0.25) * np.sin(2 * np.pi * f * t + phi)
+        x = x * np.clip(gain, 0.3, 1.8)
+
+        # 2) variable BASELINE wander (multi-tone low-freq additive)
+        base = np.zeros(self.siglen)
+        for _ in range(rng.integers(1, 4)):
+            f = rng.uniform(0.1, 0.8); phi = rng.uniform(0, 2 * np.pi)
+            base = base + s * rng.uniform(0.05, 0.3) * np.sin(2 * np.pi * f * t + phi)
+        x = x + base * np.std(x)
+
+        # 3) electrode-contact DROPOUTS: brief attenuated segments
+        if rng.random() < 0.5 * min(s, 1.0) + 0.2:
+            for _ in range(rng.integers(1, 3)):
+                w = int(rng.uniform(0.02, 0.12) * self.siglen)
+                i0 = rng.integers(0, max(1, self.siglen - w))
+                atten = rng.uniform(0.05, 0.5)
+                ramp = np.ones(self.siglen)
+                seg = np.linspace(atten, atten, w)
+                # smooth edges so we don't inject step artifacts
+                edge = max(1, w // 6)
+                seg[:edge] = np.linspace(1.0, atten, edge)
+                seg[-edge:] = np.linspace(atten, 1.0, edge)
+                ramp[i0:i0 + w] = seg
+                x = x * ramp
+
+        # 4) MOTION bursts: transient localized high-amplitude wander
+        if rng.random() < 0.4 * min(s, 1.0) + 0.15:
+            for _ in range(rng.integers(1, 3)):
+                w = int(rng.uniform(0.03, 0.15) * self.siglen)
+                i0 = rng.integers(0, max(1, self.siglen - w))
+                bf = rng.uniform(1.0, 8.0); phi = rng.uniform(0, 2 * np.pi)
+                env = np.hanning(w)
+                burst = s * rng.uniform(0.3, 1.2) * env * np.sin(
+                    2 * np.pi * bf * (np.arange(w) / self.fs) + phi)
+                x[i0:i0 + w] = x[i0:i0 + w] + burst * np.std(x)
+
+        # 5) mild broadband noise + random global amplitude scale
+        x = x + s * rng.uniform(0.01, 0.06) * np.std(x) * rng.standard_normal(self.siglen)
+        x = x * rng.uniform(0.8, 1.25)
+
+        return (x - x.mean()) / (x.std() + 1e-9)
+
+    def generate_batch(self, clinical_sigs, rng=None):
+        return np.stack([self.generate(s, rng=rng) for s in clinical_sigs])

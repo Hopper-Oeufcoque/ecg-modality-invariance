@@ -45,6 +45,8 @@
 | E23 | lead-masking on REAL CinC | 0.557 | ⚠️⚠️⚠️ | **12-lead lead-masking catastrophically fails on real (0.557 vs sim 0.718); single-lead (0.72-0.73) far more robust; 12-lead prior doesn't survive real shift** |
 | E24 | HOME real Apple Watch modality-gap meta-analysis | rho 0.42-0.86 | ✅ | **REAL-device confirmation: modality gap task-dependent; spatial tasks (Low EF/High LA/NT-proBNP) largest gaps, mirroring E1 sim; diffuse (Low Hb) smallest** |
 | E6c | simulator vs REAL Apple Watch (HOME) | dist 1.065 | ⚠️✅ | **sim over-degrades vs real AW too (E6 holds on true target); BUT real AW is CLEAN (kurt 11.9, entropy 0.32) & CinC is an excellent AW proxy (0.247) — validates CinC experiments** |
+| E25 | **AW-generator (Phase A) acceptance, single-seed** | gen 0.669 vs clean 0.622 | ⚠️ | single-seed hinted generator beats clean, but split unrepresentative (clean 0.622 vs E6b 0.753) — flagged for multi-seed |
+| E25b | **AW-generator (Phase A) acceptance, 5-seed** | gen 0.676 vs clean 0.681 | ❌⚠️ | **generator-alone NEUTRAL (Δ−0.005, 3/5); clean+gen aug modest+stable (Δ+0.028, var collapses 0.052→0.012); heavy sim biggest winner (+0.049) → fidelity≠utility, win = augmentation diversity. Downgrades E6b's single-seed "sim hurts" claim** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -529,6 +531,47 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   alignment" on this data.
 - **Bootstrap CIs / multi-seed:** current results are directional, not
   significance tests.
+
+## E25 / E25b — AW-Generator north-star acceptance test (2026-07-27)
+- **Context:** the project's north star (per Luke) is a *tool that turns
+  abundant clinical Lead-I into useful Apple-Watch training data*. E25/E25b are
+  the first build (Phase A: learned spectral transfer function + light
+  calibrated noise, morphology-preserving) and its honest acceptance test.
+- **Hypothesis:** train-on-generated-AW beats train-on-raw-clinical-Lead-I on
+  real single-lead data (CinC, the E6c-validated real-AW proxy). Bar = clean.
+- **Setup:** NORM vs AF binary; PTB-XL Lead-I source → CinC real target. Arms:
+  V1 clean, V2 old heavy sim, V3 generated (tool under test), V4 clean+generated,
+  V5 oracle. E25 = single seed; E25b = 5 seeds, mean±std, paired deltas.
+- **E25 (single seed):** V3 gen 0.669 > V1 clean 0.622, V4 0.707 — looked like a
+  win, BUT clean landed at 0.622 (vs E6b's 0.753) → unrepresentative split.
+  Correctly did NOT declare victory; escalated to multi-seed.
+- **E25b (5 seeds):** V1 clean 0.681±0.052 · V2 oldsim **0.729±0.039**
+  (Δ+0.049, 4/5) · V3 generated 0.676±0.035 (Δ−0.005, **3/5**) · V4 clean+gen
+  0.709±**0.012** (Δ+0.028, 4/5) · V5 oracle 0.930±0.014.
+- **Verdict ❌⚠️:** Phase-A generator **fails as a standalone training source**
+  (V3 neutral vs clean). As augmentation (V4) it gives a modest, variance-
+  overlapping mean gain BUT a real **stability** win (std 0.052→0.012). The
+  biggest single winner is the *crude* heavy sim (V2), not the *faithful*
+  generator → **fidelity ≠ utility; the mechanism is augmentation diversity /
+  noise-robustness, not looking-like-the-target.**
+- **Lesson 1:** a near-information-preserving transform can't add training
+  signal absent from clinical Lead-I. To help, the generator must inject
+  *useful label-preserving variation* clinical data lacks (contact dropouts,
+  motion bursts, dry-electrode wander) — i.e. **stochastic augmentation, not
+  deterministic transfer.**
+- **Lesson 2 (honesty correction):** E6b's headline "sim training HURTS real
+  transfer (0.737<0.753)" was **single-seed noise** — clean Lead-I is high-
+  variance (0.622–0.772). Averaged over 5 seeds the ranking inverts (sim 0.729 >
+  clean 0.681). **E6b downgraded; single-seed verdicts across the log need a
+  seed-variance re-audit.**
+- ⟲ **follow-up:** E26 = swap deterministic transfer for stochastic
+  augmentation (random dropouts/motion/gain-wander), re-run this exact 5-seed
+  harness to test "diversity > fidelity". Phase B (neural CycleGAN + pathology-
+  preservation loss) only if E26 plateaus. Files: `results/25_aw_generator/`,
+  `results/25b_aw_generator_multiseed/`, `src/aw_generator.py`,
+  `docs/AW_GENERATOR_DESIGN.md`.
+
+---
 
 ## How to add an entry
 1. Run experiment → write `results/<id>/REPORT.md` + `metrics.json` + figures.
