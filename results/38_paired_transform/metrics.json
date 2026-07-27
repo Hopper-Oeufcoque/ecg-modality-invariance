@@ -1,0 +1,71 @@
+{
+  "n": 243,
+  "amplitude": {
+    "apple_median_p99": 718.4715979003905,
+    "clinical_median_p99": 77.0,
+    "gain_ratio_median": 8.247483489367426,
+    "gain_ratio_iqr": [
+      6.6500725643215794,
+      11.474081053659045
+    ],
+    "gain_ratio_cv": 0.5926858252422037
+  },
+  "apple_profile": {
+    "kurtosis": [
+      15.30863348262238,
+      17.105348490217022
+    ],
+    "bw_energy": [
+      0.20177410315445624,
+      0.1586010897392586
+    ],
+    "qrs_energy": [
+      0.27001703233421737,
+      0.13234776631007597
+    ],
+    "hf_energy": [
+      0.01079904048007815,
+      0.010247518918654922
+    ],
+    "mid_energy": [
+      0.3902340625036054,
+      0.12419551670182707
+    ]
+  },
+  "clinical_leadI_profile": {
+    "kurtosis": [
+      11.938043615065908,
+      7.739510363818353
+    ],
+    "bw_energy": [
+      0.03300881942855941,
+      0.0646684590492967
+    ],
+    "qrs_energy": [
+      0.3827840324923743,
+      0.10501396648109348
+    ],
+    "hf_energy": [
+      0.0297987606484064,
+      0.024502810243607943
+    ],
+    "mid_energy": [
+      0.31857545589484443,
+      0.13705590463833178
+    ]
+  },
+  "clinical_to_apple_norm_distance": 1.0646708384551842,
+  "real_apple_target_profile": {
+    "kurtosis": 15.30863348262238,
+    "bw_energy": 0.20177410315445624,
+    "qrs_energy": 0.27001703233421737,
+    "hf_energy": 0.01079904048007815,
+    "mid_energy": 0.3902340625036054
+  },
+  "caveats": [
+    "recordings ~64min apart -> not beat-aligned; distributional only",
+    "n=243 young SJLIFE survivor cohort",
+    "Lead I only from 12-lead clinical",
+    "resampled to common 100Hz"
+  ]
+}

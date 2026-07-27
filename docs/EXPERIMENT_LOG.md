@@ -60,6 +60,7 @@
 | E35 | **Recalibrate toward REAL AW (n=1000)** | ⚠️RETRACTED (fs bug) | ⚠️❌ | **RETRACTED by E37: used the 200Hz wide file as 500Hz. The "HF/bandwidth gap" was a 2.5× frequency-axis artifact. Correct finding (E37): real AW hf≈clinical, gap is small/mild baseline-wander** |
 | E36 | **morphology-preserving bandwidth match (500Hz)** | ❌RETRACTED (fs bug) | ❌ | **RETRACTED by E37: solved a non-existent HF gap (200Hz-as-500Hz artifact). Spectral transfer injected HF real AW doesn't have. No real bandwidth gap exists** |
 | E37 | **CORRECTED sampling-rate real-AW analysis** | clin→AW 0.25-0.50, hf≈equal | ✅ | **BUG FIX: HOME has 200Hz (wide) + 500Hz (data/ecg) files; E35/E36 mislabeled the 200Hz one. Corrected: real AW hf 0.015 ≈ clinical 0.019 (NO bandwidth gap); 2 AW sources agree (dist 0.200). Vindicates E6c — real AW is CLEAN, close to clinical; use LIGHT DR. Verify fs via HR sanity check** |
+| E38 | **REAL PAIRED clinical Lead-I ↔ Apple Watch profile (SJLIFE n=243)** | gain 8.25×, norm-dist 1.065, AW bw 0.202 vs clin 0.033 | ✅ | **First real PAIRED-hardware read (same patient, both devices). (1) Systematic ~8.25× amplitude gain (Apple µV vs clinical coarse units) — ALWAYS per-record normalize before cross-modality. (2) Real modality gap is LARGER than HOME suggested (norm-dist 1.065 vs E37's 0.25-0.50): AW has 6× more baseline wander (0.202 vs 0.033) + lower QRS-band energy — a mild-noise + wander shift, NOT HF. Confirms LIGHT-DR direction but says calibrate wander UP. Caveat: recordings ~64min apart → distributional only, not beat-aligned** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -881,6 +882,55 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
 - ⟲ **follow-up:** real-AW recipe = LIGHT DR (StochasticAWAugmenter strength≈0.5),
   no HF transform. Still need labeled real AW for AUROC. Files:
   `results/37_corrected_sampling/`, `experiments/37_corrected_sampling.py`.
+
+---
+
+## E38 — REAL PAIRED clinical Lead-I ↔ Apple Watch profile: SJLIFE n=243 (2026-07-27)
+- **Milestone:** first experiment on REAL PAIRED hardware. SJLIFE repo
+  (akbilgic/SJLIFE-Paired-Clinical-and-Apple-Watch-ECG-Repository, public,
+  trainable — NOT eval-only like HOME): 243 patients, each with a 12-lead
+  clinical ECG (500 Hz × 10 s) AND their own Apple Watch single-lead ECG
+  (512 Hz × 30 s). Same person, both devices → the true modality transform,
+  no simulator/proxy guessing.
+- **Data hygiene checks (both passed):** sampling rates verified by HR sanity
+  (Apple 15360@512Hz → 69.8 bpm vs meta 69 ✓; clinical 5000@500Hz Lead-I →
+  71.6 bpm vs meta VR 71 ✓). Fixed a CSV path quirk (clinical files are
+  `clinical_ecg_N.npy`, the metadata column wrongly reuses the apple name).
+- **Result 1 — amplitude (voltage scale):** ALL 243 Apple files self-consistent
+  (0 scale outliers >5× / <⅕ median p2p; single unimodal order-of-magnitude
+  spread) → Apple stored in **microvolts** (median R-wave ~700-1200 µV). But
+  Apple vs clinical Lead-I have a **systematic ~8.25× amplitude gain**
+  (Apple median p99|x| 718 vs clinical 77; IQR 6.6-11.5×, cv 0.59). Clinical
+  stored in a coarser unit. **Mandatory: per-record normalize (z-score) both
+  sides before ANY cross-modality model — else gain masquerades as signal.**
+- **Result 2 — modality profile (z-scored, common 100 Hz):** real Apple vs real
+  clinical Lead-I: bw_energy 0.202 vs 0.033 (**6× more baseline wander**),
+  qrs_energy 0.270 vs 0.383 (lower relative QRS band), hf_energy 0.011 vs 0.030
+  (**less** HF — confirms E37, no HF gap), kurtosis 15.3 vs 11.9. Normalized
+  clinical→Apple distance = **1.065**.
+- **Reconciliation with E34/E37 (HOME):** the paired gap (1.065) is LARGER than
+  HOME's 0.25-0.50. Not a contradiction — HOME `data-for-predicting` AW is
+  visibly pre-cleaned/filtered (very low bw), whereas SJLIFE Apple is closer to
+  raw watch output (heavy baseline wander is exactly what a dry-electrode wrist
+  ECG shows). SJLIFE is the more honest "raw AW" target; HOME is a cleaned
+  benchmark. **Direction still LIGHT-DR, but calibrate baseline-wander UP
+  (toward 0.20), not the CinC over-injection (0.5) nor near-zero.**
+- **Verdict ✅:** retires the project's single biggest caveat ("simulated, not
+  real"). We now have a measured real-paired target profile
+  (`results/38_paired_transform/real_apple_target_profile.json`) to drive
+  CalibratedAWAugmenter, and a trainable paired set for downstream AUROC.
+- **Caveats:** the two recordings are ~64 min apart (metadata
+  `Minutes_ABS_Btw_Clinical_Apple`) → NOT the same cardiac cycles, so only
+  distributional/population-spectral characterization is valid (no per-beat
+  morphology regression). n=243, young SJLIFE survivor cohort (skews the
+  amplitude/HR distribution). Lead I only. No disease labels in this repo yet
+  (metadata = age/sex/race/HR/time-gap) → still need labels for a real
+  diagnostic AUROC; this establishes the transform, not the endpoint.
+- ⟲ **follow-up (E39):** re-calibrate CalibratedAWAugmenter to the E38 measured
+  profile (wander↑, HF flat), verify morphology preserved (QRS-band corr +
+  R-peak), and test train-on-clinical-with-real-calibrated-DR vs the SJLIFE
+  Apple signals. Files: `results/38_paired_transform/`,
+  `experiments/38_paired_transform.py`.
 
 ---
 
