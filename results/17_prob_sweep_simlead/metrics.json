@@ -1,0 +1,32 @@
+{
+  "n_train": 1225,
+  "n_test": 497,
+  "classes": [
+    "NORM",
+    "MI",
+    "STTC",
+    "CD",
+    "HYP"
+  ],
+  "prob_0.2": {
+    "macro_auroc_L4": 0.6769307323454162
+  },
+  "prob_0.3": {
+    "macro_auroc_L4": 0.6549500648523134
+  },
+  "prob_0.4": {
+    "macro_auroc_L4": 0.7031888447313506
+  },
+  "prob_0.5": {
+    "macro_auroc_L4": 0.7254417610123925
+  },
+  "prob_0.6": {
+    "macro_auroc_L4": 0.7083117359746943
+  },
+  "singlelead_sim_L1": {
+    "macro_auroc": 0.7334095476522675
+  },
+  "singlelead_sim_L4": {
+    "macro_auroc": 0.741829008511233
+  }
+}

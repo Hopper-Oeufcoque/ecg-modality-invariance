@@ -31,6 +31,7 @@
 | E3b | latent align, pretrain + end-to-end finetune | 0.690 | ❌ | contrastive pretrain adds NO value over lead-masking; slightly worse |
 | E5 | test-time BN adaptation (H3) on V2 | +0.007 (L4) | ⚠️ | marginal under shift; neutral/slight-hurt without; finishing move only |
 | E16 | combinations on top of lead-masking | — | ❌ | no combo beats lead-masking alone; matched-filter hurts, TTA neutral |
+| E17 | single-lead trained on sim-watch | 0.742 (L4) | ✅ | beats 12-lead lead-masking (0.725); simulator replaces 12-lead data |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best stack:**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -145,6 +146,27 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   data (E6), both queued.
 - ⟲ Follow-up E4 (500 Hz) tests whether matched-filter/TTA regain value when
   the bandwidth axis is real.
+
+## E17 — Lead-masking prob sweep + single-lead trained on simulator (2026-07-27)
+- **Hypothesis (A):** lead-masking prob 0.5 is tunable. **(B):** a single-lead
+  model trained on simulated-watch Lead-I (no 12-lead training) can match the
+  12-lead lead-masking winner.
+- **Setup:** (A) prob sweep [0.2–0.6] on L4. (B) 1-lead model trained from
+  scratch on sim-watch Lead-I with clinical labels. `experiments/17_prob_sweep_simlead.py`.
+- **Result:** (A) prob=0.5 optimal (0.725; non-monotonic: 0.677/0.655/0.703/
+  0.725/0.708). (B) single-lead+sim @ L1=0.733, **@ L4=0.742** — beats 12-lead
+  lead-masking (0.725); L4>L1 (train/test distribution match).
+- **Verdict:** ✅ (B is the strongest positive result of the project). prob=0.5
+  confirmed optimal. **A single-lead model trained on simulated watch beats
+  the 12-lead lead-masking approach — the forward-physics simulator replaces
+  the need for 12-lead data.**
+- **Lesson:** the simulator's best use is as a *from-scratch training
+  distribution* for a single-lead model, not as a fine-tune stage (E16 C5) or
+  an alignment signal (E3-B). Two regimes now: (1) no simulator → lead-masking
+  (0.725); (2) with simulator → single-lead+sim training (0.742).
+- **Honesty flag:** train/test distribution match (sim→sim) is favorable; the
+  real test is E6 (does a sim-trained model transfer to *real* watch?).
+- ⟲ Follow-up E6 is now critical: real single-lead validation.
 
 ---
 

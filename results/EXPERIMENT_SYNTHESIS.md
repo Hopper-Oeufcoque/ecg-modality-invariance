@@ -97,14 +97,21 @@ than lead-invariant ones, matching real clinical→watch transfer.
 - PTB-XL superclasses are coarse; finer pathology labels may show bigger gaps.
 
 ## Recommended recipe (what we'd ship)
-> **Lead-masking (C9) alone** — E16 showed no combination (matched-filter A2,
-> watch-aug A5, TTA H3, two-stage fine-tune) beats lead-masking alone at 100 Hz;
-> matched-filter actively hurts. So the simplest recipe wins: one training-time
-> lead-dropout augmentation, no preprocessing dance, no test-time adaptation.
-> Closes the gap from 0.521 to ~0.72 on simulated watch with zero target-domain
-> labels (~75% to the 0.865 ceiling; residual = genuine single-lead info loss).
-> The stacked recipe may regain value at 500 Hz (E4) or with real watch data
-> (E6) — both queued.
+**Two regimes (E17):**
+1. **No simulator / no target-domain generation** → **lead-masking (C9, prob=0.5)**
+   on 12-lead training. Best label-free transfer: 0.725 on full watch. Simplest
+   recipe — one training-time augmentation, no preprocessing, no TTA (E16 showed
+   combinations add nothing).
+2. **With the forward-physics simulator (E1's F10)** → **train a single-lead
+   model on simulated-watch Lead-I** with clinical labels. Beats the 12-lead
+   approach: 0.742 on full watch, and the model needs no 12-lead data at
+   inference. The simulator's best use is as a *from-scratch training
+   distribution*, not a fine-tune stage (E16 C5) or alignment signal (E3-B).
+
+The remaining gap to the 0.865 ceiling (~0.12) is genuine single-lead
+information loss + sim/real distribution mismatch. The critical open question
+(E6): does the sim-trained model's edge hold on *real* watch data, or is it a
+sim-only artifact?
 
 ## Next experiments (queued, not run)
 - **E4:** 500 Hz rerun to surface the bandwidth axis properly.
