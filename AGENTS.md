@@ -24,14 +24,23 @@ Luke (US-based). Repo: github.com/Hopper-Oeufcoque/ecg-modality-invariance
    wfdb, sklearn, scipy).
 
 ## Current experimental status (as of 2026-07-27)
-- E1 validated the forward-physics simulator (lead-count = dominant axis).
-- E2 found **lead-masking (K-MERL C9) is the decisive winner** (0.521→0.717 on
-  full watch, matches/beats single-lead reference, zero target labels).
-- E3/E3b: latent alignment beats naive but adds NO value over end-to-end
-  lead-masking — only helps when encoder is frozen (FM+adapter path).
-- E5: test-time BN adaptation marginal.
-- Next queued: E4 (500 Hz), E6 (real single-lead), E7 (LeadBridge) — see
-  `docs/FUTURE_APPROACHES.md`.
+- **HEADLINE: all sim-validated results carry realism debt — they don't transfer
+  to real single-lead data.** See `docs/SESSION_HANDOFF.md` for the full reframe.
+- E1: lead-count = dominant axis. E2: lead-masking = sim-best 0.718 (BUT fails
+  on real — E23).
+- E6: simulator OVER-DEGRADES vs real (sim_vs_real 1.077 > real_vs_clinical 0.717;
+  kurtosis 4.8 vs 17.7). E22: over-degradation is FILTER-bound (bandpass).
+- E6b (decisive): sim training HURTS real transfer (sim→real 0.737 < clean→real
+  0.753); 0.993 sim→sim is overfit artifacts. Oracle (real→real) = 0.946.
+- E23 (decisive): lead-masking 12-lead CATASTROPHICALLY fails on real (0.557 vs
+  sim 0.718); single-lead (clean 0.721, sim 0.731) robust. **Revised real
+  ranking: single-lead models > 12-lead lead-masking. Train single-lead.**
+- Novel methods (E10 INLP, E15 MixStyle, E9 REx, E20 DeepSet, E8 speech, E18
+  scattering): all near-neutral or regime-dependent. Gap is info loss, not a
+  removable/avoidable shortcut.
+- **Real Apple Watch data: HOME benchmark at `~/data/HOME` (1000 AW ECGs,
+  evaluation-only). E6c (sim vs REAL AW) + E5b (BN-adapt salvage) are the
+  immediate next experiments.** See `docs/SESSION_HANDOFF.md`.
 
 ## Domains of shift (12-lead clinical → 1-lead watch)
 lead count, electrode physics (wet vs dry), noise, sampling/bandwidth,
