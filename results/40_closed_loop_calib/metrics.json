@@ -1,0 +1,68 @@
+{
+  "n": 243,
+  "calibrated_wander_amp": 0.5857143402099609,
+  "real_apple_target": {
+    "kurtosis": 9.456632463265445,
+    "bw_energy": 0.2299722206879882,
+    "qrs_energy": 0.24164044369318707,
+    "hf_energy": 0.010436031150747946,
+    "mid_energy": 0.4064883469020052
+  },
+  "variants": {
+    "clean": {
+      "dist": 1.059026926426066,
+      "qrs": 1.0,
+      "rpeak": 1.0,
+      "profile": {
+        "kurtosis": 11.938043615065908,
+        "bw_energy": 0.03300881942855941,
+        "qrs_energy": 0.3827840324923743,
+        "hf_energy": 0.0297987606484064,
+        "mid_energy": 0.31857545589484443
+      }
+    },
+    "light_DR": {
+      "dist": 1.062971894865681,
+      "qrs": 0.9929441415257882,
+      "rpeak": 0.9645564710582489,
+      "profile": {
+        "kurtosis": 12.617118646776225,
+        "bw_energy": 0.03545983192664763,
+        "qrs_energy": 0.38159632450529735,
+        "hf_energy": 0.029926202888949906,
+        "mid_energy": 0.3180174359468412
+      }
+    },
+    "open_loop_calDR": {
+      "dist": 1.9792207586278776,
+      "qrs": 0.9713079392310098,
+      "rpeak": 0.9375719301776296,
+      "profile": {
+        "kurtosis": 0.07813884907995981,
+        "bw_energy": 0.8157605651935613,
+        "qrs_energy": 0.07130953192145109,
+        "hf_energy": 0.005744151119049419,
+        "mid_energy": 0.06328098617559419
+      }
+    },
+    "closed_loop": {
+      "dist": 0.6586407959329591,
+      "qrs": 0.9876467366170407,
+      "rpeak": 0.9625866900929118,
+      "profile": {
+        "kurtosis": 7.497761143176844,
+        "bw_energy": 0.21655476379887403,
+        "qrs_energy": 0.2928164107752724,
+        "hf_energy": 0.023472346588721323,
+        "mid_energy": 0.28879734152586956
+      }
+    }
+  },
+  "best_label_valid": "closed_loop",
+  "closes_gap_vs_clean": true,
+  "caveats": [
+    "coverage necessary-not-sufficient (E25b)",
+    "population distance not beat-aligned",
+    "no labels for AUROC"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "n": 243,
+  "real_apple_target": {
+    "kurtosis": 9.456632463265445,
+    "bw_energy": 0.2299722206879882,
+    "qrs_energy": 0.24164044369318707,
+    "hf_energy": 0.010436031150747946,
+    "mid_energy": 0.4064883469020052
+  },
+  "clinical_source": {
+    "kurtosis": 11.938043615065908,
+    "bw_energy": 0.03300881942855941,
+    "qrs_energy": 0.3827840324923743,
+    "hf_energy": 0.0297987606484064,
+    "mid_energy": 0.31857545589484443
+  },
+  "variants": {
+    "clean": {
+      "dist": 1.059026926426066,
+      "qrs": 1.0,
+      "rpeak": 1.0,
+      "profile": {
+        "kurtosis": 11.938043615065908,
+        "bw_energy": 0.03300881942855941,
+        "qrs_energy": 0.3827840324923743,
+        "hf_energy": 0.0297987606484064,
+        "mid_energy": 0.31857545589484443
+      }
+    },
+    "light_DR": {
+      "dist": 1.0447764006258162,
+      "qrs": 0.9846114006801383,
+      "rpeak": 0.9610024401223313,
+      "profile": {
+        "kurtosis": 12.713325037730234,
+        "bw_energy": 0.04212970389387782,
+        "qrs_energy": 0.3789437306900391,
+        "hf_energy": 0.029604046863953737,
+        "mid_energy": 0.3160742743114436
+      }
+    },
+    "cinc_calDR": {
+      "dist": 1.2173949687850791,
+      "qrs": 0.9510340680792408,
+      "rpeak": 0.9202322877120908,
+      "profile": {
+        "kurtosis": 3.4855550357935177,
+        "bw_energy": 0.5578427459308222,
+        "qrs_energy": 0.17025649165643175,
+        "hf_energy": 0.014007753668012452,
+        "mid_energy": 0.15286445948912675
+      }
+    },
+    "real_calDR": {
+      "dist": 1.1302223936343858,
+      "qrs": 0.9572207088265121,
+      "rpeak": 0.9240285495578481,
+      "profile": {
+        "kurtosis": 3.593233006107282,
+        "bw_energy": 0.5276559858183411,
+        "qrs_energy": 0.1809333073446898,
+        "hf_energy": 0.014424083308922713,
+        "mid_energy": 0.16735382475573532
+      }
+    }
+  },
+  "best_label_valid": "light_DR",
+  "caveats": [
+    "coverage is necessary-not-sufficient (fidelity != utility, E25b)",
+    "population-level distance; not beat-aligned",
+    "downstream AUROC still needs labels (SJLIFE has none)"
+  ]
+}

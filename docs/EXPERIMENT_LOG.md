@@ -61,6 +61,8 @@
 | E36 | **morphology-preserving bandwidth match (500Hz)** | ❌RETRACTED (fs bug) | ❌ | **RETRACTED by E37: solved a non-existent HF gap (200Hz-as-500Hz artifact). Spectral transfer injected HF real AW doesn't have. No real bandwidth gap exists** |
 | E37 | **CORRECTED sampling-rate real-AW analysis** | clin→AW 0.25-0.50, hf≈equal | ✅ | **BUG FIX: HOME has 200Hz (wide) + 500Hz (data/ecg) files; E35/E36 mislabeled the 200Hz one. Corrected: real AW hf 0.015 ≈ clinical 0.019 (NO bandwidth gap); 2 AW sources agree (dist 0.200). Vindicates E6c — real AW is CLEAN, close to clinical; use LIGHT DR. Verify fs via HR sanity check** |
 | E38 | **REAL PAIRED clinical Lead-I ↔ Apple Watch profile (SJLIFE n=243)** | gain 8.25×, norm-dist 1.065, AW bw 0.202 vs clin 0.033 | ✅ | **First real PAIRED-hardware read (same patient, both devices). (1) Systematic ~8.25× amplitude gain (Apple µV vs clinical coarse units) — ALWAYS per-record normalize before cross-modality. (2) Real modality gap is LARGER than HOME suggested (norm-dist 1.065 vs E37's 0.25-0.50): AW has 6× more baseline wander (0.202 vs 0.033) + lower QRS-band energy — a mild-noise + wander shift, NOT HF. Confirms LIGHT-DR direction but says calibrate wander UP. Caveat: recordings ~64min apart → distributional only, not beat-aligned** |
+| E39 | **recalibrate augmenter to real Apple target (SJLIFE)** | open-loop overshoots: dist worsens 1.06→1.13-1.22 | ❌ | **Informative NEGATIVE: light-DR too gentle (no move); open-loop CalibratedAWAugmenter OVERSHOOTS bw (0.53 vs target 0.23) AND collapses kurtosis (11.9→3.6) → coverage worse than clean. Root cause: open-loop sqrt(gap)·4 heuristic never checks measured output. Calibration must be closed-loop** |
+| E40 | **closed-loop calibrator (binary-search to measured target)** | dist 1.06→0.659 (38% closer), morph safe | ✅ | **FIX: binary-search wander amp until MEASURED bw hits target + 1/f coloured wander (not sinusoids). First variant to beat clean floor: dist 0.659, bw 0.217 vs target 0.230, kurtosis 7.50 preserved (open-loop→0.08), QRS-corr 0.988/R-peak 0.963. Promoted ClosedLoopCalibrator to src/. Coverage necessary-not-sufficient — AUROC still needs labels** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -931,6 +933,58 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   R-peak), and test train-on-clinical-with-real-calibrated-DR vs the SJLIFE
   Apple signals. Files: `results/38_paired_transform/`,
   `experiments/38_paired_transform.py`.
+
+---
+
+## E39 — Recalibrate augmenter to real Apple target: open-loop overshoots (2026-07-27)
+- **Hypothesis:** calibrating CalibratedAWAugmenter to the E38-measured real
+  Apple profile (vs old CinC target, vs light-DR, vs clean) will match real
+  Apple's modality distribution better while preserving morphology.
+- **Setup:** SJLIFE paired n=243, source = clinical Lead-I, target = real Apple
+  profile (E38). Distance = per-axis std-normalized profile distance to real
+  Apple. Morphology = QRS-band corr + R-peak match (E33 guard).
+- **Result (distance to real Apple, lower better):** clean 1.059 · light_DR
+  1.045 (barely moves, bw 0.033→0.042) · cinc_calDR 1.217 · real_calDR 1.130.
+  Both calibrated variants OVERSHOOT bw (0.53-0.56 vs target 0.23) and COLLAPSE
+  kurtosis (11.9→3.5) → worse than clean. Morphology stayed valid (QRS≥0.95).
+- **Verdict ❌:** open-loop calibration cannot hit the real target. Root cause:
+  the `sqrt(gap)·4·cover` heuristic sets injection amplitude without measuring
+  the resulting profile, and multi-tone sinusoidal wander destroys kurtosis.
+- **Lesson:** fidelity calibration must be **closed-loop** (measure → adjust);
+  and the wander model matters (sinusoids crush peak structure).
+- ⟲ **follow-up (E40):** closed-loop binary-search calibrator + coloured wander.
+  Files: `results/39_recalibrated_augment/`, `experiments/39_recalibrated_augment.py`.
+
+---
+
+## E40 — Closed-loop calibrator hits the real Apple profile (2026-07-27)
+- **Hypothesis:** a closed-loop calibrator (tune injection until the MEASURED
+  output matches target) with a spectrally-correct wander model can hit the real
+  Apple profile while preserving morphology.
+- **Setup:** `ClosedLoopCalibrator` — <1 Hz coloured (1/f-ish) wander,
+  amplitude binary-searched (18 iters, 40-signal probe) so measured bw_energy ==
+  target (0.23). QRS band untouched. Compared vs clean / light-DR / open-loop on
+  SJLIFE paired n=243.
+- **Result:** distance to real Apple **1.059 (clean) → 0.659 (closed-loop)**,
+  38% closer and the FIRST variant to beat the clean floor. bw_energy 0.217 vs
+  target 0.230 (hit); kurtosis 7.50 vs 9.46 (preserved — open-loop → 0.08);
+  qrs_energy 0.293 vs 0.242. Morphology valid: QRS-corr 0.988, R-peak 0.963.
+  Calibrated wander amp = 0.586.
+- **Verdict ✅:** closing the loop + coloured wander fixes both the overshoot and
+  the kurtosis collapse. Promoted `ClosedLoopCalibrator` to `src/aw_generator.py`
+  (verified importable + runnable).
+- **Lesson:** for domain-randomization calibration, always measure the realized
+  output distribution and search to it; pick a noise model that matches the
+  target's spectral shape without disturbing the diagnostic (QRS) band.
+- **Honest flags:** coverage is necessary-not-sufficient (E25b: fidelity ≠
+  utility) — this proves we can AIM at the real target, NOT that it lifts
+  downstream AUROC. That needs labels (SJLIFE has none). Population distance,
+  not beat-aligned; single calibration seed; residual gap (0.659) is mostly
+  qrs_energy/mid_energy the wander model doesn't address.
+- ⟲ **follow-up:** (a) multi-axis closed-loop (add qrs/mid shaping); (b) the real
+  unblock — find a LABELED single-lead set to test whether closed-loop-calibrated
+  training data actually lifts AUROC. Files: `results/40_closed_loop_calib/`,
+  `experiments/40_closed_loop_calib.py`, `src/aw_generator.py::ClosedLoopCalibrator`.
 
 ---
 

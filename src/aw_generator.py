@@ -329,3 +329,84 @@ class CalibratedAWAugmenter:
 
     def generate_batch(self, clinical_sigs, rng=None):
         return np.stack([self.generate(s, rng=rng) for s in clinical_sigs])
+
+
+class ClosedLoopCalibrator:
+    """Closed-loop target-calibrated augmenter (E40 — beats the clean coverage
+    floor on REAL paired SJLIFE Apple data, unlike the open-loop
+    CalibratedAWAugmenter which overshoots and collapses kurtosis).
+
+    Key differences from CalibratedAWAugmenter:
+      - wander model = <1 Hz COLOURED (1/f-ish) noise, NOT multi-tone sinusoids
+        (sinusoids crush kurtosis; coloured wander preserves peak structure).
+      - amplitude is BINARY-SEARCHED so the MEASURED output bw_energy matches the
+        target, instead of set open-loop from a sqrt(gap) heuristic.
+      - QRS band untouched -> morphology preserved (validate with
+        qrs_morphology_preserved; E40 got QRS-corr 0.988, R-peak 0.963).
+
+    Usage:
+        clc = ClosedLoopCalibrator.fit(target_bw_energy, clinical_probe_sigs,
+                                       fs=100.0, siglen=1000, seed=7, n_probe=40)
+        aug = clc.generate(clinical_leadI)          # single
+        batch = clc.generate_batch(clinical_sigs)   # many
+
+    E40 result: distance-to-real-Apple 1.059 (clean) -> 0.659 (38% closer);
+    bw_energy 0.217 vs target 0.230; kurtosis 7.50 preserved (open-loop -> 0.08).
+    """
+
+    def __init__(self, amp, fs=100.0, siglen=1000, seed=None):
+        self.amp = float(amp)
+        self.fs = fs
+        self.siglen = siglen
+        self.rng = np.random.default_rng(seed)
+
+    @staticmethod
+    def _low_wander(n, fs, rng):
+        from scipy.signal import butter, filtfilt
+        w = rng.standard_normal(n)
+        b, a = butter(2, 0.9 / (fs / 2), "low")
+        w = filtfilt(b, a, w)
+        return w / (w.std() + 1e-9)
+
+    def _add(self, x, a, rng):
+        x = np.asarray(x, float)
+        if x.shape[0] < self.siglen:
+            x = np.concatenate([x, np.zeros(self.siglen - x.shape[0])])
+        x = x[:self.siglen]
+        x = (x - x.mean()) / (x.std() + 1e-9)
+        return x + a * self._low_wander(self.siglen, self.fs, rng)
+
+    @classmethod
+    def fit(cls, tgt_bw, probe_sigs, fs=100.0, siglen=1000, seed=0, n_probe=40):
+        """Binary-search wander amplitude so measured bw_energy == tgt_bw."""
+        probe = list(probe_sigs)[:n_probe]
+        obj = cls(0.0, fs=fs, siglen=siglen, seed=seed)
+
+        def measured_bw(amp):
+            vals = []
+            for i, s in enumerate(probe):
+                y = obj._add(s, amp, np.random.default_rng(int(amp * 1e6) % 99991 + i))
+                vals.append(signal_modality_stats(y, fs)["bw_energy"])
+            return float(np.mean(vals))
+
+        lo, hi = 0.0, 3.0
+        for _ in range(18):
+            mid = (lo + hi) / 2
+            if measured_bw(mid) < tgt_bw:
+                lo = mid
+            else:
+                hi = mid
+        obj.amp = (lo + hi) / 2
+        return obj
+
+    def generate(self, clinical_leadI, rng=None):
+        rng = rng or self.rng
+        y = self._add(clinical_leadI, self.amp, rng)
+        t = np.arange(self.siglen) / self.fs
+        g = 1.0 + 0.15 * np.sin(
+            2 * np.pi * rng.uniform(0.05, 0.3) * t + rng.uniform(0, 6.28))
+        y = y * g
+        return ((y - y.mean()) / (y.std() + 1e-9)).astype(np.float32)
+
+    def generate_batch(self, clinical_sigs, rng=None):
+        return np.stack([self.generate(s, rng=rng) for s in clinical_sigs])
