@@ -57,6 +57,7 @@
 | E33 | **target-calibrated domain randomization** | calibrated 0.824 vs hand 0.783 | ✅ | **BREAKS the 0.80 plateau zero-shot: +0.042 (5/5), closes ~57% of gap w/ zero labels. Measure target stats (unlabeled) → build augmentation to COVER target. Label preserved (QRS-band corr 0.966, R-peak 0.976 — raw-Pearson guard was measuring baseline wander, corrected). New best zero-shot recipe** |
 | E33b | **calibrated DR + few-shot combo** | calib+k50 0.874 vs hand+k50 0.836 | ✅ | **the two best levers STACK: calibrated-DR base + 50 labels = 0.874 (vs hand-tuned+50 = 0.836); +100 labels → 0.894 (0.043 from oracle 0.937). Better zero-shot base ~doubles value of same labels. Full ladder: clean 0.68 → calib-zeroshot 0.82 → +50lbl 0.87 → +100lbl 0.89 → oracle 0.94** |
 | E34 | **REAL Apple Watch coverage check (n=20)** | clin→AW 0.253 < cinc→AW 0.477 | ❌⚠️ | **DEEP CAVEAT: real AW is CLEAN & closer to clinical (0.253) than to CinC (0.477); CinC-calibrated DR moved AWAY from real AW (1.136, over-injected baseline wander). Proxy misled the calibration — E33/E33b absolute numbers are vs a mediocre AW proxy. Mechanism sound, target wrong** |
+| E35 | **Recalibrate toward REAL AW (n=1000)** | gap is HF/bandwidth; aw-cal QRS 0.594 | ⚠️❌ | **n=1000 OVERTURNS n=20: real AW has HIGH hf_energy (0.165, ~8× clinical) + low baseline wander — gap is a FILTERING/bandwidth mismatch (clinical over-filtered; confirms E22 on real HW, no powerline artifact). Can't stat-match by noise: aw-calibrated DR hit the HF stat but DESTROYED morphology (QRS 0.594). Need morphology-preserving bandwidth match (E36)** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -806,6 +807,30 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
 - ⟲ **follow-up:** E35 = recalibrate DR toward REAL AW (full 1000-waveform HOME
   cohort) + light DR; correct external-validity claims. Files:
   `results/34_real_aw_coverage/`, `experiments/34_real_aw_coverage.py`.
+
+## E35 — Recalibrate toward REAL AW (n=1000): gap is bandwidth, not noise (2026-07-27)
+- **Hypothesis:** E34 (n=20) said CinC-calibrated DR aimed at the wrong target.
+  Use the FULL 1000-waveform HOME cohort for a robust real-AW profile and test
+  recalibrating DR toward real AW (+ a light-DR option).
+- **Result (n=1000):** real AW hf_energy **0.165** (~8× clinical 0.019),
+  bw_energy **0.016** (LOW). aw-calibrated DR matched HF (0.394) but QRS corr
+  collapsed to **0.594** (destroyed morphology); cinc-cal QRS 0.967; light DR
+  QRS 0.985 but no HF coverage. Diagnostic: 30–50 Hz energy smoothly decays, NO
+  50/60 Hz spike → genuine broadband signal, not powerline artifact.
+- **Verdict ⚠️❌:** n=1000 OVERTURNS n=20 (which had wrongly shown low HF —
+  small-N unreliable). The real clinical→AW gap is a **BANDWIDTH/FILTERING
+  mismatch**: clinical is over-filtered (~0.5-40 Hz), watch keeps HF. Confirms
+  E22's filter-bound finding ON REAL HARDWARE.
+- **Lesson:** you can't close a bandwidth gap by injecting broadband noise to
+  match a summary stat — it wrecks the QRS (label). Need a MORPHOLOGY-PRESERVING
+  bandwidth/filter transform (the E33 zero-phase spectral-transfer idea was
+  actually right for THIS axis; combine with light DR). Also: the standardized
+  distance metric is dominated by the tiny-clinical-std HF axis — trust the
+  per-axis profile + morphology table, not the aggregate distance.
+- ⟲ **follow-up:** E36 = morphology-preserving bandwidth match (filter, not
+  noise; verify QRS>0.95 while HF→0.165); re-profile at native 500 Hz; correct
+  external-validity claims. Files: `results/35_real_aw_recalibration/`,
+  `experiments/35_real_aw_recalibration.py`.
 
 ---
 
