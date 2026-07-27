@@ -1,0 +1,25 @@
+{
+  "n_train": 1225,
+  "n_test": 497,
+  "classes": [
+    "NORM",
+    "MI",
+    "STTC",
+    "CD",
+    "HYP"
+  ],
+  "variants": {
+    "V1_deepset_L1": {
+      "macro_auroc": 0.7385353370939888
+    },
+    "V1_deepset_L4": {
+      "macro_auroc": 0.6979007159326039
+    },
+    "V2_deepset_sim_L1": {
+      "macro_auroc": 0.7370003095354264
+    },
+    "V2_deepset_sim_L4": {
+      "macro_auroc": 0.7084406352635862
+    }
+  }
+}

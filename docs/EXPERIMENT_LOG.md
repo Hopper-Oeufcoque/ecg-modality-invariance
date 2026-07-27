@@ -33,6 +33,8 @@
 | E16 | combinations on top of lead-masking | — | ❌ | no combo beats lead-masking alone; matched-filter hurts, TTA neutral |
 | E17 | single-lead trained on sim-watch | 0.742 (L4) | ✅ | beats 12-lead lead-masking (0.725); simulator replaces 12-lead data |
 | E4 | 500 Hz rerun (directional, small-N) | 0.641 (LeadMask) | ⚠️ | bandwidth axis shows no clear drop at 500Hz either; minor at both rates |
+| E8 | speech-channel features (novel cross-domain) | 0.539–0.691 | ❌ | cepstral features hurt; speech analogy fails — ECG content is time-domain not spectral-envelope |
+| E18 | scattering transforms (novel, deformation-stable) | 0.661 | ⚠️ | training-free modality-robustness beats naive; underperforms learned but complementary |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best stack:**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -188,6 +190,47 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
 - **Limitation:** n_test=63 is too small to trust exact values (all stages near
   chance); directional only. Larger 500 Hz rerun queued but low-priority since the
   axis appears minor regardless.
+
+## E8 — Speech-channel-robustness features (novel cross-domain) (2026-07-27)
+- **Hypothesis:** porting speech's channel-invariance toolkit (MFCC + CMVN +
+  RASTA) to ECG makes single-lead features more modality-invariant, since
+  "channel" in speech ≈ "electrode chain" in ECG.
+- **Setup:** MFCC-like cepstral features (13-dim, 50 frames) on sim-watch Lead-I,
+  with variants: V1 raw waveform, V2 cepstral, V3 +CMVN, V4 +CMVN+RASTA.
+  `experiments/08_speech_features.py`.
+- **Result:** V1 0.733 · V2 0.691 · V3 0.589 · V4 0.539 (monotonic degradation).
+- **Verdict:** ❌. **The speech-channel analogy does NOT transfer to ECG.** The
+  more speech-robustness added, the worse it gets. Speech content is in the
+  spectral envelope (formants), which cepstral features preserve; ECG content is
+  in time-domain morphology/phase (P-QRS-T shape, ST elevation), which cepstral
+  features destroy. CMVN/RASTA remove ECG morphology, not "channel."
+- **Lesson:** not all cross-domain analogies transfer. The ECG≈speech
+  structural analogy is real (both quasi-periodic) but the *representation* is
+  wrong: speech channel-robustness assumes separable cepstral components; ECG
+  entangles channel+content in time-domain. Valuable negative — principled
+  rejection of I3. The right adjacent field is time-warp-stable signal
+  processing (scattering, E18), which preserves the time domain.
+- ⟲ Contrasts with E18 (scattering, which works).
+
+## E18 — Scattering transforms (novel, deformation-stable) (2026-07-27)
+- **Hypothesis:** wavelet scattering coefficients (provably Lipschitz-stable to
+  time-warp/amplitude deformations, translation-invariant) provide a training-free,
+  modality-robust front-end that beats naive transfer.
+- **Setup:** hand-rolled 1st+2nd order Morlet scattering (J=6, Q=4), 44-dim
+  features -> MLP (30 ep) on sim-watch Lead-I. `experiments/18_scattering.py`.
+- **Result:** 0.661 macro AUROC on L4; per-class NORM 0.756 · MI 0.594 · STTC
+  0.654 · CD 0.652 · HYP 0.650.
+- **Verdict:** ⚠️. Beats naive (0.521) by a wide margin *without training the
+  front-end* (deformation-stability is mathematical, by construction, so can't
+  overfit clinical). But underperforms learned single-lead+sim (E17, 0.742) and
+  lead-masking (0.718) — 44-dim compression loses discriminative detail.
+- **Lesson:** the right adjacent field for ECG modality invariance is
+  **time-warp-stable signal processing (scattering), not speech channel-
+  robustness (E8)** — both target deformation invariance, but scattering
+  preserves time-frequency structure ECG needs; cepstral destroys it. The E8/E18
+  contrast is a clean neg/pos pair. Scattering's value is as a frozen, training-
+  free, modality-robust feature extractor or a *complement* to learned features
+  (the F6/SignalMC-MED complementarity thesis — ensemble queued as E18b).
 
 ---
 
