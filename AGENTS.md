@@ -60,6 +60,14 @@ population/context.
 - No GPU on this host; CPU-only. Keep models modest (~0.5M params, 20 ep on
   ~1200 records is feasible in minutes on 4 cores).
 
+## Pitfalls (recurring — read before launching runs)
+- **mkdir race:** when launching `python3 exp.py > results/<id>/run.log 2>&1`,
+  the shell opens the redirect BEFORE the script creates its output dir → dies
+  instantly with `No such file or directory` (exit 1). ALWAYS prepend
+  `mkdir -p results/<id> &&` in the launch command. Bit us twice on 2026-07-27.
+- Launch long chains as separate background jobs; avoid `(a) & (b) & wait`
+  subshells (dropped a job once).
+
 ## Datasets
 - PTB-XL 100 Hz subset at `~/data/ptbxl/` (downloaded, ~21k records).
   500 Hz subset (`filename_hr`) available for E4.
