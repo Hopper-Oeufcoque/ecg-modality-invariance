@@ -56,6 +56,7 @@
 | E32 | **TENT test-time entropy min (zero-shot lever)** | affine −0.046, full −0.071 | ❌ | **TENT HURTS (both variants, 0-1/5 seeds); entropy-min sharpens confidence around a wrong boundary. 4/4 unsupervised adaptations now fail (AdaBN/CORAL/DANN/TENT). Zero-label adaptation ruled out** |
 | E33 | **target-calibrated domain randomization** | calibrated 0.824 vs hand 0.783 | ✅ | **BREAKS the 0.80 plateau zero-shot: +0.042 (5/5), closes ~57% of gap w/ zero labels. Measure target stats (unlabeled) → build augmentation to COVER target. Label preserved (QRS-band corr 0.966, R-peak 0.976 — raw-Pearson guard was measuring baseline wander, corrected). New best zero-shot recipe** |
 | E33b | **calibrated DR + few-shot combo** | calib+k50 0.874 vs hand+k50 0.836 | ✅ | **the two best levers STACK: calibrated-DR base + 50 labels = 0.874 (vs hand-tuned+50 = 0.836); +100 labels → 0.894 (0.043 from oracle 0.937). Better zero-shot base ~doubles value of same labels. Full ladder: clean 0.68 → calib-zeroshot 0.82 → +50lbl 0.87 → +100lbl 0.89 → oracle 0.94** |
+| E34 | **REAL Apple Watch coverage check (n=20)** | clin→AW 0.253 < cinc→AW 0.477 | ❌⚠️ | **DEEP CAVEAT: real AW is CLEAN & closer to clinical (0.253) than to CinC (0.477); CinC-calibrated DR moved AWAY from real AW (1.136, over-injected baseline wander). Proxy misled the calibration — E33/E33b absolute numbers are vs a mediocre AW proxy. Mechanism sound, target wrong** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -784,6 +785,27 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   package Phase C. E33c = richer coverage to lift the 0.82 zero-shot base; E34 =
   generalization on a cleanly-mapping rhythm. Files:
   `results/33b_calibrated_fewshot/`, `experiments/33b_calibrated_fewshot.py`.
+
+## E34 — REAL Apple Watch coverage check: the proxy misled us (2026-07-27)
+- **Hypothesis (deepest caveat):** everything E26-E33b uses CinC as an AW proxy,
+  and E33 calibrates DR toward CinC. Does CinC-calibrated DR actually cover REAL
+  Apple Watch? Tested on 20 real AW Lead-I (HOME, eval-only, stats only).
+- **Result (mean stat, dist to real AW):** clinical→AW **0.253** < cinc→AW
+  **0.477** < cinc-calibrated-DR→AW **1.136**. Real AW is CLEAN (kurt 9.4,
+  bw_energy 0.127 ≈ clinical 0.120); CinC is noisier (bw 0.256). Calibrated DR
+  pumped bw to 0.511 (4× past real AW) — optimized to the wrong target.
+- **Verdict ❌⚠️:** three findings — (1) clinical is CLOSER to real AW than CinC;
+  (2) CinC is a MEDIOCRE AW proxy on interpretable axes (walks back E6c's 0.247);
+  (3) CinC-calibrated DR moved AWAY from real AW. The calibrated-DR MECHANISM is
+  sound but was calibrated to the wrong distribution.
+- **Lesson:** the E33/E33b absolute numbers (0.82-0.89) are vs a mediocre AW
+  proxy — external validity to real AW is now in question. Real AW being clean
+  echoes E6/E6b (old sim over-degraded); we partly re-made that mistake via CinC.
+  For real AW, a LIGHTER touch is likely better. Relative method ranking
+  (calibrated > hand > clean on CinC) stands; proxy fidelity does not.
+- ⟲ **follow-up:** E35 = recalibrate DR toward REAL AW (full 1000-waveform HOME
+  cohort) + light DR; correct external-validity claims. Files:
+  `results/34_real_aw_coverage/`, `experiments/34_real_aw_coverage.py`.
 
 ---
 

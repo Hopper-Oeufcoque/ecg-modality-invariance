@@ -1,0 +1,154 @@
+{
+  "fs": 100.0,
+  "n_clinical": 277,
+  "n_cinc": 700,
+  "n_real_aw": 40,
+  "profiles": {
+    "clinical": {
+      "kurtosis": [
+        11.798027495411707,
+        7.385308072155469
+      ],
+      "bw_energy": [
+        0.1202126542727202,
+        0.16070933903390613
+      ],
+      "qrs_energy": [
+        0.3799875248096428,
+        0.11170280268170636
+      ],
+      "hf_energy": [
+        0.01868271769364682,
+        0.018081861873169926
+      ],
+      "mid_energy": [
+        0.3116075305968955,
+        0.14227132710211668
+      ]
+    },
+    "cinc_proxy": {
+      "kurtosis": [
+        8.312003701704532,
+        7.379250629426801
+      ],
+      "bw_energy": [
+        0.25557126044032313,
+        0.1758613001937292
+      ],
+      "qrs_energy": [
+        0.26416783180398,
+        0.14117346895746527
+      ],
+      "hf_energy": [
+        0.004452744468161704,
+        0.004635357609252864
+      ],
+      "mid_energy": [
+        0.38422772513312986,
+        0.1229179012192147
+      ]
+    },
+    "real_aw": {
+      "kurtosis": [
+        9.389127984134591,
+        7.380813231518254
+      ],
+      "bw_energy": [
+        0.12663206852507586,
+        0.17020930262635528
+      ],
+      "qrs_energy": [
+        0.3395791886311753,
+        0.182433514218136
+      ],
+      "hf_energy": [
+        0.014355997905088102,
+        0.011235021522018922
+      ],
+      "mid_energy": [
+        0.3538012015715582,
+        0.17224800553647954
+      ]
+    },
+    "calibrated_aug": {
+      "kurtosis": [
+        4.671343972306703,
+        5.762685826877663
+      ],
+      "bw_energy": [
+        0.5106781356838409,
+        0.21152286406509194
+      ],
+      "qrs_energy": [
+        0.20704587546041658,
+        0.10509693545693702
+      ],
+      "hf_energy": [
+        0.009763700283189621,
+        0.009204479543989346
+      ],
+      "mid_energy": [
+        0.1811730362022446,
+        0.11366570045897206
+      ]
+    }
+  },
+  "distances": {
+    "clinical__real_aw": 0.2527448691130689,
+    "cinc_proxy__clinical": 0.7297087775643987,
+    "cinc_proxy__real_aw": 0.47696390845132974,
+    "calibrated_aug__clinical": 1.2705815565592142,
+    "calibrated_aug__cinc_proxy": 0.8625334970617315,
+    "calibrated_aug__real_aw": 1.1364654274390065
+  },
+  "coverage": {
+    "kurtosis": {
+      "covered_within_1std": true,
+      "moved_toward_aw": true,
+      "clinical": 11.798027495411707,
+      "aug": 4.671343972306703,
+      "real_aw": 9.389127984134591
+    },
+    "bw_energy": {
+      "covered_within_1std": false,
+      "moved_toward_aw": true,
+      "clinical": 0.1202126542727202,
+      "aug": 0.5106781356838409,
+      "real_aw": 0.12663206852507586
+    },
+    "qrs_energy": {
+      "covered_within_1std": false,
+      "moved_toward_aw": true,
+      "clinical": 0.3799875248096428,
+      "aug": 0.20704587546041658,
+      "real_aw": 0.3395791886311753
+    },
+    "hf_energy": {
+      "covered_within_1std": true,
+      "moved_toward_aw": true,
+      "clinical": 0.01868271769364682,
+      "aug": 0.009763700283189621,
+      "real_aw": 0.014355997905088102
+    },
+    "mid_energy": {
+      "covered_within_1std": false,
+      "moved_toward_aw": false,
+      "clinical": 0.3116075305968955,
+      "aug": 0.1811730362022446,
+      "real_aw": 0.3538012015715582
+    }
+  },
+  "key_distances": {
+    "clinical_to_real_aw": 0.2527448691130689,
+    "cinc_to_real_aw": 0.47696390845132974,
+    "calibrated_aug_to_real_aw": 1.1364654274390065
+  },
+  "question": "Does CinC-calibrated DR cover the REAL Apple Watch distribution? Is CinC a good AW proxy?",
+  "honesty": [
+    "n=20 real AW recordings (windowed) \u2014 coarse profile only",
+    "stats-based coverage, not full-manifold",
+    "HOME eval-only (NO training)",
+    "500Hz resampled to 100Hz",
+    "license-compliant: distribution analysis only"
+  ]
+}
