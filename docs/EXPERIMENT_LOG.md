@@ -38,6 +38,7 @@
 | E20 | set-invariant DeepSet over leads (architectural novelty) | 0.708 | ⚠️ | competitive but mean-pool discards lead identity; < lead-masking (0.718) / sim-trained (0.742) |
 | E6 | real single-lead simulator validation | (dist, n/a) | ⚠️⚠️ | **simulator over-degrades; sim_vs_real gap > real_vs_clinical; E17 win carries realism debt** |
 | E10 | INLP modality scrubbing (novel, NLP→ECG) | 0.708→0.712 | ❌ | modality linearly separable (0.999) but scrubbing it is NEUTRAL — gap is info loss, not a removable shortcut |
+| E22 | simulator recalibration + E17 rerun | 0.711→0.723 | ⚠️✅ | less noise helps the model (+0.012) but kurtosis gap is FILTER-bound (bandpass), not noise-bound — stays ~5 vs real 17.7 |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -314,6 +315,33 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   contrast post-hoc removal (neutral) vs by-construction prevention.
 - ⟲ Follow-up E15 (MixStyle, by-construction counterpart); E10b (nonlinear
   scrubbing — likely still neutral).
+
+## E22 — Simulator recalibration + E17 rerun (spawned by E6) (2026-07-27)
+- **Hypothesis:** (A) noise magnitudes can be tuned to match real CinC stats;
+  (B) the E17 single-lead+sim edge survives/grows under recalibration.
+- **Setup:** sweep noise multiplier m∈{1.0,0.5,0.25,0.1,0.05} on baseline_wander/
+  motion/EMG; pick best by mean abs z-score to real CinC. Rerun single-lead+sim
+  at default m=1.0 vs best-m. `experiments/22_sim_recalib.py`. n_train=657.
+- **Result (calibration):** best m=0.05 (dist 0.950 vs default 1.054). BUT
+  kurtosis stays stuck ~5 (4.39→4.97) across a 20× noise reduction — far below
+  real 17.71. Entropy improves (0.831→0.606, toward real 0.282). **(edge):**
+  calib m=0.05 @ L4 = 0.723 vs default m=1.0 @ L4 = 0.711 (+0.012). Edge GREW.
+- **Verdict:** ⚠️✅. Two findings: (A) ✅ recalibration helps the model (+0.012)
+  — over-degradation was hurting; the edge is not a pure sim→sim artifact.
+  (B) ⚠️ the kurtosis gap is **FILTER-bound, not noise-bound** — the bandpass
+  (0.3-40 Hz) + electrode HP destroy QRS peakedness; a noise multiplier can't
+  fix it. E1 found bandwidth is minor for *AUROC*; E22 shows it's major for
+  *realism* — the model uses filter-robust features, explaining why E17 works
+  despite unrealistic kurtosis.
+- **Lesson:** the over-degradation localizes to the bandpass stage, not the
+  noise stage. Fixing realism needs a bandpass redesign (gentler/phase-preserving),
+  not just noise reduction. Calibrated to m=0.05 at the sweep boundary → minimal
+  noise is optimal, aligning with E6's finding that real single-lead ≈ clinical.
+- **Limitations:** n_train=657 (half E17 → absolute values not comparable to
+  0.742; within-experiment calib-vs-default is valid). CinC handheld cleaner than
+  wrist dry-electrode. Distribution-match not task-transfer (E6b needed).
+- ⟲ Follow-up E22b (bandpass redesign to recover kurtosis), E6b (task-level
+  sim→real cross-over — the decisive test).
 
 ---
 

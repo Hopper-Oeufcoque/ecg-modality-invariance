@@ -1,0 +1,155 @@
+{
+  "fs": 100.0,
+  "n_train": 657,
+  "n_test": 256,
+  "classes": [
+    "NORM",
+    "MI",
+    "STTC",
+    "CD",
+    "HYP"
+  ],
+  "real_cinc_means": {
+    "baseline_wander": 0.1901177481286991,
+    "sample_entropy": 0.28164279461336234,
+    "kurtosis": 17.712106013659493,
+    "dfa_alpha": 0.9123829682362025
+  },
+  "calibration_sweep": {
+    "m=1.0": {
+      "noise_mult": 1.0,
+      "means": {
+        "baseline_wander": 0.4305661045139905,
+        "sample_entropy": 0.8314217258295333,
+        "kurtosis": 4.385537812842545,
+        "dfa_alpha": 0.8131285853973456
+      },
+      "dist_to_real": {
+        "baseline_wander": 1.2451463414252038,
+        "sample_entropy": 1.6926395709973376,
+        "dfa_alpha": 0.53602758266711,
+        "kurtosis": 0.7420915110188044
+      },
+      "mean_dist_to_real": 1.0539762515271138
+    },
+    "m=0.5": {
+      "noise_mult": 0.5,
+      "means": {
+        "baseline_wander": 0.4198849771848304,
+        "sample_entropy": 0.6816976925757819,
+        "kurtosis": 4.795858037877625,
+        "dfa_alpha": 0.7721098087043974
+      },
+      "dist_to_real": {
+        "baseline_wander": 1.1566264314320749,
+        "sample_entropy": 1.4250847648532945,
+        "dfa_alpha": 0.7120914188492093,
+        "kurtosis": 0.7213471639937125
+      },
+      "mean_dist_to_real": 1.003787444782073
+    },
+    "m=0.25": {
+      "noise_mult": 0.25,
+      "means": {
+        "baseline_wander": 0.4153870439845898,
+        "sample_entropy": 0.6259089702907785,
+        "kurtosis": 4.921971178394722,
+        "dfa_alpha": 0.7589346503956153
+      },
+      "dist_to_real": {
+        "baseline_wander": 1.1233562321666577,
+        "sample_entropy": 1.2695853152779788,
+        "dfa_alpha": 0.7608251308430175,
+        "kurtosis": 0.7148708011947545
+      },
+      "mean_dist_to_real": 0.9671593698706021
+    },
+    "m=0.1": {
+      "noise_mult": 0.1,
+      "means": {
+        "baseline_wander": 0.41332707460154605,
+        "sample_entropy": 0.6084418924607289,
+        "kurtosis": 4.963439705954624,
+        "dfa_alpha": 0.7548783451515537
+      },
+      "dist_to_real": {
+        "baseline_wander": 1.1094555484147581,
+        "sample_entropy": 1.2145729912123668,
+        "dfa_alpha": 0.7748596122172803,
+        "kurtosis": 0.7127281831186132
+      },
+      "mean_dist_to_real": 0.9529040837407545
+    },
+    "m=0.05": {
+      "noise_mult": 0.05,
+      "means": {
+        "baseline_wander": 0.4127835323677821,
+        "sample_entropy": 0.6059345292747107,
+        "kurtosis": 4.97110501657009,
+        "dfa_alpha": 0.7542645954338132
+      },
+      "dist_to_real": {
+        "baseline_wander": 1.1060742960864505,
+        "sample_entropy": 1.206616128310426,
+        "dfa_alpha": 0.7768924547186428,
+        "kurtosis": 0.7123301177831187
+      },
+      "mean_dist_to_real": 0.9504782492246595
+    }
+  },
+  "best_noise_mult": 0.05,
+  "singlelead_sim_rerun": {
+    "default_m1.0": {
+      "noise_mult": 1.0,
+      "L1": {
+        "macro_auroc": 0.7086552912771543,
+        "per_class": [
+          0.7570112179487178,
+          0.5966372425388818,
+          0.778145032051282,
+          0.7941706730769231,
+          0.6173122907699664
+        ]
+      },
+      "L4": {
+        "macro_auroc": 0.711042766528381,
+        "per_class": [
+          0.764823717948718,
+          0.605380411937789,
+          0.7598157051282052,
+          0.7906650641025641,
+          0.6345289335246292
+        ]
+      }
+    },
+    "calib_m0.05": {
+      "noise_mult": 0.05,
+      "L1": {
+        "macro_auroc": 0.7187260101615462,
+        "per_class": [
+          0.742588141025641,
+          0.6259773013871375,
+          0.7729366987179488,
+          0.7855568910256411,
+          0.6665710186513629
+        ]
+      },
+      "L4": {
+        "macro_auroc": 0.7231686574050621,
+        "per_class": [
+          0.7888621794871794,
+          0.6491803278688524,
+          0.7622195512820513,
+          0.7641225961538463,
+          0.6514586322333812
+        ]
+      }
+    }
+  },
+  "e17_reference_L4": 0.742,
+  "honesty": [
+    "single seed",
+    "CinC is handheld (cleaner than wrist dry-electrode) \u2014 matching it may under-model true Apple Watch noise",
+    "calibration matches distribution stats, not task transfer (E6b needed for task-level)"
+  ]
+}
