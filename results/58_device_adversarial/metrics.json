@@ -1,0 +1,65 @@
+{
+  "seeds": 20,
+  "lambda": 0.1,
+  "style_dim": 8,
+  "means": {
+    "clean": 0.7007534216827892,
+    "closed_aug": 0.7419576323787631,
+    "dann": 0.6606121379759982,
+    "dann_style": 0.7067799409100958,
+    "joint_paired": 0.8071667647984849
+  },
+  "stds": {
+    "clean": 0.0483629175761839,
+    "closed_aug": 0.04726209011836635,
+    "dann": 0.04706133694546709,
+    "dann_style": 0.040731368569271224,
+    "joint_paired": 0.022849564274900983
+  },
+  "comparisons": {
+    "closed_aug_vs_clean": {
+      "delta": 0.04120421069597381,
+      "wins": 15,
+      "p": 0.008829542914040965
+    },
+    "dann_vs_clean": {
+      "delta": -0.04014128370679093,
+      "wins": 3,
+      "p": 0.005348192217062547
+    },
+    "dann_style_vs_clean": {
+      "delta": 0.006026519227306587,
+      "wins": 12,
+      "p": 0.657637647085904
+    },
+    "dann_vs_aug": {
+      "delta": -0.08134549440276476,
+      "wins": 3,
+      "p": 3.538616152103893e-05
+    },
+    "dann_style_vs_aug": {
+      "delta": -0.03517769146866722,
+      "wins": 5,
+      "p": 0.019792969436939596
+    },
+    "dann_vs_paired": {
+      "delta": -0.14655462682248682,
+      "wins": 0,
+      "p": 2.30734006626625e-11
+    },
+    "dann_style_vs_paired": {
+      "delta": -0.10038682388838929,
+      "wins": 0,
+      "p": 6.80375551931871e-10
+    }
+  },
+  "honesty": [
+    "watch pool is SJLIFE real AW but UNPAIRED (pairing discarded)",
+    "CinC finger != AW wrist",
+    "AF/NORM easy",
+    "lambda=0.1 a priori",
+    "GRL standard schedule",
+    "single clinical train set",
+    "20 seeds"
+  ]
+}

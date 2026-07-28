@@ -38,7 +38,14 @@ ranks them for exploration. Numbered experiments append to the main log when the
   it's a genuine open question whether it recovers any of the gain WITHOUT correspondence.
 - **CPU:** trivial (32-d features; CORAL is a 32×32 cov, Sinkhorn a 64×64 transport).
 
-### 🥈 N2 — Content/style disentanglement with a device-adversarial style branch
+### 🥈 N2 — Content/style disentanglement with a device-adversarial style branch → E58 ❌ DONE
+- **RESULT (E58, 20 seeds):** FAILS, triangulates E57. Plain DANN (GRL device
+  discriminator on whole feature) drops BELOW clean floor (0.661, −0.040, p=0.005) —
+  adversarial force destroys pathology (E50 failure mode via a new objective). Content/style
+  split (adversary → 8-d style stub, classifier → 24-d content) repairs to neutral (0.707≈clean,
+  p=0.66) but adds nothing; both ≪ paired 0.807 (0/20). Two opposite unpaired approaches
+  (E57 passive moment/OT → ⅓ gain; E58 active adversarial → zero/negative) both miss calibration.
+  Correspondence (E51b) is the mechanism; unpaired invariance can't manufacture it. N2 killed.
 - **Why:** directly attacks the **in-band residual wall** (E43/E48 said the remaining
   gap is information-bound for augmentation). Split the latent into `content`
   (label-predictive, device-invariant via gradient-reversal) and `style`
