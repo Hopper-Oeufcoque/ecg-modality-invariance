@@ -1,0 +1,31 @@
+{
+  "seeds": 20,
+  "task": "Normal-vs-Other (morphological, harder)",
+  "means": {
+    "clean": 0.5605244988055428,
+    "closed_loop": 0.5583273727616817,
+    "oracle": 0.7527528248288002
+  },
+  "stds": {
+    "clean": 0.02197832828051944,
+    "closed_loop": 0.016786724850335125,
+    "oracle": 0.01455440959647881
+  },
+  "delta": -0.002197126043861031,
+  "wins": 8,
+  "p": 0.6743443756715516,
+  "dz": -0.0954284084442273,
+  "compare_AF_E42": {
+    "delta": 0.041,
+    "p": 0.009
+  },
+  "oracle": 0.7527528248288002,
+  "target_bw": 0.2624157997268596,
+  "honesty": [
+    "CinC O is heterogeneous catch-all (weak label)",
+    "PTB-XL abnormal != CinC O taxonomy (approx mapping)",
+    "CinC finger != AW wrist",
+    "single clinical train set",
+    "AF excluded from clinical train to keep it morphological"
+  ]
+}

@@ -68,6 +68,7 @@
 | E43 | **multi-axis closed-loop (bw+hf) vs single-axis (20 seeds)** | bw_hf 0.735 vs bw 0.742, Δ−0.007 p=0.67 | ❌✅ | **HF axis is a NO-OP: closed-loop set hf_amp=0.000 because target hf_energy=0.005 (CinC has ~no HF). Adding HF neutral-to-slightly-negative (−0.007, n.s.). Single-axis bw remains winner (+0.041 reproduced exactly). END-TO-END confirmation of E37/E38 physics: real single-lead is CLEAN/low-pass, gap is baseline-wander NOT HF. qrs/mid axes are in-band → can't perturb without breaking morphology (likely a ceiling, not a lever)** |
 | E44 | **2nd-device replication: Icentia chest-patch (20 seeds)** | clean 0.942 → closed 0.939 (−0.003, p=0.82); target bw 0.016 | ⚠️ | **DOSE-RESPONSE: calibration helps ∝ the gap. Icentia chest-patch ≈ clinical-clean (bw 0.016) → NO gap → clean already transfers 0.942 → calibration correctly idles (−0.003, no harm). vs CinC dry-finger (bw 0.25, big gap) → +0.041. Method is GAP-PROPORTIONAL, targets baseline-wander specifically. AW = dry wrist, LARGE gap (SJLIFE bw 0.20) → predicts calibration SHOULD help on AW. RED FLAG: oracle=1.000 (21 patients, within-patient leakage) → Icentia absolutes optimistic, treat as qualitative** |
 | E46 | **minimal-tuning bridge: calibration + k real labels (10 seeds)** | closed+50=0.855 reaches 0.85; clean never does (k≤100); Δ shrinks 0.034→0.010 | ✅ | **Calibration & labels are SUBSTITUTES: closed-loop lift is biggest at k=0 (+0.034) and shrinks as labels grow (k=100 +0.010). Worth ~10-15 free labels in scarce regime. closed+50→0.855 crosses 0.85 (clean+100 only 0.845). North-star pipeline: calibrate-on-unlabeled + ~50 real labels. HONEST: both plateau ~0.85 << oracle 0.923 — tiny-k fine-tune ≠ near-oracle; last 0.07 needs many more labels. CinC≠wrist; AF/NORM easy** |
+| E47 | **HARDER morphological task (Normal-vs-Other, 20 seeds)** | closed−clean −0.002 p=0.67; clean 0.561, oracle only 0.753 | ⚠️❌ | **SCOPES THE METHOD: calibration lift is RHYTHM-SPECIFIC — vanishes on morphological task (−0.002 vs AF's +0.041), same device/gap. Wander-calibration helps rhythm/HRV robustness, not P/QRS/T shape (in-band, untouched). WORSE: clinical→real barely transfers here at all (clean 0.561≈chance, oracle only 0.753). Bounds ALL prior wins (E41/E42/E46) to rhythm regime. Matches clinical lit: single-lead validated for AF, not morphology. Caveat: CinC 'O' weak catch-all label + taxonomy mismatch inflates difficulty** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1155,6 +1156,34 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   value is the zero/low-label regime. CinC finger ≠ AW wrist; AF/NORM easy;
   tiny-k high variance (E30). Files: `results/46_fewshot_bridge/`,
   `experiments/46_fewshot_bridge.py`.
+
+---
+
+## E47 — Harder morphological task: calibration is rhythm-specific (2026-07-27)
+- **Hypothesis (testing E31's warning):** the calibration lift generalizes beyond
+  the easy AF/rhythm task to a morphological one (Normal-vs-Other).
+- **Setup:** train PTB-XL Lead-I NORM vs morphological-abnormal (MI/STTC/CD/HYP,
+  AF excluded); test real CinC N-vs-O; calibrate to unlabeled CinC bw. 20 seeds.
+- **Result:** clean 0.561 · closed_loop 0.558 · oracle 0.753. closed−clean =
+  **−0.002, 8/20, p=0.67 → no benefit** (vs AF's +0.041, p=0.009).
+- **Two findings:** (1) **Calibration is RHYTHM-SPECIFIC** — the lift vanishes on
+  morphology despite the same device/gap (target bw 0.262). Wander-calibration
+  helps a rhythm/HRV decision stay modality-robust; it does nothing for P/QRS/T
+  shape, which lives in the in-band QRS/mid frequencies calibration deliberately
+  leaves untouched. (2) **Clinical→real barely transfers here at all** — clean is
+  near-chance (0.561) and even the oracle is only 0.753; the task is intrinsically
+  hard on real single-lead + taxonomy mismatch (PTB-XL abnormal ≠ CinC "O").
+- **Verdict ⚠️❌ (scopes the method):** closed-loop calibration is a RHYTHM-TASK
+  tool, not general modality-invariance. Neither helps nor hurts on morphology.
+  Bounds all prior positives (E41/E42/E46) to the rhythm regime. Consistent with
+  clinical literature (single-lead wearables validated for AF, not morphological
+  diagnosis).
+- **Honest flags:** CinC "O" is a weak heterogeneous catch-all; PTB-XL/CinC
+  taxonomy mismatch inflates difficulty → E47 can't fully separate "no
+  calibration benefit" from "task just hard + mislabeled". A same-taxonomy
+  labeled single-lead morphological set would be needed to isolate modality-shift.
+  CinC finger ≠ AW wrist; single clinical train set. Files:
+  `results/47_harder_task/`, `experiments/47_harder_task.py`.
 
 ---
 
