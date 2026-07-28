@@ -75,6 +75,7 @@
 | E51 | **LABEL-ANCHORED joint align+classify (20 seeds) ✅CONFIRMED** | joint 0.807 (+0.106 vs clean, +0.065 vs aug, 20/20); joint_aug 0.820 (+0.078 vs aug, 20/20) | ✅✅ | **FIRST representation method to BEAT calibration — huge unanimous margin (joint_aug 0.820 = best zero-real-label transfer yet, closes ~52% of clean→oracle gap). CE anchor (per-step CE + λ·InfoNCE on SJLIFE pairs) prevents the E50 info-destruction. CONFIRMED by E51b: gain is genuine same-patient cross-modality invariance (not generic SSL regularization). The E48→E50 negatives identified the failure mode whose fix makes this work.** |
 | E53 | **Does alignment break the rhythm boundary? Morphology test (20 seeds)** | joint 0.594 (+0.034 vs clean, 20/20, p=9e-9); calibration null (−0.002) | ✅ | **ALIGNMENT IS MORE GENERAL THAN CALIBRATION. On E47's morphological task (N-vs-O) where calibration is NULL (−0.002, reproduces E47), alignment delivers a real unanimous +0.034 (20/20, p=9e-9). Smaller than AF's +0.106 (morphology intrinsically hard: oracle only 0.750; CinC-O weak catch-all label) but categorically ≠ calibration's zero. WHY: calibration perturbs one out-of-band input axis (rhythm only); alignment works in FEATURE space forcing same-content→same-features across modalities incl. in-band morphology. Broadens the method beyond rhythm — more AW downstream tasks reachable.** |
 | E51b | **mechanism control: shuffled-pair + self-calibrated-view (20 seeds)** | joint 0.807 vs shuffled 0.706 (Δ+0.101, p=3e-10); selfclin 0.742 (=calibration) | ✅✅ | **DECISIVE: (1) SHUFFLED pairs (clinical↔different-patient watch) give NOTHING (0.706≈clean 0.701, p=0.76) → generic aux-SSL regularization hypothesis FALSIFIED. (2) SELF-calibrated view (no watch data) reproduces calibration EXACTLY (0.742) and no more → augmentation-consistency ≠ the extra gain. (3) Only CORRECT real pairing gives 0.807 (+0.101 vs shuffled, 20/20, p=3e-10) → same-patient cross-modality CORRESPONDENCE is the mechanism. E51 win = real modality invariance from real paired hardware. Confirms & promotes E51.** |
+| E54 | **λ/temp sensitivity sweep of E51 (12 cells × 10 seeds)** | ALL 12/12 cells beat calibration + clean; plateau 0.80–0.82; best λ=0.3/temp=0.1 → 0.819 | ✅ | **HEADLINE IS ROBUST, not a lucky point. Every hyperparameter cell beats calibration (0.737) and clean (0.701); central region λ∈{0.1,0.3}×all temps sits 0.799–0.819. Clear U-shape in λ: 0.03 too weak (0.76, high var), 0.1–0.3 sweet spot (0.80–0.82), 1.0 alignment starts to overwhelm CE (0.79, lowest var = E50 failure mode reasserting but CE anchor holds). temp 2nd-order (≤0.017). Default near-optimal; light tune to λ=0.3 buys +0.014. Deployable without careful tuning.** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1372,6 +1373,30 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   morphology intrinsically hard (oracle 0.750); 3 devices; λ/temp a-priori; single
   clinical train set; 20 seeds. Files: `results/53_align_morphology/`,
   `experiments/53_align_morphology.py`.
+
+---
+
+## E54 — λ/temp sensitivity of the E51 headline: robust plateau (2026-07-27)
+- **Hypothesis:** E51's win used λ=0.1/temp=0.1 a-priori. Confirm it's a robust
+  plateau, not a fragile lucky point. Sweep λ∈{0.03,0.1,0.3,1.0}×temp∈{0.05,0.1,0.2}.
+- **Setup (10 seeds/cell, AF task):** seed-matched clean (0.701) + calibration (0.737)
+  refs; 12 joint cells with parameterized λ and InfoNCE temp.
+- **Result:** **ALL 12/12 cells beat calibration AND clean.** Central region
+  λ∈{0.1,0.3}×all temps = 0.799–0.819; best λ=0.3/temp=0.1 → 0.819; default
+  λ=0.1/temp=0.1 → 0.805 (reproduces E51 0.807@20 within noise); worst λ=0.03/temp=0.2
+  → 0.758 (still +0.021 over calibration).
+- **Verdict ✅ (robust plateau — headline confirmed):** the win is not
+  hyperparameter-fragile. Clear U-shape in λ: 0.03 too weak (barely aligns, high var
+  ~0.035); 0.1–0.3 sweet spot (0.80–0.82); 1.0 alignment starts to overwhelm CE (mean
+  dips to ~0.79, lowest var ~0.016 — the E50 info-destruction failure mode beginning to
+  reassert, but the CE anchor keeps it beating calibration). Temp is 2nd-order (≤0.017
+  within each λ). Variance shrinks monotonically with λ (regularizer footprint), but
+  mean gain peaks at moderate λ.
+- **Consequence:** deployable WITHOUT careful tuning — anything in λ∈[0.1,0.3],
+  temp∈[0.05,0.2] lands near 0.81. Strengthens the deployability claim.
+- **Honest flags:** 10 seeds/cell (vs 20 in E51); CinC finger ≠ AW wrist; AF/N easy;
+  single clinical train set; coarse 4×3 grid; 3-device caveat. Files:
+  `results/54_lambda_temp_sweep/`, `experiments/54_lambda_temp_sweep.py`.
 
 ---
 

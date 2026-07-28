@@ -185,3 +185,4 @@ train clinical Lead-I with the calibrated augmentation → (optional) fine-tune 
 - E51 `results/51_label_anchored_align/` — **HEADLINE: label-anchored alignment beats calibration, 0.820 (+0.078), 20/20**
 - E51b `results/51b_align_control/` — control CONFIRMS E51 is real cross-modality invariance (shuffled→null, p=3e-10)
 - E53 `results/53_align_morphology/` — alignment generalizes beyond rhythm: +0.034 on morphology where calibration is null
+- E54 `results/54_lambda_temp_sweep/` — headline robust: 12/12 λ×temp cells beat calibration (plateau 0.80–0.82)

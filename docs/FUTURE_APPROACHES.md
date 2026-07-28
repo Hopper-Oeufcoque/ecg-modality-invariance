@@ -56,11 +56,11 @@
   intrinsically hard: oracle only 0.750; CinC-O weak label). **Alignment is more
   general than calibration** — feature-space, not one input axis. See E53 log entry.
 
-### 🟠 E54 — λ / temperature sensitivity of E51
-- **Why here:** λ=0.1, temp=0.1 were a-priori, untuned — the 0.820 may not be optimal.
-  A small sweep (λ∈{0.03,0.1,0.3,1.0}, temp∈{0.05,0.1,0.2}) maps robustness and
-  whether the win is fragile or broad. **Difficulty:** low. **Value:** medium — shows
-  the effect isn't a lucky hyperparameter, and may push past 0.820.
+### 🟠 ~~E54 — λ / temperature sensitivity of E51~~ (RUN ✅)
+- **Status:** ✅ ran 2026-07-27. ALL 12/12 grid cells beat calibration + clean;
+  robust plateau 0.80–0.82 across λ∈{0.1,0.3}×all temps. U-shape in λ (0.03 too weak,
+  1.0 overwhelms CE). Best λ=0.3/temp=0.1 → 0.819 (+0.014 over default). Headline is
+  NOT a lucky point; deployable without careful tuning. See E54 log entry.
 
 ### 🟠 E55 — Few-shot stacking on the E51 champion (best deployable recipe)
 - **Why here:** E46 showed calibration + ~50 real labels → 0.855. Does label-anchored
