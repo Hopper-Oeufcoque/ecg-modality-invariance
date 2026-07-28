@@ -49,15 +49,12 @@
   p=3e-10), NOT generic SSL regularization. First representation method to beat
   calibration. Now the project headline (see README + EXPERIMENT_SYNTHESIS).
 
-### 🔴 E53 — Rhythm-breadth / morphology test of the E51 WIN (highest priority)
-- **Why here:** E51 is confirmed on AF only. E47 showed *calibration* is
-  rhythm-specific — does label-anchored ALIGNMENT break that boundary, or share it?
-  This is the single most important open question: if alignment helps morphology too,
-  the method is far more general than calibration.
-- **How:** rerun E51 joint arms on the E47 harder task (PTB-XL NORM-vs-morphological
-  → CinC N-vs-O). Compare joint vs clean vs calibration on morphology.
-- **Difficulty:** low (compose E51 + E47 harnesses). **Value:** very high — bounds the
-  generality of the headline result.
+### 🔴 ~~E53 — Rhythm-breadth / morphology test of the E51 WIN~~ (RUN ✅)
+- **Status:** ✅ ran 2026-07-27. On E47's morphological task (N-vs-O) where
+  calibration is NULL (−0.002), alignment gives **+0.034 (20/20, p=9e-9)** — real,
+  unanimous, categorically ≠ calibration's zero. Smaller than AF's +0.106 (morphology
+  intrinsically hard: oracle only 0.750; CinC-O weak label). **Alignment is more
+  general than calibration** — feature-space, not one input axis. See E53 log entry.
 
 ### 🟠 E54 — λ / temperature sensitivity of E51
 - **Why here:** λ=0.1, temp=0.1 were a-priori, untuned — the 0.820 may not be optimal.

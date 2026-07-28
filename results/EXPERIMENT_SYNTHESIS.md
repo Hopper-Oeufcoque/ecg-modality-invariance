@@ -36,6 +36,7 @@ Best zero-real-label transfer to date — closes ~52% of the clean→oracle(0.93
 | **Label-equivalent value (calibration)** | worth ~10–15 real labeled examples | E46 |
 | **Gap-proportional (calibration)** | helps on high-wander dry-electrode (CinC); idles on clean chest-patch (Icentia) | E42 vs E44 |
 | **Rhythm-specific (calibration)** | vanishes on morphological task (−0.002) | E47 |
+| **Alignment generalizes BEYOND rhythm** | +0.034 on morphology (20/20, p=9e-9) where calibration is null; feature-space not input-space | E53 |
 | **Augmentation ceiling** | ~+0.041; residual in-band. Info-bound: UNANCHORED invariance hits the same wall (E48) or worse (E49/E50) — the label anchor (E51) is what breaks past it | E43, E48–E51 |
 | **Oracle (train-on-real, AF)** | 0.93 | E42 |
 
@@ -183,3 +184,4 @@ train clinical Lead-I with the calibrated augmentation → (optional) fine-tune 
 - E50 `results/50_sjlife_align/` — real-paired contrastive pretraining hurts (alignment ≠ useful invariance; needs label anchor)
 - E51 `results/51_label_anchored_align/` — **HEADLINE: label-anchored alignment beats calibration, 0.820 (+0.078), 20/20**
 - E51b `results/51b_align_control/` — control CONFIRMS E51 is real cross-modality invariance (shuffled→null, p=3e-10)
+- E53 `results/53_align_morphology/` — alignment generalizes beyond rhythm: +0.034 on morphology where calibration is null

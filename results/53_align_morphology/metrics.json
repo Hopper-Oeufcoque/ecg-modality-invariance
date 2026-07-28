@@ -1,0 +1,42 @@
+{
+  "seeds": 20,
+  "task": "Normal-vs-Other (morphological, harder)",
+  "means": {
+    "clean": 0.5605244988055428,
+    "closed_aug": 0.5583273727616817,
+    "joint": 0.5943463715128947,
+    "oracle": 0.7502534770712543
+  },
+  "stds": {
+    "clean": 0.02197832828051944,
+    "closed_aug": 0.016786724850335125,
+    "joint": 0.017812652219745578,
+    "oracle": 0.02104672184240597
+  },
+  "comparisons": {
+    "closed_aug_vs_clean": {
+      "delta": -0.002197126043861031,
+      "wins": 8,
+      "p": 0.6743443756715516
+    },
+    "joint_vs_clean": {
+      "delta": 0.033821872707351985,
+      "wins": 20,
+      "p": 9.29467091286589e-09
+    },
+    "joint_vs_aug": {
+      "delta": 0.03601899875121302,
+      "wins": 19,
+      "p": 1.785682866757088e-08
+    }
+  },
+  "compare_AF_E51_joint_vs_clean": 0.106,
+  "honesty": [
+    "CinC O heterogeneous catch-all (weak label)",
+    "PTB-XL abnormal != CinC O taxonomy",
+    "3 devices",
+    "lambda=0.1/temp=0.1 a priori",
+    "single clinical train set",
+    "AF excluded from clinical train"
+  ]
+}

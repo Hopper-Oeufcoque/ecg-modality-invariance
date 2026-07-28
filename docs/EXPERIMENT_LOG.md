@@ -73,6 +73,7 @@
 | E49 | **12-lead→1-lead clinical distillation (Hinton KD, 20 seeds)** | distill 0.682 (−0.060 vs aug, p=0.0005); distill_aug 0.726 (−0.016 vs aug) | ❌❌ | **INFORMATION SOURCE MATTERS: distilling a 12-lead CLINICAL teacher HURTS real transfer — distill drops BELOW clean floor (−0.019) and far below augmentation (−0.060, p=0.0005). Teacher (train-acc 0.994, overfit) encodes clinical-modality decision boundaries → KD pulls student TOWARD clinical distribution = wrong direction. Calibration partly rescues (distill_aug 0.726) but fights the distill pull, still < pure aug. SHARPENS E48: extra clinical info is modality-ENTANGLED; injecting it imports modality bias, not invariant structure. Useful aux info must be watch-anchored/modality-invariant → pivot to real paired hardware (SJLIFE, E50)** |
 | E50 | **SJLIFE real-paired contrastive invariance pretraining (20 seeds)** | sjlife_ft 0.669 (−0.073 vs aug, p=2e-5); sjlife_ft_aug 0.735 (−0.007 vs aug, n.s.) | ❌❌ | **ALIGNMENT ≠ USEFUL INVARIANCE: InfoNCE on 243 real clinical↔watch pairs CONVERGED (4.01→0.63) but transfer got WORSE — sjlife_ft below clean floor (−0.032), far below aug (−0.073). Invariance-by-information-DESTRUCTION: tiny paired set + trivial same-patient objective → encoder collapses to low-level/patient-id features that match across modalities, DISCARDING pathology morphology. sjlife_ft_aug≈aug (overwrites init, adds nothing). E48+E49+E50 ALL fail to beat calibration → representation engineering NOT anchored to the label trades away discriminative content. Next: label-preserving constraint (E51 supervised-contrastive/joint pretrain+classify)** |
 | E51 | **LABEL-ANCHORED joint align+classify (20 seeds) ✅CONFIRMED** | joint 0.807 (+0.106 vs clean, +0.065 vs aug, 20/20); joint_aug 0.820 (+0.078 vs aug, 20/20) | ✅✅ | **FIRST representation method to BEAT calibration — huge unanimous margin (joint_aug 0.820 = best zero-real-label transfer yet, closes ~52% of clean→oracle gap). CE anchor (per-step CE + λ·InfoNCE on SJLIFE pairs) prevents the E50 info-destruction. CONFIRMED by E51b: gain is genuine same-patient cross-modality invariance (not generic SSL regularization). The E48→E50 negatives identified the failure mode whose fix makes this work.** |
+| E53 | **Does alignment break the rhythm boundary? Morphology test (20 seeds)** | joint 0.594 (+0.034 vs clean, 20/20, p=9e-9); calibration null (−0.002) | ✅ | **ALIGNMENT IS MORE GENERAL THAN CALIBRATION. On E47's morphological task (N-vs-O) where calibration is NULL (−0.002, reproduces E47), alignment delivers a real unanimous +0.034 (20/20, p=9e-9). Smaller than AF's +0.106 (morphology intrinsically hard: oracle only 0.750; CinC-O weak catch-all label) but categorically ≠ calibration's zero. WHY: calibration perturbs one out-of-band input axis (rhythm only); alignment works in FEATURE space forcing same-content→same-features across modalities incl. in-band morphology. Broadens the method beyond rhythm — more AW downstream tasks reachable.** |
 | E51b | **mechanism control: shuffled-pair + self-calibrated-view (20 seeds)** | joint 0.807 vs shuffled 0.706 (Δ+0.101, p=3e-10); selfclin 0.742 (=calibration) | ✅✅ | **DECISIVE: (1) SHUFFLED pairs (clinical↔different-patient watch) give NOTHING (0.706≈clean 0.701, p=0.76) → generic aux-SSL regularization hypothesis FALSIFIED. (2) SELF-calibrated view (no watch data) reproduces calibration EXACTLY (0.742) and no more → augmentation-consistency ≠ the extra gain. (3) Only CORRECT real pairing gives 0.807 (+0.101 vs shuffled, 20/20, p=3e-10) → same-patient cross-modality CORRESPONDENCE is the mechanism. E51 win = real modality invariance from real paired hardware. Confirms & promotes E51.** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
@@ -1344,6 +1345,33 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   measurement); AF/rhythm only (E51 morphology untested — next); λ/temp a-priori (not
   tuned, so maybe not optimal); n=243; 20 seeds. Files: `results/51b_align_control/`,
   `experiments/51b_align_control.py`.
+
+---
+
+## E53 — Does label-anchored alignment break the RHYTHM-only boundary? (2026-07-27)
+- **Hypothesis:** E47 showed calibration is rhythm-specific (null on morphology). E51
+  alignment is the confirmed win but only tested on AF. Does alignment also help
+  MORPHOLOGY (→ more general than calibration) or share the same rhythm wall?
+- **Setup (20 seeds):** E47's harder task — train PTB-XL Lead-I NORM vs morphological-
+  abnormal (MI/STTC/CD/HYP, AF excluded); test real CinC N-vs-O. Arms: clean · closed_aug
+  (calibration) · joint (E51 align+classify on SJLIFE pairs) · oracle (train-on-real).
+- **Result:** clean 0.561 · closed_aug 0.558 · **joint 0.594** · oracle 0.750.
+  closed_aug−clean −0.002 (p=0.67, reproduces E47 null); **joint−clean +0.034 (20/20,
+  p=9e-9)**; joint−aug +0.036 (19/20, p=2e-8). AF was +0.106; morphology +0.034.
+- **Verdict ✅ (alignment is MORE GENERAL than calibration):** on the exact task where
+  calibration is null, alignment delivers a real unanimous +0.034. Smaller than AF's
+  +0.106 but categorically ≠ calibration's zero.
+- **Why:** calibration perturbs one out-of-band input axis (baseline-wander) → only
+  helps rhythm/HRV. Alignment works in FEATURE space, forcing same-cardiac-content →
+  same-features across modalities regardless of band → reaches in-band morphology too.
+  Smaller lift because single-lead morphology is intrinsically weak (oracle only 0.750)
+  and CinC-O is a noisy catch-all — both cap the measurable ceiling.
+- **Consequence:** the confirmed method is not rhythm-bound like calibration; it
+  broadens the set of Apple-Watch downstream tasks reachable with zero target labels.
+- **Honest flags:** CinC-O heterogeneous catch-all; PTB-XL abnormal ≠ CinC-O taxonomy;
+  morphology intrinsically hard (oracle 0.750); 3 devices; λ/temp a-priori; single
+  clinical train set; 20 seeds. Files: `results/53_align_morphology/`,
+  `experiments/53_align_morphology.py`.
 
 ---
 
