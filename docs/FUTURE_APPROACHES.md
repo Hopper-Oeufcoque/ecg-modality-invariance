@@ -15,6 +15,63 @@
 
 ---
 
+## ═══ REAL-DATA ERA BACKLOG (E38+, current) ═══
+
+> Everything below the next divider is **simulator-era** (E1–E23) and largely
+> superseded — the simulator over-degrades (E6) and sim-training hurts real
+> transfer (E6b). Kept for provenance. The live backlog is here.
+>
+> **Where we are (post-E48):** closed-loop calibration gives +0.041 zero-label on
+> real CinC AF (E42), gap-proportional (E44), rhythm-specific (E47). The +0.041
+> augmentation ceiling is **information-bound** — a learned invariance loss hits
+> the same wall (E48). So the frontier is **information injection**, not better
+> invariance objectives.
+
+### 🔴 E49 — 12-lead→1-lead distillation (RUNNING)
+- **Status:** 🔄 running. Train a 12-lead teacher on clinical PTB-XL (train-acc
+  0.994), distil (Hinton KD) into a single-lead student that only sees Lead-I.
+  Arms: clean / closed_aug / distill / distill+aug on real CinC, 20 seeds. Tests
+  whether multi-lead clinical structure is information the augmentation ceiling
+  can't reach, and whether it **stacks** with calibration.
+
+### 🔴 E50 — SJLIFE paired-hardware feature alignment (the untapped real asset)
+- **Why here:** SJLIFE is our ONLY real paired clinical+watch dataset (243
+  patients, same person both modalities). We've only used it to *measure* the
+  modality profile (E38). It can do much more: learn/validate a **modality
+  alignment** (clinical-Lead-I features → watch features) directly on real pairs,
+  no disease labels needed. If aligning collapses the real clinical↔watch feature
+  gap, that's a modality-invariant encoder grounded in real hardware — exactly
+  the north-star "invariant features."
+- **How:** encode both modalities with the shared backbone; align paired
+  embeddings via CORAL / Sinkhorn-OT / paired-contrastive (same patient = positive
+  pair). Metric: does the paired feature-distance drop, and does a classifier
+  trained on aligned clinical features transfer better to the watch-side
+  representation? Unsupervised — uses the pairing as the only supervision.
+- **Difficulty:** medium. **Value:** high — first use of real paired hardware for
+  invariance, not just profiling.
+
+### 🔴 E51 — Distillation + few-shot stacking (conditional on E49)
+- **Why here:** if E49 distillation adds real information, E46 showed labels are
+  the proven closer. The combo question: does teacher-distillation + ~50 real
+  labels beat calibration + 50 labels? i.e. do the two information sources
+  (multi-lead structure + real labels) stack toward oracle?
+- **How:** E46 few-shot curve (k=0/25/50/100) with distilled student as the base.
+- **Difficulty:** low (reuse E46 harness). **Value:** high — maps the best
+  achievable recipe under a realistic label budget.
+
+### 🟠 E52 — Beyond-AF rhythm breadth (flutter / PVC / PAC)
+- **Why here:** E47 showed the lift is rhythm-specific but only tested AF vs a
+  morphological task. Does the rhythm-transfer claim generalize to *other*
+  arrhythmias? Icentia has beat-level flutter/PVC labels (mine more patients,
+  patient-disjoint to avoid E44's leakage).
+- **How:** mine a patient-disjoint flutter/PVC cohort; repeat the E42 calibration
+  test. **Difficulty:** medium (mining + leakage control). **Value:** medium-high
+  — bounds the generality of the one positive result we have.
+
+---
+
+## ═══ SIMULATOR-ERA BACKLOG (E1–E23, largely superseded) ═══
+
 ## 🔴 ~~E4 — 500 Hz rerun to surface the bandwidth axis~~ (RUN — directional, small-N)
 - **Category:** infrastructure / honest rerun
 - **Status:** ✅ ran 2026-07-27 (directional, n=122/63 due to partial 500 Hz
