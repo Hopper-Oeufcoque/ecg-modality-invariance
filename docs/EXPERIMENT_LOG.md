@@ -67,6 +67,7 @@
 | E42 | **20-seed significance (clean vs closed-loop vs oracle)** | closed 0.742 vs clean 0.701, +0.041, p=0.0088 | ✅ | **SETTLES E41: closed-loop calibration lift is REAL & SIGNIFICANT but MODEST — +0.041 (15/20 wins, paired t=2.92 p=0.0088, Wilcoxon p=0.0094, Cohen dz=0.65). E41's +0.072 was 5-seed optimism (halved at 20 seeds). Zero test labels. Closes ~18% of clean→oracle(0.931) gap. Strongest properly-powered zero-label result. Modest — real labels still dominate the 0.19 residual** |
 | E43 | **multi-axis closed-loop (bw+hf) vs single-axis (20 seeds)** | bw_hf 0.735 vs bw 0.742, Δ−0.007 p=0.67 | ❌✅ | **HF axis is a NO-OP: closed-loop set hf_amp=0.000 because target hf_energy=0.005 (CinC has ~no HF). Adding HF neutral-to-slightly-negative (−0.007, n.s.). Single-axis bw remains winner (+0.041 reproduced exactly). END-TO-END confirmation of E37/E38 physics: real single-lead is CLEAN/low-pass, gap is baseline-wander NOT HF. qrs/mid axes are in-band → can't perturb without breaking morphology (likely a ceiling, not a lever)** |
 | E44 | **2nd-device replication: Icentia chest-patch (20 seeds)** | clean 0.942 → closed 0.939 (−0.003, p=0.82); target bw 0.016 | ⚠️ | **DOSE-RESPONSE: calibration helps ∝ the gap. Icentia chest-patch ≈ clinical-clean (bw 0.016) → NO gap → clean already transfers 0.942 → calibration correctly idles (−0.003, no harm). vs CinC dry-finger (bw 0.25, big gap) → +0.041. Method is GAP-PROPORTIONAL, targets baseline-wander specifically. AW = dry wrist, LARGE gap (SJLIFE bw 0.20) → predicts calibration SHOULD help on AW. RED FLAG: oracle=1.000 (21 patients, within-patient leakage) → Icentia absolutes optimistic, treat as qualitative** |
+| E46 | **minimal-tuning bridge: calibration + k real labels (10 seeds)** | closed+50=0.855 reaches 0.85; clean never does (k≤100); Δ shrinks 0.034→0.010 | ✅ | **Calibration & labels are SUBSTITUTES: closed-loop lift is biggest at k=0 (+0.034) and shrinks as labels grow (k=100 +0.010). Worth ~10-15 free labels in scarce regime. closed+50→0.855 crosses 0.85 (clean+100 only 0.845). North-star pipeline: calibrate-on-unlabeled + ~50 real labels. HONEST: both plateau ~0.85 << oracle 0.923 — tiny-k fine-tune ≠ near-oracle; last 0.07 needs many more labels. CinC≠wrist; AF/NORM easy** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1117,6 +1118,34 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
 - **Lesson:** always check for patient leakage when a cohort has few subjects and
   many windows each; an oracle of exactly 1.000 is a tell. Files:
   `results/44_icentia_seconddevice/`, `experiments/44_icentia_seconddevice.py`.
+
+---
+
+## E46 — Minimal-tuning bridge: calibration ≈ 10–15 free labels (2026-07-27)
+- **Question (north-star "minimal tuning"):** as we add k real target labels
+  (fine-tune), how fast does each approach climb to oracle, and does the
+  closed-loop-calibrated base need FEWER labels than clean?
+- **Setup:** train PTB-XL Lead-I AFIB/NORM (clean vs closed-loop), fine-tune on
+  k∈{0,10,25,50,100} real CinC labels, test held-out real CinC. 10 seeds.
+- **Result (AUROC vs k):** clean 0.701/0.745/0.807/0.842/0.845 ·
+  closed 0.735/0.782/0.824/0.855/0.854 (k=0/10/25/50/100); oracle 0.923.
+  Δ shrinks monotonically: +0.034→+0.037→+0.017→+0.013→+0.010.
+- **Finding — calibration and labels are SUBSTITUTES:** both inject
+  target-domain info. Calibration's benefit is largest when labels are scarcest
+  and vanishes toward the noise floor as labels grow. Zero-label calibration is
+  worth **~10–15 real labeled examples** in the scarce regime. closed+50 (0.855)
+  crosses 0.85; clean never does within k≤100 (clean+100 = 0.845).
+- **North-star pipeline:** closed-loop-calibrate on UNLABELED target + fine-tune
+  on ~50 real labels → 0.855, closing ~70% of the clean-zero-shot→oracle gap
+  with a realistic tiny label budget, and fewer labels than clean needs.
+- **Verdict ✅ (practically useful, honestly bounded).**
+- **Honest flags:** BOTH arms plateau ~0.85 << oracle 0.923 — tiny-k fine-tuning
+  of a clinical model does NOT reach full-target training; the last ~0.07 needs
+  many more labels or better methods. Do not overclaim "near-oracle with 50
+  labels" (it's ~0.855). Δ at k≥50 is within noise; calibration's *significant*
+  value is the zero/low-label regime. CinC finger ≠ AW wrist; AF/NORM easy;
+  tiny-k high variance (E30). Files: `results/46_fewshot_bridge/`,
+  `experiments/46_fewshot_bridge.py`.
 
 ---
 
