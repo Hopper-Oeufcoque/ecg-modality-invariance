@@ -1,129 +1,140 @@
-# Method Ladder: Clinical 12-Lead → Apple Watch Single-Lead ECG Transfer
+# Clinical → Wearable Single-Lead ECG Transfer: Synthesis of Findings
 
-**Date:** 2026-07-27 · **Repo:** github.com/Hopper-Oeufcoque/ecg-modality-invariance
-· **Author:** Hopper · **Status:** Experimental results, PTB-XL 100 Hz, CPU
-
-A coherent experimental arc validating the forward-physics watch simulator (F10)
-and ranking proven methods for closing the clinical→watch modality gap. All
-experiments on PTB-XL 100 Hz, 5 superclasses (NORM/MI/STTC/CD/HYP), ~1225 train /
-~497 test, 1D ResNet, single seed.
+**Repo:** github.com/Hopper-Oeufcoque/ecg-modality-invariance · **Author:** Hopper
+**Status (2026-07-27):** real-data results (E38–E47). This supersedes the earlier
+simulator-phase synthesis (E1–E5), most of which was later **refuted on real
+data** — see "What we retracted" below.
 
 ---
 
-## The problem, measured
+## The goal
+Leverage abundant **clinical** ECG data to train models usable on **Apple Watch**
+(and other wearable single-lead) ECG for downstream detection — ideally with
+**zero or minimal** target labels, approaching a train-on-target oracle.
 
-A model trained on clinical 12-lead ECG, tested on simulated single-lead Apple
-Watch ECG, loses **−0.34 macro AUROC** (0.865 → 0.527). E1's axis decomposition
-shows **lead-count accounts for essentially all of it** (−0.338 of −0.311); the
-noise/bandwidth/electrode axes add nothing measurable on top at 100 Hz. The naive
-12-lead→single-lead transfer is near chance because the model never saw missing
-leads. This empirically grounds the synthesis report's central bet: **lead-count
-is the war.**
+## TL;DR — what actually works, and where it stops
+**Closed-loop modality calibration** (measure the unlabeled target's baseline-wander
+level, then binary-search a morphology-preserving coloured-wander augmentation on
+clinical data to hit it) gives a **real, significant, zero-label** transfer gain
+— but **only for rhythm-detectable tasks**, and only on devices that actually
+have a modality gap.
 
-## The method ladder (macro AUROC on full simulated watch, L4)
+| dimension | finding | evidence |
+|---|---|---|
+| **Zero-label lift (AF)** | +0.041 AUROC (0.701→0.742), p=0.009, 20 seeds | E42 |
+| **Label-equivalent value** | worth ~10–15 real labeled examples | E46 |
+| **Best minimal-tuning recipe** | calibrate-on-unlabeled + ~50 real labels → 0.855 | E46 |
+| **Gap-proportional** | helps on high-wander dry-electrode (CinC); idles on clean chest-patch (Icentia) | E42 vs E44 |
+| **Rhythm-specific** | vanishes on morphological task (−0.002) | E47 |
+| **Augmentation ceiling** | ~+0.041; residual gap is in-band (QRS/mid), untouchable | E43 |
+| **Oracle (train-on-real, AF)** | 0.93 | E42 |
 
-| # | Method | L4 full watch | Δ from naive | Category |
-|---|---|---|---|---|
-| — | **L0 clinical ceiling** (12-lead) | 0.865 | — | upper bound |
-| 0 | Naive 12-lead → single-lead | 0.521 | — | (the gap) |
-| 1 | + watch-sim augmentation (A5) | 0.551 | +0.03 | preprocessing/aug |
-| 2 | + **lead-masking (K-MERL, C9)** | **0.717** | **+0.20** | architectural |
-| 3 | + test-time BN adaptation (H3) | 0.724 | +0.20 | test-time |
-| ref | latent alignment, frozen+probe (B9) | 0.700 | +0.18 | representation |
-| ref | latent alignment, pretrain+finetune (B9) | 0.690 | +0.17 | representation |
-| ref | single-lead model (trains on Lead-I) | 0.690 | +0.17 | target-domain |
+**One-line honest claim:** *For rhythm-detectable wearable tasks (AF confirmed),
+closed-loop modality calibration converts clinical data into a zero-label
+transfer gain worth ~10–15 labels; it does not extend to morphological diagnosis,
+where single-lead transfer is intrinsically weak.*
 
-## Headline findings
+---
 
-### 1. Lead-masking is the practical winner (E2)
-A 12-lead model trained with random lead dropout (keep Lead-I) reaches **0.750
-on clean Lead-I and 0.717 on full watch** — matching the single-lead reference
-model (0.751) on clean Lead-I and **beating it on full watch** (0.717 vs 0.690).
-You keep the rich 12-lead training signal and still deploy on single-lead, with
-**no target-domain labels, no adapter, no synthesis.** This reproduces K-MERL
-(arXiv:2502.17900, +16% AUC on partial-lead zero-shot) on PTB-XL and should be
-the default baseline for any clinical→single-lead transfer.
+## How we got here (the real-data arc)
 
-### 2. The 12-lead prior is a feature, not a bug (E2)
-Lead-masking (0.717) beats the single-lead model (0.690) on full watch — the
-model that trained on 12 leads is *more* robust to watch noise than one that
-only ever saw one clean lead. The richer spatial training signal transfers.
+### The mechanism
+1. **Real single-lead is CLEAN and low-pass** (E37 spectral, E38 paired-hardware,
+   E43 downstream) — the retracted "high-frequency bandwidth gap" was a
+   sampling-rate artifact. The real clinical→wearable gap is **baseline wander**
+   (dry electrode + motion), not HF noise.
+2. **Fidelity ≠ utility** (E25b): a faithful spectral generator was neutral as
+   training data; crude diversity-injecting augmentation helped. But…
+3. **…open-loop calibration overshoots** (E39): a `sqrt(gap)` heuristic injected
+   2× too much wander and collapsed kurtosis → worse than clean.
+4. **Closed-loop fixes it** (E40): binary-search the injection until the *measured*
+   output matches the target; use 1/f coloured wander (not sinusoids) to preserve
+   peak structure. Coverage distance 1.06→0.66, morphology intact (QRS-corr 0.99).
+5. **Coverage → utility, confirmed** (E41→E42): the calibrated model lifts real
+   labeled-CinC AUROC +0.041 (p=0.009), zero test labels. First properly-powered
+   real-data win. (E41's 5-seed +0.072 was small-sample optimism — corrected.)
 
-### 3. Watch-sim augmentation alone does NOT fix lead-count (E2)
-Watch-aug (A5) alone: 0.521/0.551 — no better than naive on the lead-count axis.
-It only helps the noise axis, which E1 showed is minor. **Augmentation fights the
-wrong battle alone**; it's redundant once lead-masking handles lead-robustness
-(combo V4 ≈ V2).
+### The boundaries (equally important)
+- **Gap-proportional** (E44): on Icentia chest-patch (electrically ≈ clinical, no
+  wander gap) calibration correctly idles (−0.003). The benefit scales with the
+  gap. Apple Watch is a dry *wrist* electrode with a LARGE wander gap (SJLIFE E38:
+  ~6× clinical) → dose-response *predicts* calibration should help on AW (unproven
+  — real AW has no public labels).
+- **HF axis is a no-op** (E43): adding a second calibration axis self-zeroed
+  because real single-lead has ~no HF. Confirms the clean-signal physics end-to-end.
+- **Rhythm-specific** (E47): on a morphological task (Normal-vs-Other) the lift
+  vanishes (−0.002), because morphology lives in the in-band QRS/mid frequencies
+  calibration deliberately leaves untouched. Also, clinical→real morphological
+  transfer is intrinsically weak (oracle only 0.753).
+- **Labels dominate eventually** (E46): calibration and labels are substitutes;
+  above ~50 labels the calibration edge shrinks into the noise.
 
-### 4. Latent-space alignment works but does NOT beat lead-masking (E3, E3b)
-SelfMIS-style self-cutting contrastive alignment beats naive (0.700 vs 0.521 on
-L4). The watch-sim variant (aligning watch-like single↔multi) > clean variant
-(0.700 vs 0.655) — the F10 simulator is useful as a *training* tool for
-alignment, not just an eval probe. **But the fair test (E3b: contrastive
-pretrain THEN end-to-end fine-tune with lead-masking) = 0.690 on L4 — slightly
-WORSE than lead-masking alone (0.717).** Contrastive pretraining does not add
-value on top of end-to-end lead-masking for this task; it may even slightly
-hurt (the contrastive objective may preserve lead-distinguishing structure
-unhelpful for classification). The simple method wins decisively.
+---
 
-### 5. Test-time adaptation is a finishing move, not a main lever (E5)
-BN-adapt adds +0.007 under genuine shift (L4) and slightly hurts without shift
-(L1 −0.011) — exactly TTA theory. Small because lead-masking already closed the
-dominant axis. Stack it on top for free; don't rely on it alone.
+## The reusable tool
+`src/aw_generator.py`:
+- `ClosedLoopCalibrator.fit(target_bw, clinical_probe_sigs)` — the winner. Measures
+  target from **unlabeled** data, morphology-preserving, gap-proportional.
+- `MultiAxisClosedLoopCalibrator` — bw+hf; self-zeroes unused axes (kept for
+  targets that DO have an HF gap; no-op on clean single-lead).
+- `signal_modality_stats`, `measure_distribution`, `qrs_morphology_preserved`
+  (QRS-band corr + R-peak match — the label-validity guard).
 
-### 6. Spatial pathologies collapse under lead reduction; conduction survives (E1)
-Per-class at naive L1: CD (conduction, bundle-branch blocks) stays 0.635 because
-QRS widening is lead-invariant; MI/STTC/HYP collapse to chance. Lead-masking
-recovers the spatial classes substantially (MI 0.508→0.608, STTC 0.487→0.759).
-This is the central sanity check passing: the gap degrades spatial classes more
-than lead-invariant ones, matching real clinical→watch transfer.
+**Recipe:** z-score per record (SJLIFE showed ~8× clinical/AW gain difference) →
+measure target bw from unlabeled wearable data → `ClosedLoopCalibrator.fit` →
+train clinical Lead-I with the calibrated augmentation → (optional) fine-tune on
+~50 real labels.
 
-## What this refines vs the synthesis report
-- The report ranked latent-space lead alignment (B9) as the top solution based on
-  SelfMIS. **SelfMIS showed latent alignment > signal synthesis, not > lead-masking.**
-  E2/E3 refine the ranking for the lead-count axis: **end-to-end lead-masking (C9)
-  > latent alignment + probe (B9)** when you can train end-to-end. Latent alignment
-  remains the right tool when you *can't* train end-to-end (frozen FM + adapter).
-- The report's "noise/bandwidth axes" methods (A2/A5) are de-prioritized: at 100 Hz
-  they're minor; a 500 Hz rerun would show more (queued).
+---
 
-## Honest limitations
-- **100 Hz geometry** mutes the bandwidth axis; 500 Hz rerun queued.
-- **Single seed**, no bootstrap CIs — directional results, not significance tests.
-- **HYP under-sampled** (rare in PTB-XL); its AUROC is noisier.
-- Simulated watch, not real Apple Watch data — the simulator is validated by the
-  axis structure (lead-count dominant, spatial classes hit hardest) matching the
-  literature, but real-watch validation is the real test.
-- PTB-XL superclasses are coarse; finer pathology labels may show bigger gaps.
+## Datasets used
+- **PTB-XL** (clinical 12-lead, Lead-I) — training source. AFIB n=1514.
+- **CinC 2017** (AliveCor KardiaMobile, dry FINGER, labeled AF/N/O) — primary real
+  test; big wander gap; 1 record/patient (leakage-free). E41/E42/E43/E46/E47.
+- **SJLIFE paired** (243 pts, clinical + Apple Watch, same person) — real modality
+  profile measurement (E38). No disease labels.
+- **Icentia11k** (CardioSTAT chest-patch, labeled) — 2nd-device dose-response
+  (E44). Low gap. AF too sparse for a patient-disjoint re-mine (E45 abandoned).
+- **HOME** (real Apple Watch, 1000) — EVALUATION-ONLY (license forbids training).
 
-## Recommended recipe (what we'd ship)
-**Two regimes (E17):**
-1. **No simulator / no target-domain generation** → **lead-masking (C9, prob=0.5)**
-   on 12-lead training. Best label-free transfer: 0.725 on full watch. Simplest
-   recipe — one training-time augmentation, no preprocessing, no TTA (E16 showed
-   combinations add nothing).
-2. **With the forward-physics simulator (E1's F10)** → **train a single-lead
-   model on simulated-watch Lead-I** with clinical labels. Beats the 12-lead
-   approach: 0.742 on full watch, and the model needs no 12-lead data at
-   inference. The simulator's best use is as a *from-scratch training
-   distribution*, not a fine-tune stage (E16 C5) or alignment signal (E3-B).
+---
 
-The remaining gap to the 0.865 ceiling (~0.12) is genuine single-lead
-information loss + sim/real distribution mismatch. The critical open question
-(E6): does the sim-trained model's edge hold on *real* watch data, or is it a
-sim-only artifact?
+## What we retracted / corrected (honesty ledger)
+- **E35/E36 "bandwidth gap"** → RETRACTED (E37): 200 Hz file processed as 500 Hz.
+- **Early simulator synthesis (E1–E5)** → superseded: lead-masking/sim-training
+  looked good on simulated watch but **failed on real single-lead** (E6b, E23).
+  The simulator over-degrades; sim-trained models don't transfer.
+- **E41 +0.072 (5 seeds)** → corrected to +0.041 (20 seeds, E42): small-sample
+  optimism.
+- **E44 Icentia absolutes** → untrusted (patient leakage, oracle=1.000); only the
+  qualitative dose-response (which rests on the leakage-free CinC gap) stands.
+- **Cocktail rule (E26)** → target-dependent, not universal (E41 cocktail regressed).
 
-## Next experiments (queued, not run)
-- **E4:** 500 Hz rerun to surface the bandwidth axis properly.
-- **E6:** Real single-lead data (PhysioNet single-lead sets) to validate the
-  simulator's gap against real watch shift.
-- **E7:** LeadBridge adapter (E5 in taxonomy) — the labelled-target path, to beat
-  lead-masking when some watch labels exist.
-- **E8:** Scattering/speech-channel features (I4/I3) as modality-robust inputs.
+## Standing limitations
+- Best real proxy is CinC finger-electrode, **not** Apple Watch wrist. Real AW
+  (SJLIFE/HOME) has **no usable labels** → the AW lift is a dose-response
+  *prediction*, not a measurement.
+- All positive transfer results are **AF/rhythm**; morphology does not transfer.
+- CPU-only, modest ResNet, single fixed clinical train set per experiment (seed
+  CIs omit clinical-cohort variance).
 
-## Experiment index
-- E1 — `results/01_simulator_validation/` — simulator validation + axis decomposition
-- E2 — `results/02_lead_masking/` — lead-masking wins, matches single-lead reference
-- E3 — `results/03_latent_alignment/` — latent alignment (frozen+probe)
-- E3b — `results/03b_latent_finetune/` — latent alignment (pretrain+finetune, fair)
-- E5 — `results/05_tta/` — test-time BN adaptation
+## Open levers (next)
+1. **Representation-level rhythm-invariance** — can a learned modality-invariant
+   feature space beat the +0.041 augmentation ceiling? (in-band info is the wall
+   for augmentation; a learned invariance might reach it differently)
+2. **Other arrhythmias** (PVC/PAC, flutter) — does the rhythm-transfer claim hold
+   beyond AF? (Icentia has beat labels if we mine more patients)
+3. **A same-taxonomy labeled single-lead morphological set** — to cleanly separate
+   "calibration doesn't help morphology" from "task+label mismatch" (E47 caveat).
+
+## Experiment index (real-data era)
+- E37 `results/37_corrected_sampling/` — clean-signal physics, retracts E35/E36
+- E38 `results/38_paired_transform/` — real paired modality profile (SJLIFE)
+- E39 `results/39_recalibrated_augment/` — open-loop overshoots (negative)
+- E40 `results/40_closed_loop_calib/` — closed-loop hits the target
+- E41 `results/41_endtoend_auroc/` — first real end-to-end AUROC (5 seeds)
+- E42 `results/42_seeds20_significance/` — significance (+0.041, p=0.009)
+- E43 `results/43_multiaxis_calib/` — HF axis no-op
+- E44 `results/44_icentia_seconddevice/` — dose-response (2nd device)
+- E46 `results/46_fewshot_bridge/` — minimal-tuning bridge
+- E47 `results/47_harder_task/` — rhythm-specific (morphology null)

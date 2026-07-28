@@ -29,15 +29,31 @@ A model trained on clinical data typically **degrades sharply** on watch data du
 - `docs/EXPERIMENT_LOG.md` — **living lab notebook**: what's been tried, what worked, what didn't (negative results included)
 - `docs/FUTURE_APPROACHES.md` — actionable backlog of approaches not yet tried (growing)
 - `notes/idea_log.md` — 13 frontier ideas with adjacent-field grounding
-- `results/` — per-experiment REPORT.md + metrics.json + figures; `EXPERIMENT_SYNTHESIS.md` ties them into a method ladder
-- `src/` — `watch_simulator.py` (forward-physics F10), `dataset.py`, `model.py` (1D ResNet)
+- `results/` — per-experiment REPORT.md + metrics.json + figures; **`results/EXPERIMENT_SYNTHESIS.md` is the current headline document** (real-data findings E38–E47)
+- `src/` — `aw_generator.py` (**ClosedLoopCalibrator — the reusable tool**), `watch_simulator.py`, `dataset.py`, `model.py` (1D ResNet)
 - `experiments/` — numbered, reproducible experiment scripts
 - `references/` — 155-paper searchable corpus + priority abstracts
 
-## Status
+## Status / headline result (2026-07-27, real-data phase)
 
-Bootstrapped 2026-07-26 (literature survey). Experimental phase 2026-07-27:
-forward-physics watch simulator validated; **lead-masking (K-MERL) is the
-decisive winner** (closes the lead-count gap from 0.52→0.72 on simulated watch
-with zero target-domain labels). See `docs/EXPERIMENT_LOG.md` for the full
-trial-and-error record and `results/method_ladder.png` for the ranking.
+**Closed-loop modality calibration** works for **rhythm-detectable** wearable
+tasks, with clear boundaries:
+
+- **Zero-label AF transfer:** +0.041 AUROC (0.701→0.742), p=0.009, 20 seeds, on
+  **real** labeled single-lead (CinC 2017). Calibration uses only *unlabeled*
+  target data. (E41/E42)
+- **Worth ~10–15 real labels**; best minimal-tuning recipe = calibrate + ~50
+  labels → 0.855. (E46)
+- **Gap-proportional** (helps dry-electrode, idles on clean chest-patch — E44),
+  **rhythm-specific** (no benefit on morphological tasks — E47), augmentation
+  ceiling ~+0.041 (E43).
+
+**Tool:** `src/aw_generator.py::ClosedLoopCalibrator`. See
+`results/EXPERIMENT_SYNTHESIS.md` for the full synthesis and honest limitations,
+and `docs/EXPERIMENT_LOG.md` for the complete trial-and-error record (negative
+results included).
+
+> **Superseded:** the earlier simulator-phase claim ("lead-masking is the
+> decisive winner") was validated only on *simulated* watch data and **failed on
+> real single-lead** (E6b, E23). The real-data arc (E37+) is authoritative.
+
