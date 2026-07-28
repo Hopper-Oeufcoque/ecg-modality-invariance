@@ -1,0 +1,35 @@
+{
+  "seeds": 20,
+  "lambda": 0.5,
+  "means": {
+    "clean": 0.7007534216827892,
+    "closed_aug": 0.7419576323787631,
+    "invariance": 0.7315566989019026
+  },
+  "stds": {
+    "clean": 0.0483629175761839,
+    "closed_aug": 0.04726209011836635,
+    "invariance": 0.04324259498197614
+  },
+  "closed_aug_vs_clean": {
+    "delta": 0.04120421069597381,
+    "wins": 15,
+    "p": 0.008829542914040965
+  },
+  "invariance_vs_clean": {
+    "delta": 0.030803277219113422,
+    "wins": 14,
+    "p": 0.08330462909641524
+  },
+  "invariance_vs_aug": {
+    "delta": -0.010400933476860386,
+    "wins": 10,
+    "p": 0.4685359956717745
+  },
+  "honesty": [
+    "CinC finger != AW wrist",
+    "AF/NORM easy task",
+    "single clinical train set",
+    "lambda=0.5 a priori not tuned"
+  ]
+}

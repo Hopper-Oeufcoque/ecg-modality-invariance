@@ -26,7 +26,7 @@ have a modality gap.
 | **Best minimal-tuning recipe** | calibrate-on-unlabeled + ~50 real labels → 0.855 | E46 |
 | **Gap-proportional** | helps on high-wander dry-electrode (CinC); idles on clean chest-patch (Icentia) | E42 vs E44 |
 | **Rhythm-specific** | vanishes on morphological task (−0.002) | E47 |
-| **Augmentation ceiling** | ~+0.041; residual gap is in-band (QRS/mid), untouchable | E43 |
+| **Augmentation ceiling** | ~+0.041; residual gap is in-band (QRS/mid). Confirmed **information-bound**: learned invariance hits the same wall (E48) | E43, E48 |
 | **Oracle (train-on-real, AF)** | 0.93 | E42 |
 
 **One-line honest claim:** *For rhythm-detectable wearable tasks (AF confirmed),
@@ -119,12 +119,22 @@ train clinical Lead-I with the calibrated augmentation → (optional) fine-tune 
   CIs omit clinical-cohort variance).
 
 ## Open levers (next)
-1. **Representation-level rhythm-invariance** — can a learned modality-invariant
-   feature space beat the +0.041 augmentation ceiling? (in-band info is the wall
-   for augmentation; a learned invariance might reach it differently)
-2. **Other arrhythmias** (PVC/PAC, flutter) — does the rhythm-transfer claim hold
+1. ~~**Representation-level rhythm-invariance**~~ — **ANSWERED (E48, ❌).** An
+   explicit feature-consistency invariance loss does *not* beat implicit
+   augmentation (−0.010, p=0.47); both families hit the same +0.041 wall. The
+   ceiling is **information-bound**, not a formulation artifact. Do not chase
+   cleverer single-lead invariance objectives.
+2. **INFORMATION INJECTION (the pivot)** — the residual gap needs *new
+   information*, not a better loss:
+   (a) **multi-lead → single-lead distillation** — teach a single-lead student to
+   mimic a 12-lead teacher's logits/features, so clinical multi-lead structure is
+   compressed into the Lead-I student (available now: PTB-XL 12-lead + Lead-I);
+   (b) **auxiliary channels** watches actually carry (accelerometer/PPG) as extra
+   modality-invariant inputs;
+   (c) **real target labels** — the proven closer (E46: ~50 → 0.855).
+3. **Other arrhythmias** (PVC/PAC, flutter) — does the rhythm-transfer claim hold
    beyond AF? (Icentia has beat labels if we mine more patients)
-3. **A same-taxonomy labeled single-lead morphological set** — to cleanly separate
+4. **A same-taxonomy labeled single-lead morphological set** — to cleanly separate
    "calibration doesn't help morphology" from "task+label mismatch" (E47 caveat).
 
 ## Experiment index (real-data era)
@@ -138,3 +148,4 @@ train clinical Lead-I with the calibrated augmentation → (optional) fine-tune 
 - E44 `results/44_icentia_seconddevice/` — dose-response (2nd device)
 - E46 `results/46_fewshot_bridge/` — minimal-tuning bridge
 - E47 `results/47_harder_task/` — rhythm-specific (morphology null)
+- E48 `results/48_representation_invariance/` — learned invariance = augmentation (ceiling is info-bound)

@@ -69,6 +69,7 @@
 | E44 | **2nd-device replication: Icentia chest-patch (20 seeds)** | clean 0.942 → closed 0.939 (−0.003, p=0.82); target bw 0.016 | ⚠️ | **DOSE-RESPONSE: calibration helps ∝ the gap. Icentia chest-patch ≈ clinical-clean (bw 0.016) → NO gap → clean already transfers 0.942 → calibration correctly idles (−0.003, no harm). vs CinC dry-finger (bw 0.25, big gap) → +0.041. Method is GAP-PROPORTIONAL, targets baseline-wander specifically. AW = dry wrist, LARGE gap (SJLIFE bw 0.20) → predicts calibration SHOULD help on AW. RED FLAG: oracle=1.000 (21 patients, within-patient leakage) → Icentia absolutes optimistic, treat as qualitative** |
 | E46 | **minimal-tuning bridge: calibration + k real labels (10 seeds)** | closed+50=0.855 reaches 0.85; clean never does (k≤100); Δ shrinks 0.034→0.010 | ✅ | **Calibration & labels are SUBSTITUTES: closed-loop lift is biggest at k=0 (+0.034) and shrinks as labels grow (k=100 +0.010). Worth ~10-15 free labels in scarce regime. closed+50→0.855 crosses 0.85 (clean+100 only 0.845). North-star pipeline: calibrate-on-unlabeled + ~50 real labels. HONEST: both plateau ~0.85 << oracle 0.923 — tiny-k fine-tune ≠ near-oracle; last 0.07 needs many more labels. CinC≠wrist; AF/NORM easy** |
 | E47 | **HARDER morphological task (Normal-vs-Other, 20 seeds)** | closed−clean −0.002 p=0.67; clean 0.561, oracle only 0.753 | ⚠️❌ | **SCOPES THE METHOD: calibration lift is RHYTHM-SPECIFIC — vanishes on morphological task (−0.002 vs AF's +0.041), same device/gap. Wander-calibration helps rhythm/HRV robustness, not P/QRS/T shape (in-band, untouched). WORSE: clinical→real barely transfers here at all (clean 0.561≈chance, oracle only 0.753). Bounds ALL prior wins (E41/E42/E46) to rhythm regime. Matches clinical lit: single-lead validated for AF, not morphology. Caveat: CinC 'O' weak catch-all label + taxonomy mismatch inflates difficulty** |
+| E48 | **learned invariance vs implicit augmentation (20 seeds)** | invariance 0.732 (+0.031) vs closed_aug 0.742 (+0.041); head-to-head −0.010 p=0.47 | ❌ | **CEILING IS INFO-BOUND: explicit feature-consistency invariance loss (CE_clean+CE_shift+λ‖Δfeat‖²) does NOT beat implicit augmentation — lands −0.010 below it (n.s.), own lift +0.031 n.s. Two independent families (aug E42/E43 + learned invariance E48) hit the SAME +0.041 wall → wall is a property of single-lead information, not the objective. PIVOT: stop chasing cleverer invariance losses; close the residual with NEW information (real labels E46, multi-lead→single-lead distillation, or accel/PPG aux channels)** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1184,6 +1185,36 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   labeled single-lead morphological set would be needed to isolate modality-shift.
   CinC finger ≠ AW wrist; single clinical train set. Files:
   `results/47_harder_task/`, `experiments/47_harder_task.py`.
+
+---
+
+## E48 — Learned invariance vs implicit augmentation: the ceiling is info-bound (2026-07-27)
+- **Hypothesis:** E43/E46 showed pure augmentation plateaus ~+0.041 because the
+  residual gap is in-band. An explicit **feature-consistency invariance loss**
+  (force encoder to emit identical features for a clinical sample & its
+  modality-shifted twin) might reach the target differently and beat the ceiling.
+- **Setup:** train PTB-XL Lead-I AFIB-vs-sinus, test real CinC AF-vs-N. 3 arms,
+  20 seeds: clean · closed_aug (E42 winner) · invariance (dual forward, loss =
+  CE_clean + CE_shifted + λ·‖feat_clean − feat_shifted‖², λ=0.5 a-priori). Same
+  `ClosedLoopCalibrator` defines the shifted view in arms 2 & 3.
+- **Result:** clean 0.701 · closed_aug **0.742 (+0.041, 15/20, p=0.0088)** ·
+  invariance 0.732 (+0.031, 14/20, p=0.083 n.s.). Head-to-head
+  **invariance − closed_aug = −0.010, 10/20, p=0.47 → explicit does NOT beat implicit.**
+- **Verdict ❌ (informative null):** two independent method families
+  (augmentation E42/E43 + learned invariance E48) hit the **same +0.041 wall**.
+  That makes the ceiling **information-bound, not formulation-bound** — no loss
+  function manufactures discriminative information the modality shift has already
+  entangled with label-relevant morphology in the same frequency band.
+- **Lesson / pivot:** stop chasing "a cleverer single-lead invariance objective" —
+  it won't move the wall. Closing the ~0.19 residual to oracle needs *new
+  information*: (a) real target labels (E46: ~50 → 0.855), or (b) multi-lead
+  clinical structure distilled into a single-lead student, or (c) auxiliary
+  channels (accel/PPG) watches actually carry. **Next: information injection, not
+  invariance losses.**
+- **Honest flags:** λ not swept (but −0.010 head-to-head makes a large hidden win
+  unlikely); CinC finger ≠ AW wrist; AF/N easy task; single train/test set; 20
+  seeds, one architecture. Files: `results/48_representation_invariance/`,
+  `experiments/48_representation_invariance.py`.
 
 ---
 
