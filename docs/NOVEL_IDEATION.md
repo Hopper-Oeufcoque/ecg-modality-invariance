@@ -63,7 +63,13 @@ ranks them for exploration. Numbered experiments append to the main log when the
   the objective is cardiac-structure-aware, not just batch statistics.
 - **CPU:** moderate (per-clip inner loop) — keep adapter tiny.
 
-### N4 — Frequency-band "modality dropout" augmentation
+### N4 — Frequency-band "modality dropout" augmentation → E59 ✅⚠️ DONE
+- **RESULT (E59, 20 seeds):** WIN (partial). band_SCRAMBLE (phase-randomize the <1.5 Hz
+  band — keep wander power, destroy structure) TIES calibration (0.739 vs 0.742) using
+  ZERO watch data + ZERO target profile; beats clean +0.038 (13/20, p=0.006) → cheapest
+  lever yet. band_DROP (random attenuation) HURTS (0.666, −0.035) — removing energy strips
+  real P-wave/ST content (info-destruction motif). Still ≪ paired 0.807 (shares the ~0.74
+  augmentation ceiling). Follow-up queued: does scramble stack with calibration / under paired?
 - **Why:** the gap is baseline-wander (out-of-band). Instead of *injecting* wander
   (calibration), randomly **drop/scramble the low-freq band** during training → forces
   reliance on in-band content by construction. Cheap structured augmentation; a different

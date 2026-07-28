@@ -1,0 +1,60 @@
+{
+  "seeds": 20,
+  "cutoff_hz": 1.5,
+  "means": {
+    "clean": 0.7007534216827892,
+    "closed_aug": 0.7419576323787631,
+    "band_drop": 0.666136663209506,
+    "band_scramble": 0.7385094001574376,
+    "band_both": 0.722679401898768,
+    "joint_paired": 0.8071667647984849
+  },
+  "stds": {
+    "clean": 0.0483629175761839,
+    "closed_aug": 0.04726209011836635,
+    "band_drop": 0.051855087108977564,
+    "band_scramble": 0.046087684237055664,
+    "band_both": 0.047023289804551095,
+    "joint_paired": 0.022849564274900983
+  },
+  "comparisons": {
+    "closed_aug_vs_clean": {
+      "delta": 0.04120421069597381,
+      "wins": 15,
+      "p": 0.008829542914040965
+    },
+    "band_drop_vs_clean": {
+      "delta": -0.034616758473283084,
+      "wins": 5,
+      "p": 0.04185506868314281
+    },
+    "band_scramble_vs_clean": {
+      "delta": 0.0377559784746483,
+      "wins": 13,
+      "p": 0.006096031882671399
+    },
+    "band_both_vs_clean": {
+      "delta": 0.02192598021597884,
+      "wins": 13,
+      "p": 0.07146645485405317
+    },
+    "band_both_vs_aug": {
+      "delta": -0.019278230479994968,
+      "wins": 7,
+      "p": 0.18575636843657953
+    },
+    "band_both_vs_paired": {
+      "delta": -0.08448736289971703,
+      "wins": 0,
+      "p": 1.6856600862317112e-07
+    }
+  },
+  "honesty": [
+    "CinC finger != AW wrist",
+    "AF/NORM easy",
+    "cutoff 1.5Hz a priori",
+    "no watch data used (pure augmentation)",
+    "single clinical train set",
+    "20 seeds"
+  ]
+}
