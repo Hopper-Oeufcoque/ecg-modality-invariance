@@ -34,30 +34,26 @@
   whether multi-lead clinical structure is information the augmentation ceiling
   can't reach, and whether it **stacks** with calibration.
 
-### 🔴 E50 — SJLIFE paired-hardware feature alignment (the untapped real asset)
-- **Why here:** SJLIFE is our ONLY real paired clinical+watch dataset (243
-  patients, same person both modalities). We've only used it to *measure* the
-  modality profile (E38). It can do much more: learn/validate a **modality
-  alignment** (clinical-Lead-I features → watch features) directly on real pairs,
-  no disease labels needed. If aligning collapses the real clinical↔watch feature
-  gap, that's a modality-invariant encoder grounded in real hardware — exactly
-  the north-star "invariant features."
-- **How:** encode both modalities with the shared backbone; align paired
-  embeddings via CORAL / Sinkhorn-OT / paired-contrastive (same patient = positive
-  pair). Metric: does the paired feature-distance drop, and does a classifier
-  trained on aligned clinical features transfer better to the watch-side
-  representation? Unsupervised — uses the pairing as the only supervision.
-- **Difficulty:** medium. **Value:** high — first use of real paired hardware for
-  invariance, not just profiling.
+### 🔴 ~~E50 — SJLIFE paired-hardware feature alignment~~ (RUN ❌❌)
+- **Status:** ✅ ran 2026-07-27. Label-free InfoNCE on 243 real clinical↔watch
+  pairs CONVERGED (4.01→0.63) but transfer got WORSE (sjlife_ft 0.669, −0.073 vs
+  aug p=2e-5). Invariance-by-information-destruction: tiny paired set + trivial
+  same-patient objective → encoder discards pathology morphology. Confirms
+  E48/E49/E50 pattern: unanchored representation engineering loses to calibration.
 
-### 🔴 E51 — Distillation + few-shot stacking (conditional on E49)
-- **Why here:** if E49 distillation adds real information, E46 showed labels are
-  the proven closer. The combo question: does teacher-distillation + ~50 real
-  labels beat calibration + 50 labels? i.e. do the two information sources
-  (multi-lead structure + real labels) stack toward oracle?
-- **How:** E46 few-shot curve (k=0/25/50/100) with distilled student as the base.
-- **Difficulty:** low (reuse E46 harness). **Value:** high — maps the best
-  achievable recipe under a realistic label budget.
+### 🔴 E51 — LABEL-ANCHORED alignment (the fix for E48/E49/E50)
+- **Why here:** E48/E49/E50 all failed because nothing protected the label signal
+  while aligning modalities. The fix: alignment + classification **jointly**, so the
+  encoder cannot collapse onto label-destroying invariance.
+- **How (candidates):** (a) **joint objective** — train the AF/NORM head on PTB-XL
+  Lead-I AND a modality-alignment term on SJLIFE pairs *simultaneously* (multi-task),
+  so morphology is preserved by the CE term while the pairs pull modalities together;
+  (b) **supervised contrastive** with a modality-shifted view (calibrated Lead-I) as
+  the positive, label defines negatives — anchors invariance to the class.
+  Compare vs pure calibration (must beat +0.041 to matter).
+- **Difficulty:** medium. **Value:** high — the last untested representation lever
+  that respects the E48–E50 lesson. If this also fails to beat calibration, the
+  verdict is firm: input-space calibration + real labels is the whole story.
 
 ### 🟠 E52 — Beyond-AF rhythm breadth (flutter / PVC / PAC)
 - **Why here:** E47 showed the lift is rhythm-specific but only tested AF vs a

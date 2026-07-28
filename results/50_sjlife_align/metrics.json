@@ -1,0 +1,53 @@
+{
+  "seeds": 20,
+  "temp": 0.1,
+  "sjlife_patients": 243,
+  "apple_windows": 729,
+  "means": {
+    "clean": 0.7007534216827892,
+    "closed_aug": 0.7419576323787631,
+    "sjlife_ft": 0.6685604273299147,
+    "sjlife_ft_aug": 0.7345767331492316
+  },
+  "stds": {
+    "clean": 0.0483629175761839,
+    "closed_aug": 0.04726209011836635,
+    "sjlife_ft": 0.03852719205564563,
+    "sjlife_ft_aug": 0.040212875102568275
+  },
+  "comparisons": {
+    "closed_aug_vs_clean": {
+      "delta": 0.04120421069597381,
+      "wins": 15,
+      "p": 0.008829542914040965
+    },
+    "sjlife_ft_vs_clean": {
+      "delta": -0.03219299435287445,
+      "wins": 5,
+      "p": 0.029113913220862913
+    },
+    "sjlife_ft_vs_aug": {
+      "delta": -0.07339720504884825,
+      "wins": 2,
+      "p": 2.13158502975105e-05
+    },
+    "sjlife_ft_aug_vs_aug": {
+      "delta": -0.007380899229531307,
+      "wins": 7,
+      "p": 0.5139455209897195
+    },
+    "sjlife_ft_aug_vs_clean": {
+      "delta": 0.033823311466442504,
+      "wins": 14,
+      "p": 0.046549616117473123
+    }
+  },
+  "honesty": [
+    "SJLIFE no disease labels (label-free pretrain, correct)",
+    "3 devices: CinC finger != AW wrist != SJLIFE wrist",
+    "SJLIFE n=243 small for contrastive",
+    "InfoNCE temp=0.1 a priori",
+    "AF/NORM easy task",
+    "single clinical train set"
+  ]
+}

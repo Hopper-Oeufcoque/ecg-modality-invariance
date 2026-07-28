@@ -71,6 +71,7 @@
 | E47 | **HARDER morphological task (Normal-vs-Other, 20 seeds)** | closed−clean −0.002 p=0.67; clean 0.561, oracle only 0.753 | ⚠️❌ | **SCOPES THE METHOD: calibration lift is RHYTHM-SPECIFIC — vanishes on morphological task (−0.002 vs AF's +0.041), same device/gap. Wander-calibration helps rhythm/HRV robustness, not P/QRS/T shape (in-band, untouched). WORSE: clinical→real barely transfers here at all (clean 0.561≈chance, oracle only 0.753). Bounds ALL prior wins (E41/E42/E46) to rhythm regime. Matches clinical lit: single-lead validated for AF, not morphology. Caveat: CinC 'O' weak catch-all label + taxonomy mismatch inflates difficulty** |
 | E48 | **learned invariance vs implicit augmentation (20 seeds)** | invariance 0.732 (+0.031) vs closed_aug 0.742 (+0.041); head-to-head −0.010 p=0.47 | ❌ | **CEILING IS INFO-BOUND: explicit feature-consistency invariance loss (CE_clean+CE_shift+λ‖Δfeat‖²) does NOT beat implicit augmentation — lands −0.010 below it (n.s.), own lift +0.031 n.s. Two independent families (aug E42/E43 + learned invariance E48) hit the SAME +0.041 wall → wall is a property of single-lead information, not the objective. PIVOT: stop chasing cleverer invariance losses; close the residual with NEW information (real labels E46, multi-lead→single-lead distillation, or accel/PPG aux channels)** |
 | E49 | **12-lead→1-lead clinical distillation (Hinton KD, 20 seeds)** | distill 0.682 (−0.060 vs aug, p=0.0005); distill_aug 0.726 (−0.016 vs aug) | ❌❌ | **INFORMATION SOURCE MATTERS: distilling a 12-lead CLINICAL teacher HURTS real transfer — distill drops BELOW clean floor (−0.019) and far below augmentation (−0.060, p=0.0005). Teacher (train-acc 0.994, overfit) encodes clinical-modality decision boundaries → KD pulls student TOWARD clinical distribution = wrong direction. Calibration partly rescues (distill_aug 0.726) but fights the distill pull, still < pure aug. SHARPENS E48: extra clinical info is modality-ENTANGLED; injecting it imports modality bias, not invariant structure. Useful aux info must be watch-anchored/modality-invariant → pivot to real paired hardware (SJLIFE, E50)** |
+| E50 | **SJLIFE real-paired contrastive invariance pretraining (20 seeds)** | sjlife_ft 0.669 (−0.073 vs aug, p=2e-5); sjlife_ft_aug 0.735 (−0.007 vs aug, n.s.) | ❌❌ | **ALIGNMENT ≠ USEFUL INVARIANCE: InfoNCE on 243 real clinical↔watch pairs CONVERGED (4.01→0.63) but transfer got WORSE — sjlife_ft below clean floor (−0.032), far below aug (−0.073). Invariance-by-information-DESTRUCTION: tiny paired set + trivial same-patient objective → encoder collapses to low-level/patient-id features that match across modalities, DISCARDING pathology morphology. sjlife_ft_aug≈aug (overwrites init, adds nothing). E48+E49+E50 ALL fail to beat calibration → representation engineering NOT anchored to the label trades away discriminative content. Next: label-preserving constraint (E51 supervised-contrastive/joint pretrain+classify)** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1248,6 +1249,42 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   unlikely to flip); teacher on same PTB-XL cohort (favours distillation, still hurt);
   CinC finger ≠ AW wrist; AF/N easy; 20 seeds, single arch/train set. Files:
   `results/49_distillation/`, `experiments/49_distillation.py`.
+
+---
+
+## E50 — SJLIFE real-paired invariance pretraining: alignment ≠ useful invariance (2026-07-27)
+- **Hypothesis (E49 pivot):** injected info must be watch-anchored/modality-invariant.
+  SJLIFE = 243 patients on BOTH clinical 12-lead + Apple Watch (both single-lead → one
+  shared encoder). Contrastively pretrain the encoder so the same patient's two
+  modalities map together (label-free InfoNCE) → real-hardware invariant features; then
+  fine-tune AF/NORM head on PTB-XL, test real CinC. Should beat clean and/or stack w/ aug.
+- **Setup:** InfoNCE pretrain (same patient = positive, temp 0.1) on 243 pts / 729 apple
+  windows; converged 4.01→0.63. Arms (20 seeds): clean · closed_aug (E42) · sjlife_ft
+  (pretrained init → clean FT) · sjlife_ft_aug (pretrained init → calibrated FT).
+- **Result:** clean 0.701 · closed_aug 0.742 · **sjlife_ft 0.669** · sjlife_ft_aug 0.735.
+  sjlife_ft−clean = −0.032 (p=0.029); **sjlife_ft−aug = −0.073 (p=2e-5)**;
+  sjlife_ft_aug−aug = −0.007 (p=0.51 n.s.).
+- **Verdict ❌❌ (negative, sharp mechanism):** pretraining HURTS. Alignment was
+  ACHIEVED (InfoNCE converged) yet transfer got worse → **invariance-by-information-
+  destruction**: with only 243 pts and a trivial same-patient objective, the cheapest
+  way to satisfy the loss is to collapse onto low-level/patient-id features matching
+  across modalities, DISCARDING pathology morphology the AF task needs. You can always
+  make features invariant by making them uninformative. sjlife_ft_aug≈aug → supervised
+  augmented training overwrites the init; pretraining adds nothing net.
+- **Lesson (E48+E49+E50 together):** THREE representation-level strategies (explicit
+  invariance loss, clinical distillation, real-paired contrastive) ALL fail to beat
+  plain closed-loop calibration (+0.041). Representation engineering NOT anchored to the
+  label trades away discriminative content. Robust wins come from (a) input-space
+  calibration that leaves morphology untouched (E42), (b) real labels (E46). Does NOT
+  refute paired-hardware invariance in principle — shows naïve label-free contrastive on
+  a tiny set is the wrong recipe; needs a **label-preserving constraint**.
+- **⟲ Next (E51):** label-anchored alignment — supervised-contrastive or joint
+  pretrain+classify so morphology is protected while aligning modalities.
+- **Honest flags:** SJLIFE no disease labels (label-free is the only option, but nothing
+  protected pathology during alignment); 3 devices (CinC finger ≠ Apple wrist ≠ SJLIFE
+  wrist) — invariance learned is SJLIFE-internal, not CinC's; n=243 small for contrastive;
+  temp 0.1 a-priori; AF/N easy; 20 seeds. Files: `results/50_sjlife_align/`,
+  `experiments/50_sjlife_align.py`.
 
 ---
 

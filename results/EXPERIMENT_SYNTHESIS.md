@@ -68,6 +68,17 @@ where single-lead transfer is intrinsically weak.*
   transfer is intrinsically weak (oracle only 0.753).
 - **Labels dominate eventually** (E46): calibration and labels are substitutes;
   above ~50 labels the calibration edge shrinks into the noise.
+- **Representation methods all lose to calibration** (E48/E49/E50): three
+  representation-level strategies — explicit feature-invariance loss (E48, −0.010
+  vs aug), 12-lead clinical distillation (E49, −0.060, p=0.0005), and real-paired
+  SJLIFE contrastive pretraining (E50, −0.073, p=2e-5) — **all fail to beat plain
+  closed-loop calibration.** The unifying lesson: *representation engineering that
+  is not anchored to the label trades away discriminative morphology.* Distillation
+  imports clinical-modality bias (E49); label-free contrastive achieves invariance
+  by destroying pathology content (E50, "invariance-by-information-destruction" —
+  InfoNCE converged 4.01→0.63 yet transfer dropped). Input-space calibration wins
+  precisely because it leaves morphology untouched. Next lever: **label-preserving**
+  alignment (supervised-contrastive / joint pretrain+classify, E51).
 
 ---
 
@@ -155,3 +166,4 @@ train clinical Lead-I with the calibrated augmentation → (optional) fine-tune 
 - E47 `results/47_harder_task/` — rhythm-specific (morphology null)
 - E48 `results/48_representation_invariance/` — learned invariance = augmentation (ceiling is info-bound)
 - E49 `results/49_distillation/` — 12-lead→1-lead clinical distillation BACKFIRES (source must be modality-invariant)
+- E50 `results/50_sjlife_align/` — real-paired contrastive pretraining hurts (alignment ≠ useful invariance; needs label anchor)
