@@ -1118,6 +1118,15 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
 - **Lesson:** always check for patient leakage when a cohort has few subjects and
   many windows each; an oracle of exactly 1.000 is a tell. Files:
   `results/44_icentia_seconddevice/`, `experiments/44_icentia_seconddevice.py`.
+- ⟲ **UPDATE (2026-07-27):** attempted E45 (patient-disjoint re-mine) to fix the
+  leakage — ABANDONED: AFIB is too sparse in Icentia's accessible patient block
+  (26 patients scanned → AF from only 1 patient), so a patient-disjoint AF/Normal
+  split isn't feasible without an unbounded download. E44's Icentia absolutes
+  therefore remain leakage-inflated and are NOT trusted; the qualitative
+  dose-response point (low-gap device → calibration idles) still holds because it
+  rests on the modality-gap measurement (bw 0.016 ≈ clinical), not the AUROC
+  absolutes. Dose-response's load-bearing evidence is the CinC real gap (+0.041,
+  E42, leakage-free — CinC records are 1-per-patient) vs Icentia's ~zero gap.
 
 ---
 
