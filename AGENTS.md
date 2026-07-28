@@ -23,24 +23,29 @@ Luke (US-based). Repo: github.com/Hopper-Oeufcoque/ecg-modality-invariance
    `experiments/` (numbered scripts). Python venv at `.venv` (torch CPU,
    wfdb, sklearn, scipy).
 
-## Current experimental status (as of 2026-07-27)
-- **HEADLINE: all sim-validated results carry realism debt — they don't transfer
-  to real single-lead data.** See `docs/SESSION_HANDOFF.md` for the full reframe.
-- E1: lead-count = dominant axis. E2: lead-masking = sim-best 0.718 (BUT fails
-  on real — E23).
-- E6: simulator OVER-DEGRADES vs real (sim_vs_real 1.077 > real_vs_clinical 0.717;
-  kurtosis 4.8 vs 17.7). E22: over-degradation is FILTER-bound (bandpass).
-- E6b (decisive): sim training HURTS real transfer (sim→real 0.737 < clean→real
-  0.753); 0.993 sim→sim is overfit artifacts. Oracle (real→real) = 0.946.
-- E23 (decisive): lead-masking 12-lead CATASTROPHICALLY fails on real (0.557 vs
-  sim 0.718); single-lead (clean 0.721, sim 0.731) robust. **Revised real
-  ranking: single-lead models > 12-lead lead-masking. Train single-lead.**
-- Novel methods (E10 INLP, E15 MixStyle, E9 REx, E20 DeepSet, E8 speech, E18
-  scattering): all near-neutral or regime-dependent. Gap is info loss, not a
-  removable/avoidable shortcut.
-- **Real Apple Watch data: HOME benchmark at `~/data/HOME` (1000 AW ECGs,
-  evaluation-only). E6c (sim vs REAL AW) + E5b (BN-adapt salvage) are the
-  immediate next experiments.** See `docs/SESSION_HANDOFF.md`.
+## Current experimental status (as of 2026-07-27, real-data phase E38–E56)
+- **HEADLINE (confirmed): label-anchored real-paired modality alignment.** Train the
+  single-lead encoder to classify clinical Lead-I AND align same-patient
+  clinical↔Apple-Watch pairs (real SJLIFE) in the same step — the CE loss anchors
+  invariance so it can't destroy pathology. **0.807 alone / 0.820 +calibration
+  (+0.078 vs calibration, +0.119 vs clean, 20/20 seeds, p<1e-8)** on real CinC AF.
+  Falsification-tested (E51b: shuffled pairs → null p=0.76; only same-patient
+  correspondence works, +0.101 p=3e-10) → genuine cross-modality invariance, not
+  regularization. Robust (E54: 12/12 λ×temp cells win), general (E53: +0.034 on
+  morphology where calibration is null), label-efficient (E55: ½ the labels-to-0.85),
+  device-safe (E56: no OOD collapse, halves variance).
+- **Lever 2: closed-loop calibration** — +0.041 zero-label (E42), gap-proportional
+  (E44), rhythm-specific (E47), worth ~10-15 labels (E46). Lighter; no paired data.
+- **Both obey a dose-response law: benefit ∝ modality gap.** Real AW wrist is large-gap
+  (SJLIFE bw~0.20) → predicts large lift there (a PREDICTION — no labeled real-AW data).
+- **The E48–E50 negatives** (learned-invariance null, clinical-distillation −0.060,
+  unanchored-contrastive −0.073) identified the failure mode — unanchored invariance
+  destroys pathology — whose fix (the CE anchor) is the headline.
+- **Canonical writeup: `docs/FINDINGS.md`.** Method ladder: `results/EXPERIMENT_SYNTHESIS.md`.
+  Full notebook: `docs/EXPERIMENT_LOG.md`. Superseded simulator-phase reframe in
+  `docs/SESSION_HANDOFF.md`.
+- **Open (gated on external resources): HOME eval-portal frozen-model submission** — the
+  only path to convert the AW prediction into a measurement (application in progress).
 
 ## Domains of shift (12-lead clinical → 1-lead watch)
 lead count, electrode physics (wet vs dry), noise, sampling/bandwidth,
@@ -96,13 +101,20 @@ population/context.
   files at DIFFERENT rates (see sampling-rate pitfall above).
 - CODE-15, MIMIC-IV-ECG (clinical 12-lead) — not yet downloaded.
 
-## Key result (as of 2026-07-27, E38–E44)
-**Closed-loop modality calibration** (measure unlabeled target baseline-wander →
-binary-search a coloured-wander augmentation to hit it, QRS band untouched;
-`src/aw_generator.py::ClosedLoopCalibrator`) lifts clinical→real-single-lead
-transfer AUROC by **+0.041 (p=0.009, 20 seeds)** on CinC — GAP-PROPORTIONAL:
-helps on high-wander-gap dry-electrode devices (CinC; predicted for AW), idles
-harmlessly on clean chest-patch (Icentia, E44). The gap is baseline-wander, NOT
-HF (E43 multi-axis no-op). Pure-augmentation ceiling ~+0.041; beyond needs real
-few-shot labels or representation-level methods. Real AW still has NO public
-labels → AW lift is a dose-response PREDICTION, not proven.
+## Key result (as of 2026-07-27, E38–E56)
+**Label-anchored real-paired modality alignment** is the confirmed headline
+(`experiments/51_label_anchored_align.py::train_joint`): joint `CE(clinical Lead-I) +
+λ·InfoNCE(same-patient clinical↔Apple-Watch SJLIFE pairs)`, λ∈[0.1,0.3]. **0.807 alone
+/ 0.820 with calibration** on real CinC AF (+0.078 vs calibration, +0.119 vs clean,
+20/20 seeds, p<1e-8) — ~52% of the clean→oracle(0.93) gap, zero wearable labels.
+Falsification control (E51b) confirms genuine same-patient cross-modality invariance,
+not regularization (shuffled pairs → null, p=0.76). General beyond rhythm (E53), robust
+(E54), device-safe (E56), halves transfer variance.
+
+**Closed-loop modality calibration** is the lighter, no-paired-data lever
+(`src/aw_generator.py::ClosedLoopCalibrator`): measure unlabeled target baseline-wander
+→ binary-search a coloured-wander augmentation to hit it, QRS band untouched → **+0.041
+(p=0.009, 20 seeds)** on CinC. Both levers are GAP-PROPORTIONAL (E44/E56: help ∝ the
+modality gap; idle on clean chest-patch). Real AW wrist is large-gap → predicts a large
+lift, but real AW has NO public labels → the AW number is a PREDICTION, not proven
+(HOME eval-portal submission is the pending confirmation path). Canonical: `docs/FINDINGS.md`.

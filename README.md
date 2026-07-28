@@ -34,9 +34,12 @@ A model trained on clinical data typically **degrades sharply** on watch data du
 - `experiments/` — numbered, reproducible experiment scripts
 - `references/` — 155-paper searchable corpus + priority abstracts
 
-## Status / headline result (2026-07-27, real-data phase)
+## Status / headline result (2026-07-27, real-data phase E38–E56)
 
-**Two working levers for zero-label clinical→real-single-lead transfer (AF/rhythm):**
+📄 **Full consolidated writeup: [`docs/FINDINGS.md`](docs/FINDINGS.md)** — start here.
+
+**Two working levers for zero-wearable-label clinical→real-single-lead transfer (AF/rhythm),
+validated end-to-end on real labeled single-lead data (CinC 2017), not a simulator:**
 
 **1. Label-anchored real-paired modality alignment (headline, E51/E51b).** Train the
 encoder to classify clinical Lead-I AND align same-patient clinical↔Apple-Watch pairs
@@ -46,25 +49,32 @@ calibration, +0.119 vs clean, 20/20 seeds, p<1e-8)** — best zero-real-label tr
 date, ~52% of the clean→oracle(0.93) gap. A falsification control (E51b) confirms the
 gain is **genuine cross-modality invariance**: shuffling the pairs (different-patient
 watch) kills it entirely (p=0.76), only the true same-patient correspondence works
-(joint−shuffled +0.101, p=3e-10).
+(joint−shuffled +0.101, p=3e-10). **Stress-tested:** generalizes beyond rhythm (E53,
+where calibration is null); robust across 12/12 hyperparameter cells (E54); best at
+every label budget, ½ the labels-to-0.85 of calibration (E55); safe on an unseen 3rd
+device and halves transfer variance (E56).
 
 **2. Closed-loop modality calibration (input-space, E42).** Measure the unlabeled
 target's baseline-wander, binary-search a morphology-preserving augmentation to match
 it. **+0.041 AUROC, p=0.009**; worth ~10–15 real labels (E46); gap-proportional (E44).
-Lighter-weight; stacks under lever 1.
+Lighter-weight (no paired data needed); stacks under lever 1.
 
-**Boundaries (honest):** both are **rhythm-specific** — no benefit on morphological
-tasks (E47); neither is yet validated on real *labeled* Apple-Watch wrist data (none is
-public — the AW number is a strong prediction, not a measurement); shown on the CinC
-proxy. The three representation negatives that led here (E48 learned-invariance null, E49
-clinical-distillation backfire, E50 unanchored-contrastive collapse) identified the
-failure mode — unanchored invariance destroys signal — whose fix is lever 1.
+**Governing law (both levers):** benefit ∝ the modality gap (E44/E56) — predicts a large
+lift on real Apple-Watch wrist (a large-gap dry electrode).
+
+**Boundaries (honest):** both are **rhythm-specific for large gains** (morphology
+transfers weakly for everyone, E47/E53); neither is yet validated on real *labeled*
+Apple-Watch wrist data (none is public — the AW number is a falsifiable **prediction**,
+not a measurement; shown on the CinC proxy). The three representation negatives that led
+here (E48 learned-invariance null, E49 clinical-distillation backfire, E50
+unanchored-contrastive collapse) identified the failure mode — unanchored invariance
+destroys signal — whose fix is lever 1.
 
 **Tools:** `src/aw_generator.py::ClosedLoopCalibrator` +
 `experiments/51_label_anchored_align.py` (joint align+classify). See
-`results/EXPERIMENT_SYNTHESIS.md` for the full synthesis and honest limitations,
-and `docs/EXPERIMENT_LOG.md` for the complete trial-and-error record (negative
-results included).
+[`docs/FINDINGS.md`](docs/FINDINGS.md) for the full narrative,
+`results/EXPERIMENT_SYNTHESIS.md` for the method ladder, and `docs/EXPERIMENT_LOG.md`
+for the complete trial-and-error record (negative results included).
 
 > **Superseded:** the earlier simulator-phase claim ("lead-masking is the
 > decisive winner") was validated only on *simulated* watch data and **failed on
