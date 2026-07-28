@@ -16,8 +16,15 @@ ranks them for exploration. Numbered experiments append to the main log when the
 
 ## Ranked exploration backlog
 
-### 🥇 N1 — Drop the paired-hardware dependency (unpaired distribution alignment) → E57
-- **Why it matters most:** the headline (E51) needs an *unlabeled paired* set (SJLIFE) —
+### 🥇 N1 — Drop the paired-hardware dependency (unpaired distribution alignment) → E57 ⚠️❌ DONE
+- **RESULT (E57, 20 seeds):** unpaired distribution matching recovers only ~⅓ of the
+  paired gain and loses to plain calibration. CORAL 0.715 (+0.014 vs clean, null p=0.31),
+  Sinkhorn 0.730 (+0.029, borderline p=0.053, = calibration p=0.52); both ≪ paired 0.807
+  (0/20 seeds, p<1e-4). **Pairing is irreplaceable — the mechanism is relational
+  (same heart / two devices), not distributional (shape of the feature cloud).** This is
+  E51b seen from the other side. Consequence: a few hundred same-patient pairs beat a large
+  unpaired watch corpus → direct data collection toward PAIRING, not volume.
+- **Why it mattered most:** the headline (E51) needs an *unlabeled paired* set (SJLIFE) —
   the rarest ingredient. If we can recover a meaningful fraction of the gain from
   **unpaired** clinical & watch feature clouds (no same-patient correspondence), the
   method becomes vastly more deployable (any pile of unlabeled watch traces would do).
