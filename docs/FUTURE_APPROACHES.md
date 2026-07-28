@@ -17,6 +17,17 @@
 
 ## ═══ REAL-DATA ERA BACKLOG (E38+, current) ═══
 
+> **HOME eval-portal submission (gated on access — application in progress).**
+> Apply for tasks: **Gender, Age, Low_EF, High_NT-proBNP** (Apple device). Anchor real
+> effort on **Low_EF** (biggest baseline→FT gap 0.736→0.842 = most adaptation headroom;
+> heart-failure screening) and **Gender** (n=1000, highest power, clean sanity check).
+> Age = regression (scored as r, needs a regression head). High_NT-proBNP = low priority
+> (n=100, baseline 0.811→0.817, ~no headroom). Compliance: train on PTB-XL + SJLIFE only,
+> **frozen inference** on HOME (never train/adapt/calibrate on HOME waveforms — license
+> forbids). NOTE: all HOME tasks are morphology/demographics, NOT rhythm — tests our
+> method where it is weakest (E47/E53); expect modest results vs the fine-tuned baselines.
+> User will supply device-specific training data at submission time. Revisit then.
+
 > Everything below the next divider is **simulator-era** (E1–E23) and largely
 > superseded — the simulator over-degrades (E6) and sim-training hurts real
 > transfer (E6b). Kept for provenance. The live backlog is here.
