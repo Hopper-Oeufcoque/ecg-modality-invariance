@@ -72,6 +72,7 @@
 | E48 | **learned invariance vs implicit augmentation (20 seeds)** | invariance 0.732 (+0.031) vs closed_aug 0.742 (+0.041); head-to-head −0.010 p=0.47 | ❌ | **CEILING IS INFO-BOUND: explicit feature-consistency invariance loss (CE_clean+CE_shift+λ‖Δfeat‖²) does NOT beat implicit augmentation — lands −0.010 below it (n.s.), own lift +0.031 n.s. Two independent families (aug E42/E43 + learned invariance E48) hit the SAME +0.041 wall → wall is a property of single-lead information, not the objective. PIVOT: stop chasing cleverer invariance losses; close the residual with NEW information (real labels E46, multi-lead→single-lead distillation, or accel/PPG aux channels)** |
 | E49 | **12-lead→1-lead clinical distillation (Hinton KD, 20 seeds)** | distill 0.682 (−0.060 vs aug, p=0.0005); distill_aug 0.726 (−0.016 vs aug) | ❌❌ | **INFORMATION SOURCE MATTERS: distilling a 12-lead CLINICAL teacher HURTS real transfer — distill drops BELOW clean floor (−0.019) and far below augmentation (−0.060, p=0.0005). Teacher (train-acc 0.994, overfit) encodes clinical-modality decision boundaries → KD pulls student TOWARD clinical distribution = wrong direction. Calibration partly rescues (distill_aug 0.726) but fights the distill pull, still < pure aug. SHARPENS E48: extra clinical info is modality-ENTANGLED; injecting it imports modality bias, not invariant structure. Useful aux info must be watch-anchored/modality-invariant → pivot to real paired hardware (SJLIFE, E50)** |
 | E50 | **SJLIFE real-paired contrastive invariance pretraining (20 seeds)** | sjlife_ft 0.669 (−0.073 vs aug, p=2e-5); sjlife_ft_aug 0.735 (−0.007 vs aug, n.s.) | ❌❌ | **ALIGNMENT ≠ USEFUL INVARIANCE: InfoNCE on 243 real clinical↔watch pairs CONVERGED (4.01→0.63) but transfer got WORSE — sjlife_ft below clean floor (−0.032), far below aug (−0.073). Invariance-by-information-DESTRUCTION: tiny paired set + trivial same-patient objective → encoder collapses to low-level/patient-id features that match across modalities, DISCARDING pathology morphology. sjlife_ft_aug≈aug (overwrites init, adds nothing). E48+E49+E50 ALL fail to beat calibration → representation engineering NOT anchored to the label trades away discriminative content. Next: label-preserving constraint (E51 supervised-contrastive/joint pretrain+classify)** |
+| E51 | **LABEL-ANCHORED joint align+classify (20 seeds) ⚠️PROVISIONAL** | joint 0.807 (+0.106 vs clean, +0.065 vs aug, 20/20); joint_aug 0.820 (+0.078 vs aug, 20/20) | ✅⚠️ | **FIRST representation method to BEAT calibration — huge unanimous margin (joint_aug 0.820 = best zero-real-label transfer yet, closes ~52% of clean→oracle gap). CE anchor (per-step CE + λ·InfoNCE on SJLIFE pairs) prevents the E50 info-destruction. BUT variance collapsed (0.048→0.023) = regularizer footprint → CONFOUND: same-patient modality alignment (invariance) vs generic aux-ECG SSL regularization? NO invariance claim until E51b control (shuffled-pair + self-calibrated-view) decides. Provisional.** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1285,6 +1286,34 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   wrist) — invariance learned is SJLIFE-internal, not CinC's; n=243 small for contrastive;
   temp 0.1 a-priori; AF/N easy; 20 seeds. Files: `results/50_sjlife_align/`,
   `experiments/50_sjlife_align.py`.
+
+---
+
+## E51 — Label-anchored joint align+classify: first representation win (PROVISIONAL) (2026-07-27)
+- **Hypothesis (E50 fix):** E48/E49/E50 all lost to calibration because nothing
+  protected the label while aligning. Align modalities AND classify JOINTLY (same
+  step) so CE forbids collapse onto label-destroying invariance. Objective:
+  CE(PTB-XL Lead-I) + λ·InfoNCE(real SJLIFE clinical↔watch pairs), λ=0.1, shared encoder.
+- **Setup:** 20 seeds, test real CinC AF/N. Arms: clean · closed_aug · joint ·
+  joint_aug (joint with calibrated Lead-I input).
+- **Result:** clean 0.701 · closed_aug 0.742 · **joint 0.807** · **joint_aug 0.820**.
+  joint−clean +0.106 (20/20, p=5e-8); joint−aug +0.065 (20/20, p=8e-6); joint_aug−aug
+  +0.078 (20/20, p=9e-7). **Variance collapsed** 0.048→0.023.
+- **Verdict ✅⚠️ (PROVISIONAL — big win, control pending):** FIRST representation
+  method to beat calibration, unanimous 20/20, largest zero-real-label transfer yet
+  (joint_aug 0.820 closes ~52% of the clean→oracle 0.93 gap vs calibration's ~18%).
+- **⚠️ Why provisional:** variance collapse + big mean gain = classic REGULARIZER
+  footprint. Confound: is the gain from same-patient modality ALIGNMENT (the invariance
+  claim) or from bolting ANY aux InfoNCE loss on extra real ECG (generic SSL
+  regularization)? **No invariance claim until E51b controls decide:**
+  (a) `joint_shuffled` — mismatched (different-patient) pairs: keeps aux-ECG InfoNCE,
+  destroys correspondence; (b) `joint_selfclin` — align clinical to its own calibrated
+  view, no SJLIFE watch at all. If joint≈shuffled → generic regularization (retract
+  invariance story); if joint>shuffled → real correspondence matters.
+- **Honest flags:** SJLIFE align label-free but CE-gated; 3 devices (CinC finger ≠
+  Apple wrist ≠ SJLIFE wrist); λ=0.1 a-priori; AF/N easy; single train set; 20 seeds;
+  PROVISIONAL pending E51b. Files: `results/51_label_anchored_align/`,
+  `experiments/51_label_anchored_align.py`.
 
 ---
 

@@ -1,0 +1,52 @@
+{
+  "seeds": 20,
+  "lambda": 0.1,
+  "temp": 0.1,
+  "sjlife_patients": 243,
+  "means": {
+    "clean": 0.7007534216827892,
+    "closed_aug": 0.7419576323787631,
+    "joint": 0.8071667647984849,
+    "joint_aug": 0.819813664851931
+  },
+  "stds": {
+    "clean": 0.0483629175761839,
+    "closed_aug": 0.04726209011836635,
+    "joint": 0.022849564274900983,
+    "joint_aug": 0.020451310224795623
+  },
+  "comparisons": {
+    "closed_aug_vs_clean": {
+      "delta": 0.04120421069597381,
+      "wins": 15,
+      "p": 0.008829542914040965
+    },
+    "joint_vs_clean": {
+      "delta": 0.10641334311569588,
+      "wins": 20,
+      "p": 4.656620727656947e-08
+    },
+    "joint_vs_aug": {
+      "delta": 0.06520913241972208,
+      "wins": 20,
+      "p": 7.731589054946247e-06
+    },
+    "joint_aug_vs_aug": {
+      "delta": 0.07785603247316786,
+      "wins": 20,
+      "p": 9.399071635839705e-07
+    },
+    "joint_aug_vs_clean": {
+      "delta": 0.11906024316914168,
+      "wins": 20,
+      "p": 5.400309159042146e-09
+    }
+  },
+  "honesty": [
+    "SJLIFE align term label-free but gated by CE anchor",
+    "3 devices: CinC finger != AW wrist != SJLIFE wrist",
+    "lambda=0.1 a priori not tuned",
+    "AF/NORM easy task",
+    "single clinical train set"
+  ]
+}
