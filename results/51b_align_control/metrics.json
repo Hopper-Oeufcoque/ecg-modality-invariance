@@ -1,0 +1,52 @@
+{
+  "seeds": 20,
+  "lambda": 0.1,
+  "temp": 0.1,
+  "means": {
+    "clean": 0.7007534216827892,
+    "joint": 0.8071667647984849,
+    "joint_shuffled": 0.70578427267376,
+    "joint_selfclin": 0.7420845039679349
+  },
+  "stds": {
+    "clean": 0.0483629175761839,
+    "joint": 0.022849564274900983,
+    "joint_shuffled": 0.04069161605364352,
+    "joint_selfclin": 0.031366711779586456
+  },
+  "comparisons": {
+    "joint_vs_clean": {
+      "delta": 0.10641334311569588,
+      "wins": 20,
+      "p": 4.656620727656947e-08
+    },
+    "shuffled_vs_clean": {
+      "delta": 0.005030850990970753,
+      "wins": 11,
+      "p": 0.7615407735582874
+    },
+    "selfclin_vs_clean": {
+      "delta": 0.041331082285145704,
+      "wins": 15,
+      "p": 0.00528439558657032
+    },
+    "joint_vs_shuffled": {
+      "delta": 0.10138249212472514,
+      "wins": 20,
+      "p": 3.094147428307508e-10
+    },
+    "joint_vs_selfclin": {
+      "delta": 0.06508226083055017,
+      "wins": 19,
+      "p": 3.996727619813212e-08
+    }
+  },
+  "honesty": [
+    "shuffled=fixed derangement per seed",
+    "selfclin uses no SJLIFE watch",
+    "3 devices",
+    "lambda=0.1 a priori",
+    "AF/NORM easy",
+    "single clinical train set"
+  ]
+}

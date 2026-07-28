@@ -1,7 +1,7 @@
 # Clinical → Wearable Single-Lead ECG Transfer: Synthesis of Findings
 
 **Repo:** github.com/Hopper-Oeufcoque/ecg-modality-invariance · **Author:** Hopper
-**Status (2026-07-27):** real-data results (E38–E47). This supersedes the earlier
+**Status (2026-07-27):** real-data results (E38–E51b). This supersedes the earlier
 simulator-phase synthesis (E1–E5), most of which was later **refuted on real
 data** — see "What we retracted" below.
 
@@ -12,27 +12,41 @@ Leverage abundant **clinical** ECG data to train models usable on **Apple Watch*
 (and other wearable single-lead) ECG for downstream detection — ideally with
 **zero or minimal** target labels, approaching a train-on-target oracle.
 
-## TL;DR — what actually works, and where it stops
-**Closed-loop modality calibration** (measure the unlabeled target's baseline-wander
-level, then binary-search a morphology-preserving coloured-wander augmentation on
-clinical data to hit it) gives a **real, significant, zero-label** transfer gain
-— but **only for rhythm-detectable tasks**, and only on devices that actually
-have a modality gap.
+## TL;DR — two levers that work, one wall, one hard boundary
+
+**Lever 1 — Closed-loop modality calibration** (input-space): measure the unlabeled
+target's baseline-wander, binary-search a morphology-preserving coloured-wander
+augmentation on clinical data to match it. Real, significant, zero-label: **+0.041
+AUROC** (E42), gap-proportional, worth ~10–15 real labels (E46).
+
+**Lever 2 — Label-anchored real-paired modality alignment** (representation-space,
+the HEADLINE result): train the encoder to classify (CE on clinical Lead-I) AND
+align same-patient clinical↔watch pairs (InfoNCE on real SJLIFE hardware) **jointly**,
+so the label anchor stops invariance from destroying pathology. **joint 0.807
+(+0.106 vs clean), joint_aug 0.820 (+0.078 vs calibration), 20/20 seeds** (E51),
+and a falsification control (E51b) proves it is genuine same-patient cross-modality
+invariance, not generic SSL regularization (shuffled pairs → gain vanishes, p=3e-10).
+Best zero-real-label transfer to date — closes ~52% of the clean→oracle(0.93) gap.
 
 | dimension | finding | evidence |
 |---|---|---|
-| **Zero-label lift (AF)** | +0.041 AUROC (0.701→0.742), p=0.009, 20 seeds | E42 |
-| **Label-equivalent value** | worth ~10–15 real labeled examples | E46 |
-| **Best minimal-tuning recipe** | calibrate-on-unlabeled + ~50 real labels → 0.855 | E46 |
-| **Gap-proportional** | helps on high-wander dry-electrode (CinC); idles on clean chest-patch (Icentia) | E42 vs E44 |
-| **Rhythm-specific** | vanishes on morphological task (−0.002) | E47 |
-| **Augmentation ceiling** | ~+0.041; residual gap is in-band (QRS/mid). Confirmed **information-bound**: learned invariance hits the same wall (E48) | E43, E48 |
+| **Zero-label lift (calibration, AF)** | +0.041 AUROC (0.701→0.742), p=0.009 | E42 |
+| **Zero-label lift (label-anchored alignment, AF)** | **+0.119 vs clean → 0.820**, 20/20, p=5e-9 | E51 |
+| **Alignment is REAL invariance, not regularization** | shuffled pairs give nothing (p=0.76); joint−shuffled +0.101 (p=3e-10) | E51b |
+| **Label-equivalent value (calibration)** | worth ~10–15 real labeled examples | E46 |
+| **Gap-proportional (calibration)** | helps on high-wander dry-electrode (CinC); idles on clean chest-patch (Icentia) | E42 vs E44 |
+| **Rhythm-specific (calibration)** | vanishes on morphological task (−0.002) | E47 |
+| **Augmentation ceiling** | ~+0.041; residual in-band. Info-bound: UNANCHORED invariance hits the same wall (E48) or worse (E49/E50) — the label anchor (E51) is what breaks past it | E43, E48–E51 |
 | **Oracle (train-on-real, AF)** | 0.93 | E42 |
 
 **One-line honest claim:** *For rhythm-detectable wearable tasks (AF confirmed),
-closed-loop modality calibration converts clinical data into a zero-label
-transfer gain worth ~10–15 labels; it does not extend to morphological diagnosis,
-where single-lead transfer is intrinsically weak.*
+label-anchored alignment on real clinical↔watch pairs learns a genuine
+modality-invariant encoder that transfers clinical→real-single-lead at 0.807–0.820
+with zero target disease labels (closing ~half the gap to the train-on-target
+oracle); plain input-space calibration is a lighter-weight lever worth ~10–15 labels.
+Neither is yet validated on real labeled Apple-Watch wrist data (no public set), and
+the effect is rhythm-scoped — morphological single-lead diagnosis remains intrinsically
+weak (E47).*
 
 ---
 
@@ -167,3 +181,5 @@ train clinical Lead-I with the calibrated augmentation → (optional) fine-tune 
 - E48 `results/48_representation_invariance/` — learned invariance = augmentation (ceiling is info-bound)
 - E49 `results/49_distillation/` — 12-lead→1-lead clinical distillation BACKFIRES (source must be modality-invariant)
 - E50 `results/50_sjlife_align/` — real-paired contrastive pretraining hurts (alignment ≠ useful invariance; needs label anchor)
+- E51 `results/51_label_anchored_align/` — **HEADLINE: label-anchored alignment beats calibration, 0.820 (+0.078), 20/20**
+- E51b `results/51b_align_control/` — control CONFIRMS E51 is real cross-modality invariance (shuffled→null, p=3e-10)

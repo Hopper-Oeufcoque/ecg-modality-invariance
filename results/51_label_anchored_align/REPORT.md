@@ -1,8 +1,11 @@
-# E51 — Label-anchored modality alignment: the first representation win (PROVISIONAL — control pending)
+# E51 — Label-anchored modality alignment: the first representation win (CONFIRMED by E51b)
 
 **Date:** 2026-07-27
 **Script:** `experiments/51_label_anchored_align.py`
 **Seeds:** 20 · **λ (align weight):** 0.1 · **temp:** 0.1 · SJLIFE pairs: 243
+**STATUS: CONFIRMED** — E51b mechanism control passed (joint − shuffled = +0.101,
+p=3e-10): the gain is genuine same-patient cross-modality invariance, NOT generic
+auxiliary-SSL regularization. See `results/51b_align_control/REPORT.md`.
 
 ## Hypothesis
 E48/E49/E50 all lost to calibration because nothing protected the label signal

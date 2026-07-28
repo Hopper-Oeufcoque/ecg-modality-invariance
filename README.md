@@ -36,19 +36,32 @@ A model trained on clinical data typically **degrades sharply** on watch data du
 
 ## Status / headline result (2026-07-27, real-data phase)
 
-**Closed-loop modality calibration** works for **rhythm-detectable** wearable
-tasks, with clear boundaries:
+**Two working levers for zero-label clinical→real-single-lead transfer (AF/rhythm):**
 
-- **Zero-label AF transfer:** +0.041 AUROC (0.701→0.742), p=0.009, 20 seeds, on
-  **real** labeled single-lead (CinC 2017). Calibration uses only *unlabeled*
-  target data. (E41/E42)
-- **Worth ~10–15 real labels**; best minimal-tuning recipe = calibrate + ~50
-  labels → 0.855. (E46)
-- **Gap-proportional** (helps dry-electrode, idles on clean chest-patch — E44),
-  **rhythm-specific** (no benefit on morphological tasks — E47), augmentation
-  ceiling ~+0.041 (E43).
+**1. Label-anchored real-paired modality alignment (headline, E51/E51b).** Train the
+encoder to classify clinical Lead-I AND align same-patient clinical↔Apple-Watch pairs
+(real SJLIFE hardware) in the same step — the classification loss anchors invariance so
+it can't destroy pathology. **0.807 alone / 0.820 with calibration (+0.078 vs
+calibration, +0.119 vs clean, 20/20 seeds, p<1e-8)** — best zero-real-label transfer to
+date, ~52% of the clean→oracle(0.93) gap. A falsification control (E51b) confirms the
+gain is **genuine cross-modality invariance**: shuffling the pairs (different-patient
+watch) kills it entirely (p=0.76), only the true same-patient correspondence works
+(joint−shuffled +0.101, p=3e-10).
 
-**Tool:** `src/aw_generator.py::ClosedLoopCalibrator`. See
+**2. Closed-loop modality calibration (input-space, E42).** Measure the unlabeled
+target's baseline-wander, binary-search a morphology-preserving augmentation to match
+it. **+0.041 AUROC, p=0.009**; worth ~10–15 real labels (E46); gap-proportional (E44).
+Lighter-weight; stacks under lever 1.
+
+**Boundaries (honest):** both are **rhythm-specific** — no benefit on morphological
+tasks (E47); neither is yet validated on real *labeled* Apple-Watch wrist data (none is
+public — the AW number is a strong prediction, not a measurement); shown on the CinC
+proxy. The three representation negatives that led here (E48 learned-invariance null, E49
+clinical-distillation backfire, E50 unanchored-contrastive collapse) identified the
+failure mode — unanchored invariance destroys signal — whose fix is lever 1.
+
+**Tools:** `src/aw_generator.py::ClosedLoopCalibrator` +
+`experiments/51_label_anchored_align.py` (joint align+classify). See
 `results/EXPERIMENT_SYNTHESIS.md` for the full synthesis and honest limitations,
 and `docs/EXPERIMENT_LOG.md` for the complete trial-and-error record (negative
 results included).

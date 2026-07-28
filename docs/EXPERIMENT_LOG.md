@@ -72,7 +72,8 @@
 | E48 | **learned invariance vs implicit augmentation (20 seeds)** | invariance 0.732 (+0.031) vs closed_aug 0.742 (+0.041); head-to-head −0.010 p=0.47 | ❌ | **CEILING IS INFO-BOUND: explicit feature-consistency invariance loss (CE_clean+CE_shift+λ‖Δfeat‖²) does NOT beat implicit augmentation — lands −0.010 below it (n.s.), own lift +0.031 n.s. Two independent families (aug E42/E43 + learned invariance E48) hit the SAME +0.041 wall → wall is a property of single-lead information, not the objective. PIVOT: stop chasing cleverer invariance losses; close the residual with NEW information (real labels E46, multi-lead→single-lead distillation, or accel/PPG aux channels)** |
 | E49 | **12-lead→1-lead clinical distillation (Hinton KD, 20 seeds)** | distill 0.682 (−0.060 vs aug, p=0.0005); distill_aug 0.726 (−0.016 vs aug) | ❌❌ | **INFORMATION SOURCE MATTERS: distilling a 12-lead CLINICAL teacher HURTS real transfer — distill drops BELOW clean floor (−0.019) and far below augmentation (−0.060, p=0.0005). Teacher (train-acc 0.994, overfit) encodes clinical-modality decision boundaries → KD pulls student TOWARD clinical distribution = wrong direction. Calibration partly rescues (distill_aug 0.726) but fights the distill pull, still < pure aug. SHARPENS E48: extra clinical info is modality-ENTANGLED; injecting it imports modality bias, not invariant structure. Useful aux info must be watch-anchored/modality-invariant → pivot to real paired hardware (SJLIFE, E50)** |
 | E50 | **SJLIFE real-paired contrastive invariance pretraining (20 seeds)** | sjlife_ft 0.669 (−0.073 vs aug, p=2e-5); sjlife_ft_aug 0.735 (−0.007 vs aug, n.s.) | ❌❌ | **ALIGNMENT ≠ USEFUL INVARIANCE: InfoNCE on 243 real clinical↔watch pairs CONVERGED (4.01→0.63) but transfer got WORSE — sjlife_ft below clean floor (−0.032), far below aug (−0.073). Invariance-by-information-DESTRUCTION: tiny paired set + trivial same-patient objective → encoder collapses to low-level/patient-id features that match across modalities, DISCARDING pathology morphology. sjlife_ft_aug≈aug (overwrites init, adds nothing). E48+E49+E50 ALL fail to beat calibration → representation engineering NOT anchored to the label trades away discriminative content. Next: label-preserving constraint (E51 supervised-contrastive/joint pretrain+classify)** |
-| E51 | **LABEL-ANCHORED joint align+classify (20 seeds) ⚠️PROVISIONAL** | joint 0.807 (+0.106 vs clean, +0.065 vs aug, 20/20); joint_aug 0.820 (+0.078 vs aug, 20/20) | ✅⚠️ | **FIRST representation method to BEAT calibration — huge unanimous margin (joint_aug 0.820 = best zero-real-label transfer yet, closes ~52% of clean→oracle gap). CE anchor (per-step CE + λ·InfoNCE on SJLIFE pairs) prevents the E50 info-destruction. BUT variance collapsed (0.048→0.023) = regularizer footprint → CONFOUND: same-patient modality alignment (invariance) vs generic aux-ECG SSL regularization? NO invariance claim until E51b control (shuffled-pair + self-calibrated-view) decides. Provisional.** |
+| E51 | **LABEL-ANCHORED joint align+classify (20 seeds) ✅CONFIRMED** | joint 0.807 (+0.106 vs clean, +0.065 vs aug, 20/20); joint_aug 0.820 (+0.078 vs aug, 20/20) | ✅✅ | **FIRST representation method to BEAT calibration — huge unanimous margin (joint_aug 0.820 = best zero-real-label transfer yet, closes ~52% of clean→oracle gap). CE anchor (per-step CE + λ·InfoNCE on SJLIFE pairs) prevents the E50 info-destruction. CONFIRMED by E51b: gain is genuine same-patient cross-modality invariance (not generic SSL regularization). The E48→E50 negatives identified the failure mode whose fix makes this work.** |
+| E51b | **mechanism control: shuffled-pair + self-calibrated-view (20 seeds)** | joint 0.807 vs shuffled 0.706 (Δ+0.101, p=3e-10); selfclin 0.742 (=calibration) | ✅✅ | **DECISIVE: (1) SHUFFLED pairs (clinical↔different-patient watch) give NOTHING (0.706≈clean 0.701, p=0.76) → generic aux-SSL regularization hypothesis FALSIFIED. (2) SELF-calibrated view (no watch data) reproduces calibration EXACTLY (0.742) and no more → augmentation-consistency ≠ the extra gain. (3) Only CORRECT real pairing gives 0.807 (+0.101 vs shuffled, 20/20, p=3e-10) → same-patient cross-modality CORRESPONDENCE is the mechanism. E51 win = real modality invariance from real paired hardware. Confirms & promotes E51.** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1314,6 +1315,35 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   Apple wrist ≠ SJLIFE wrist); λ=0.1 a-priori; AF/N easy; single train set; 20 seeds;
   PROVISIONAL pending E51b. Files: `results/51_label_anchored_align/`,
   `experiments/51_label_anchored_align.py`.
+
+---
+
+## E51b — Mechanism control: E51's win IS real invariance, not regularization (2026-07-27)
+- **Question:** E51's +0.078 came with a variance collapse (regularizer footprint).
+  Is the gain same-patient modality ALIGNMENT (invariance) or ANY aux InfoNCE on extra
+  real ECG (generic SSL regularization)? Identical joint loop, only the positive-pair
+  definition changes.
+- **Setup (20 seeds):** clean · joint (correct pairs) · joint_shuffled (clinical ↔
+  DIFFERENT patient's watch, fixed derangement) · joint_selfclin (clinical ↔ its OWN
+  calibrated view, no watch data).
+- **Result:** clean 0.701 · **joint 0.807** · joint_shuffled 0.706 · joint_selfclin 0.742.
+  shuffled−clean +0.005 (p=0.76 n.s.); selfclin−clean +0.041 (=calibration);
+  **joint−shuffled +0.101 (20/20, p=3e-10)**; joint−selfclin +0.065 (19/20, p=4e-8).
+- **Verdict ✅✅ (CONFIRMS E51):** three hypotheses cleanly separated. (1) **Generic
+  regularization FALSIFIED** — shuffled keeps the aux loss + all real ECG but the gain
+  VANISHES (0.706≈0.701). (2) **Augmentation-consistency insufficient** — selfclin (no
+  watch) reproduces calibration exactly (0.742) and no more. (3) **Same-patient
+  cross-modality correspondence is THE mechanism** — only correct pairs give 0.807
+  (+0.101 vs shuffled, p=3e-10). The encoder exploits "same heart, two recordings →
+  same features." Genuine modality invariance from real paired hardware.
+- **Lesson:** the E48→E50 negatives were necessary — they isolated the failure mode
+  (unanchored invariance destroys pathology) whose fix (CE anchor in the SAME step)
+  makes E51 work. Anchor + real correspondence together = the win; either alone is not.
+- **Honest flags:** 3 devices (invariance learned SJLIFE clinical+wrist, tested on CinC
+  finger; real AW wrist still unlabeled → AW number is a strong PREDICTION not a
+  measurement); AF/rhythm only (E51 morphology untested — next); λ/temp a-priori (not
+  tuned, so maybe not optimal); n=243; 20 seeds. Files: `results/51b_align_control/`,
+  `experiments/51b_align_control.py`.
 
 ---
 
