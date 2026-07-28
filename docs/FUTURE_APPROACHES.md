@@ -41,19 +41,36 @@
   same-patient objective → encoder discards pathology morphology. Confirms
   E48/E49/E50 pattern: unanchored representation engineering loses to calibration.
 
-### 🔴 E51 — LABEL-ANCHORED alignment (the fix for E48/E49/E50)
-- **Why here:** E48/E49/E50 all failed because nothing protected the label signal
-  while aligning modalities. The fix: alignment + classification **jointly**, so the
-  encoder cannot collapse onto label-destroying invariance.
-- **How (candidates):** (a) **joint objective** — train the AF/NORM head on PTB-XL
-  Lead-I AND a modality-alignment term on SJLIFE pairs *simultaneously* (multi-task),
-  so morphology is preserved by the CE term while the pairs pull modalities together;
-  (b) **supervised contrastive** with a modality-shifted view (calibrated Lead-I) as
-  the positive, label defines negatives — anchors invariance to the class.
-  Compare vs pure calibration (must beat +0.041 to matter).
-- **Difficulty:** medium. **Value:** high — the last untested representation lever
-  that respects the E48–E50 lesson. If this also fails to beat calibration, the
-  verdict is firm: input-space calibration + real labels is the whole story.
+### 🔴 ~~E51 — LABEL-ANCHORED alignment~~ (RUN ✅✅ CONFIRMED — HEADLINE WIN)
+- **Status:** ✅ ran + controlled 2026-07-27. Joint CE(clinical Lead-I) +
+  λ·InfoNCE(SJLIFE real pairs) → **joint 0.807 / joint_aug 0.820** (+0.078 vs
+  calibration, 20/20, p=9e-7). E51b control CONFIRMED it is genuine same-patient
+  cross-modality invariance (shuffled pairs → null p=0.76; joint−shuffled +0.101
+  p=3e-10), NOT generic SSL regularization. First representation method to beat
+  calibration. Now the project headline (see README + EXPERIMENT_SYNTHESIS).
+
+### 🔴 E53 — Rhythm-breadth / morphology test of the E51 WIN (highest priority)
+- **Why here:** E51 is confirmed on AF only. E47 showed *calibration* is
+  rhythm-specific — does label-anchored ALIGNMENT break that boundary, or share it?
+  This is the single most important open question: if alignment helps morphology too,
+  the method is far more general than calibration.
+- **How:** rerun E51 joint arms on the E47 harder task (PTB-XL NORM-vs-morphological
+  → CinC N-vs-O). Compare joint vs clean vs calibration on morphology.
+- **Difficulty:** low (compose E51 + E47 harnesses). **Value:** very high — bounds the
+  generality of the headline result.
+
+### 🟠 E54 — λ / temperature sensitivity of E51
+- **Why here:** λ=0.1, temp=0.1 were a-priori, untuned — the 0.820 may not be optimal.
+  A small sweep (λ∈{0.03,0.1,0.3,1.0}, temp∈{0.05,0.1,0.2}) maps robustness and
+  whether the win is fragile or broad. **Difficulty:** low. **Value:** medium — shows
+  the effect isn't a lucky hyperparameter, and may push past 0.820.
+
+### 🟠 E55 — Few-shot stacking on the E51 champion (best deployable recipe)
+- **Why here:** E46 showed calibration + ~50 real labels → 0.855. Does label-anchored
+  alignment + k real labels reach oracle (0.93) faster? Maps the best achievable recipe
+  under a realistic label budget, now from a much higher zero-label base (0.820).
+- **How:** E46 few-shot curve (k=0/25/50/100) with joint_aug as the base.
+- **Difficulty:** low (reuse E46). **Value:** high — the deployment recipe.
 
 ### 🟠 E52 — Beyond-AF rhythm breadth (flutter / PVC / PAC)
 - **Why here:** E47 showed the lift is rhythm-specific but only tested AF vs a
