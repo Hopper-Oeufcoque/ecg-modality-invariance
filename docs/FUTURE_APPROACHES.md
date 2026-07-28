@@ -62,12 +62,12 @@
   1.0 overwhelms CE). Best λ=0.3/temp=0.1 → 0.819 (+0.014 over default). Headline is
   NOT a lucky point; deployable without careful tuning. See E54 log entry.
 
-### 🟠 E55 — Few-shot stacking on the E51 champion (best deployable recipe)
-- **Why here:** E46 showed calibration + ~50 real labels → 0.855. Does label-anchored
-  alignment + k real labels reach oracle (0.93) faster? Maps the best achievable recipe
-  under a realistic label budget, now from a much higher zero-label base (0.820).
-- **How:** E46 few-shot curve (k=0/25/50/100) with joint_aug as the base.
-- **Difficulty:** low (reuse E46). **Value:** high — the deployment recipe.
+### 🟠 ~~E55 — Few-shot stacking on the E51 champion~~ (RUN ✅)
+- **Status:** ✅ ran 2026-07-27. Alignment gives best transfer at EVERY label budget
+  (k0 0.805, k50 0.863, k100 0.866); reaches 0.85 at k=50 vs calibration's k=100.
+  Biggest edge at k=0 (+0.069); advantage shrinks with labels (substitutes, like E46).
+  Real k=10 DIP (fine-tuning aligned encoder on 10 labels hurts). Deployment rule: <25
+  labels → zero-shot; ~50 → fine-tune → 0.863. Oracle 0.93 needs ≫100 labels. See E55 log.
 
 ### 🟠 E52 — Beyond-AF rhythm breadth (flutter / PVC / PAC)
 - **Why here:** E47 showed the lift is rhythm-specific but only tested AF vs a

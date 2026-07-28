@@ -106,10 +106,21 @@ weak (E47).*
 - `signal_modality_stats`, `measure_distribution`, `qrs_morphology_preserved`
   (QRS-band corr + R-peak match — the label-validity guard).
 
-**Recipe:** z-score per record (SJLIFE showed ~8× clinical/AW gain difference) →
-measure target bw from unlabeled wearable data → `ClosedLoopCalibrator.fit` →
-train clinical Lead-I with the calibrated augmentation → (optional) fine-tune on
-~50 real labels.
+**Recipe (calibration — the zero-dependency baseline):** z-score per record (SJLIFE
+showed ~8× clinical/AW gain difference) → measure target bw from unlabeled wearable
+data → `ClosedLoopCalibrator.fit` → train clinical Lead-I with the calibrated
+augmentation → (optional) fine-tune on ~50 real labels. Zero-label lift +0.041 (E42).
+
+**Recipe (label-anchored alignment — the CONFIRMED champion, E51/E51b/E53/E54/E55):**
+if an *unlabeled* real paired set exists (clinical + wearable, same patient, e.g.
+SJLIFE), train the single-lead encoder JOINTLY: `CE(clinical Lead-I labels) + λ·InfoNCE(
+same-patient clinical↔wearable pairs)`, λ∈[0.1,0.3], temp∈[0.05,0.2] (robust plateau,
+E54). Optionally stack the calibrated input (joint_aug). Deployment operating points
+(E55): **zero real labels → 0.805–0.820**; **~50 real labels → fine-tune → 0.863**
+(crosses 0.85 at half the labels calibration needs). **Rule: with <~25 real labels,
+use the aligned model ZERO-SHOT — do NOT fine-tune (k=10 dip, E55).** Mechanism is
+genuine same-patient cross-modality invariance (falsification-tested, E51b), generalizes
+beyond rhythm (E53). Near-oracle (0.93) still needs ≫100 real labels — honest ceiling.
 
 ---
 
@@ -186,3 +197,4 @@ train clinical Lead-I with the calibrated augmentation → (optional) fine-tune 
 - E51b `results/51b_align_control/` — control CONFIRMS E51 is real cross-modality invariance (shuffled→null, p=3e-10)
 - E53 `results/53_align_morphology/` — alignment generalizes beyond rhythm: +0.034 on morphology where calibration is null
 - E54 `results/54_lambda_temp_sweep/` — headline robust: 12/12 λ×temp cells beat calibration (plateau 0.80–0.82)
+- E55 `results/55_align_fewshot/` — alignment best at every label budget; 0.85 at k=50 (½ calibration's labels); k=10 dip → zero-shot <25 labels

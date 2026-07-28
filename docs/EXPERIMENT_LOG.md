@@ -76,6 +76,7 @@
 | E53 | **Does alignment break the rhythm boundary? Morphology test (20 seeds)** | joint 0.594 (+0.034 vs clean, 20/20, p=9e-9); calibration null (−0.002) | ✅ | **ALIGNMENT IS MORE GENERAL THAN CALIBRATION. On E47's morphological task (N-vs-O) where calibration is NULL (−0.002, reproduces E47), alignment delivers a real unanimous +0.034 (20/20, p=9e-9). Smaller than AF's +0.106 (morphology intrinsically hard: oracle only 0.750; CinC-O weak catch-all label) but categorically ≠ calibration's zero. WHY: calibration perturbs one out-of-band input axis (rhythm only); alignment works in FEATURE space forcing same-content→same-features across modalities incl. in-band morphology. Broadens the method beyond rhythm — more AW downstream tasks reachable.** |
 | E51b | **mechanism control: shuffled-pair + self-calibrated-view (20 seeds)** | joint 0.807 vs shuffled 0.706 (Δ+0.101, p=3e-10); selfclin 0.742 (=calibration) | ✅✅ | **DECISIVE: (1) SHUFFLED pairs (clinical↔different-patient watch) give NOTHING (0.706≈clean 0.701, p=0.76) → generic aux-SSL regularization hypothesis FALSIFIED. (2) SELF-calibrated view (no watch data) reproduces calibration EXACTLY (0.742) and no more → augmentation-consistency ≠ the extra gain. (3) Only CORRECT real pairing gives 0.807 (+0.101 vs shuffled, 20/20, p=3e-10) → same-patient cross-modality CORRESPONDENCE is the mechanism. E51 win = real modality invariance from real paired hardware. Confirms & promotes E51.** |
 | E54 | **λ/temp sensitivity sweep of E51 (12 cells × 10 seeds)** | ALL 12/12 cells beat calibration + clean; plateau 0.80–0.82; best λ=0.3/temp=0.1 → 0.819 | ✅ | **HEADLINE IS ROBUST, not a lucky point. Every hyperparameter cell beats calibration (0.737) and clean (0.701); central region λ∈{0.1,0.3}×all temps sits 0.799–0.819. Clear U-shape in λ: 0.03 too weak (0.76, high var), 0.1–0.3 sweet spot (0.80–0.82), 1.0 alignment starts to overwhelm CE (0.79, lowest var = E50 failure mode reasserting but CE anchor holds). temp 2nd-order (≤0.017). Default near-optimal; light tune to λ=0.3 buys +0.014. Deployable without careful tuning.** |
+| E55 | **alignment × few-shot real labels (k=0–100, 10 seeds)** | joint dominates every k (k0 0.805, k50 0.863, k100 0.866); reaches 0.85 at k=50 vs calibration's k=100 | ✅ | **BEST RECIPE AT EVERY LABEL BUDGET. joint ≥ calibration ≥ clean at all k; halves labels-to-0.85 (50 vs 100; clean never). Biggest edge at k=0 (+0.069) — the deployment regime. BUT (1) advantage shrinks with labels (+0.069→+0.013, alignment & labels partial SUBSTITUTES like E46); (2) real k=10 DIP: joint 0.772 < its own k=0 0.805 — fine-tuning aligned encoder on 10 labels HURTS (tiny-k instability E30). Deployment rule: <25 labels → use aligned model ZERO-SHOT, don't fine-tune; ~50 labels → fine-tune → 0.863. Oracle 0.930 needs ≫100 labels (honest ceiling, no method closes it).** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1397,6 +1398,33 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
 - **Honest flags:** 10 seeds/cell (vs 20 in E51); CinC finger ≠ AW wrist; AF/N easy;
   single clinical train set; coarse 4×3 grid; 3-device caveat. Files:
   `results/54_lambda_temp_sweep/`, `experiments/54_lambda_temp_sweep.py`.
+
+---
+
+## E55 — Alignment × few-shot real labels: best recipe at every budget (2026-07-27)
+- **Hypothesis:** north-star recipe = clinical + unlabeled pairs + a few real labels.
+  E46 mapped clean vs calibration (plateau ~0.85). Does alignment (E51 k=0 winner)
+  stay ahead / reach oracle faster as k real CinC labels are added, or converge?
+- **Setup (10 seeds):** base models clean / calibration / joint(E51), each fine-tuned
+  on k∈{0,10,25,50,100} real CinC labels; + oracle (train-on-real).
+- **Result:** joint dominates absolute AUROC at EVERY k: k0 0.805 · k10 0.772 · k25
+  0.836 · k50 0.863 · k100 0.866 (vs calibration 0.735/0.770/0.824/0.849/0.853; clean
+  0.701/0.742/0.807/0.843/0.845). oracle 0.930. Reaches 0.85 at k=50 (calibration
+  k=100; clean never ≤100). joint−calibration: k0 +0.069 (p=0.003) shrinking to
+  +0.013 @k100.
+- **Verdict ✅ (best recipe at every budget, two honest caveats):** alignment gives the
+  best transfer at all label budgets, halves labels-to-0.85, biggest edge at k=0 (the
+  deployment regime). CAVEAT 1: advantage shrinks with labels (+0.069→+0.013) —
+  alignment & labels are partial SUBSTITUTES (same as E46 calibration). CAVEAT 2: real
+  **k=10 DIP** — joint 0.772 < its own k=0 0.805; fine-tuning the aligned encoder on
+  just 10 labels HURTS (tiny-k instability, E30; a good representation has more to lose).
+- **Practical deployment rule (falls out of the curve):** <~25 real labels → use the
+  aligned model ZERO-SHOT (0.805), do NOT naively fine-tune; ~50 labels → fine-tune →
+  0.863. Near-oracle (0.93) needs ≫100 labels regardless of method — honest ceiling.
+- **Honest flags:** CinC finger ≠ AW wrist; AF/N easy; tiny-k high variance (E30);
+  joint base on SJLIFE pairs (3-device); 10 seeds; oracle 0.930 = CinC proxy (not
+  real-AW HOME 0.77–0.84). Files: `results/55_align_fewshot/`,
+  `experiments/55_align_fewshot.py`.
 
 ---
 
