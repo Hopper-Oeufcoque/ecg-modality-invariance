@@ -1,0 +1,101 @@
+{
+  "seeds": 5,
+  "n_folds": 5,
+  "n_test_patients": 243,
+  "means": {
+    "clinical_self": 0.6841866994884681,
+    "clean": 0.6804904484487196,
+    "closed_aug": 0.697493564557648,
+    "band_scramble": 0.678756266088606,
+    "aligned": 0.7118132578246652,
+    "oracle": 0.6921016093578942
+  },
+  "stds": {
+    "clinical_self": 0.010512275828854558,
+    "clean": 0.00831755265376493,
+    "closed_aug": 0.01689786389100365,
+    "band_scramble": 0.025880635711895705,
+    "aligned": 0.023227475555245878,
+    "oracle": 0.01977049403443915
+  },
+  "per_seed": {
+    "clinical_self": [
+      0.6697016388849979,
+      0.6969408058365112,
+      0.6824180943015371,
+      0.6951778017241379,
+      0.6766951566951567
+    ],
+    "clean": [
+      0.6734182360113806,
+      0.6929955290611028,
+      0.6825633383010433,
+      0.6694214876033058,
+      0.684053651266766
+    ],
+    "closed_aug": [
+      0.7169760195095516,
+      0.6915052160953801,
+      0.7081696247120987,
+      0.702818046335185,
+      0.6679989161360249
+    ],
+    "band_scramble": [
+      0.6473377591112315,
+      0.6545860994445197,
+      0.7076954342230051,
+      0.7091857471887278,
+      0.6749762904755453
+    ],
+    "aligned": [
+      0.7552571196919022,
+      0.70005205666496,
+      0.7157116895682276,
+      0.6974635164921054,
+      0.6905819067061304
+    ],
+    "oracle": [
+      0.7109658457484545,
+      0.6760167914238575,
+      0.7196434640164172,
+      0.6691455308767498,
+      0.6847364147239924
+    ]
+  },
+  "comparisons": {
+    "closed_aug_vs_clean": {
+      "delta": 0.01700311610892833,
+      "wins": 3,
+      "p": 0.20168936848508873
+    },
+    "band_scramble_vs_clean": {
+      "delta": -0.0017341823601138228,
+      "wins": 2,
+      "p": 0.9129100879358361
+    },
+    "aligned_vs_clean": {
+      "delta": 0.03132280937594541,
+      "wins": 5,
+      "p": 0.08464246242432118
+    },
+    "aligned_vs_closed_aug": {
+      "delta": 0.014319693267017075,
+      "wins": 4,
+      "p": 0.12680106526005905
+    },
+    "oracle_vs_clean": {
+      "delta": 0.011611160909174556,
+      "wins": 3,
+      "p": 0.3488821470363407
+    }
+  },
+  "honesty": [
+    "n=243 real-AW test, wide CIs",
+    "PTB-XL older/cardiac vs SJLIFE young/cancer-survivor = POPULATION shift confounds modality shift",
+    "Lead-I sex weaker than 12-lead",
+    "per-patient mean-prob over few windows",
+    "female=1 both datasets",
+    "aligned uses fold-disjoint SJLIFE pairs (no test-patient leakage)",
+    "oracle=patient-CV learnability probe"
+  ]
+}

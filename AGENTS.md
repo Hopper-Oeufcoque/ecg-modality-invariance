@@ -87,9 +87,12 @@ population/context.
   proxy we have. Primary real-transfer test set (E41/E42/E43).
 - **SJLIFE paired** at `~/projects/ecg-modality-invariance/data/sjlife/` (243
   patients, PAIRED clinical 12-lead 500 Hz + Apple Watch 512 Hz, same person).
-  Public/trainable. NO disease labels (age/sex/HR/time-gap only). Real AW = DRY
-  WRIST, bw~0.20 (~6× clinical). ~8.25× amplitude gain vs clinical → per-record
-  z-score mandatory. Used for E38 (measure real modality profile).
+  Public/trainable. **Labels in `shared_paired_data_243.csv`: sex (`gender_x`, 122 M /
+  121 F balanced), age (`age_at_ecg`, mean 36 range 22–69), race, HR, time-gap. NO
+  disease labels.** SEX is a usable real-AW MORPHOLOGICAL outcome (E60) — the only
+  labeled real-Apple-Watch endpoint we have; age is a weak secondary (compressed range).
+  Real AW = DRY WRIST, bw~0.20 (~6× clinical). ~8.25× amplitude gain vs clinical → per-record
+  z-score mandatory. Used for E38 (modality profile), E50/E51 (alignment pairs), E60 (real-AW sex).
 - **Icentia11k** at `~/projects/ecg-modality-invariance/data/icentia/` (mined
   subset: 200 AF + 200 Normal windows, 21 patients). CardioSTAT CHEST-PATCH
   single-lead, 250 Hz, labeled beats+rhythms. Electrically ≈ clinical-clean
