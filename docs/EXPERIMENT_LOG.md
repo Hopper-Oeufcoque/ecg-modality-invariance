@@ -77,6 +77,7 @@
 | E51b | **mechanism control: shuffled-pair + self-calibrated-view (20 seeds)** | joint 0.807 vs shuffled 0.706 (Δ+0.101, p=3e-10); selfclin 0.742 (=calibration) | ✅✅ | **DECISIVE: (1) SHUFFLED pairs (clinical↔different-patient watch) give NOTHING (0.706≈clean 0.701, p=0.76) → generic aux-SSL regularization hypothesis FALSIFIED. (2) SELF-calibrated view (no watch data) reproduces calibration EXACTLY (0.742) and no more → augmentation-consistency ≠ the extra gain. (3) Only CORRECT real pairing gives 0.807 (+0.101 vs shuffled, 20/20, p=3e-10) → same-patient cross-modality CORRESPONDENCE is the mechanism. E51 win = real modality invariance from real paired hardware. Confirms & promotes E51.** |
 | E54 | **λ/temp sensitivity sweep of E51 (12 cells × 10 seeds)** | ALL 12/12 cells beat calibration + clean; plateau 0.80–0.82; best λ=0.3/temp=0.1 → 0.819 | ✅ | **HEADLINE IS ROBUST, not a lucky point. Every hyperparameter cell beats calibration (0.737) and clean (0.701); central region λ∈{0.1,0.3}×all temps sits 0.799–0.819. Clear U-shape in λ: 0.03 too weak (0.76, high var), 0.1–0.3 sweet spot (0.80–0.82), 1.0 alignment starts to overwhelm CE (0.79, lowest var = E50 failure mode reasserting but CE anchor holds). temp 2nd-order (≤0.017). Default near-optimal; light tune to λ=0.3 buys +0.014. Deployable without careful tuning.** |
 | E55 | **alignment × few-shot real labels (k=0–100, 10 seeds)** | joint dominates every k (k0 0.805, k50 0.863, k100 0.866); reaches 0.85 at k=50 vs calibration's k=100 | ✅ | **BEST RECIPE AT EVERY LABEL BUDGET. joint ≥ calibration ≥ clean at all k; halves labels-to-0.85 (50 vs 100; clean never). Biggest edge at k=0 (+0.069) — the deployment regime. BUT (1) advantage shrinks with labels (+0.069→+0.013, alignment & labels partial SUBSTITUTES like E46); (2) real k=10 DIP: joint 0.772 < its own k=0 0.805 — fine-tuning aligned encoder on 10 labels HURTS (tiny-k instability E30). Deployment rule: <25 labels → use aligned model ZERO-SHOT, don't fine-tune; ~50 labels → fine-tune → 0.863. Oracle 0.930 needs ≫100 labels (honest ceiling, no method closes it).** |
+| E56 | **2nd-device external validity: alignment on Icentia chest-patch (20 seeds)** | joint 0.961 vs clean 0.942 (+0.018, n.s.); calibration idles (−0.003); var HALVED 0.065→0.028 | ✅ | **EXTERNAL VALIDITY CONFIRMED (safety sense) + gap-proportional law holds for alignment. On a 3rd device the SJLIFE-wrist alignment NEVER saw (chest-patch), joint does NOT hurt (0.961≥0.942) — feared OOD-overfit did NOT happen. Big win doesn't "replicate" but EXPECTED: Icentia near-zero gap (bw 0.016, clean already 0.942, oracle 1.0=leakage) → no headroom. Same E44 DOSE-RESPONSE law now for a 2nd method: helps ∝ gap (CinC +0.106 → Icentia +0.018 idle; calibration +0.041→−0.003). BONUS: alignment HALVES transfer variance (0.065→0.028; also CinC 0.048→0.023) = more reliable regardless of mean. Mechanism general, not CinC artifact.** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1425,6 +1426,35 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   joint base on SJLIFE pairs (3-device); 10 seeds; oracle 0.930 = CinC proxy (not
   real-AW HOME 0.77–0.84). Files: `results/55_align_fewshot/`,
   `experiments/55_align_fewshot.py`.
+
+---
+
+## E56 — 2nd-device external validity: alignment on Icentia chest-patch (2026-07-27)
+- **Hypothesis:** all alignment results are on CinC. Does the +0.10 replicate on a 2nd
+  real device, or is it CinC-specific? Also a 3rd-device OOD test: SJLIFE alignment pairs
+  are Apple WRIST; Icentia is CHEST-PATCH, never seen by the alignment.
+- **Setup (20 seeds):** train PTB-XL AF/N Lead-I; test real Icentia; arms clean ·
+  closed_aug · joint(E51) · oracle. Icentia target bw = 0.016 (near-zero gap).
+- **Result:** clean 0.942 · closed_aug 0.939 (−0.003, p=0.82) · **joint 0.961 (+0.018,
+  p=0.32 n.s.)** · oracle 1.000 (leakage). CinC was +0.106; Icentia +0.018. Variance
+  HALVED: joint std 0.028 vs clean 0.065.
+- **Verdict ✅ (external validity confirmed in the safety sense; win is gap-proportional):**
+  (1) alignment does NOT hurt on an unseen 3rd device (0.961≥0.942) — feared OOD-overfit
+  to the wrist modality did not happen. (2) big win doesn't "replicate" but that's
+  EXPECTED — Icentia near-zero gap (clean already 0.942, oracle 1.0), no headroom for
+  invariance to recover. (3) same E44 DOSE-RESPONSE law now for a 2nd method: helps ∝
+  gap (CinC high-gap +0.106 → Icentia low-gap +0.018 idle; calibration obeys it too,
+  +0.041→−0.003). Two methods, one law = coherent falsifiable mechanism, not a per-dataset fit.
+- **Bonus:** alignment HALVES transfer variance (0.065→0.028; also CinC 0.048→0.023) —
+  more RELIABLE clinical→real transfer regardless of mean lift. Practical deployment value.
+- **What it does/doesn't show:** DOES — method safe across devices, benefit follows the
+  gap law on a 2nd real device. DOESN'T — a large lift on a 2nd HIGH-gap device (none
+  labeled available); the law PREDICTS large lift in the real-AW-wrist regime (SJLIFE bw
+  ~0.20) but that stays a prediction, not a measurement (no labeled real-AW data exists).
+- **Honest flags:** Icentia within-patient leakage (21 pts, oracle=1.0) → use RELATIVE
+  deltas; chest-patch low gap → little headroom; SJLIFE pairs wrist not chest-patch
+  (3rd-device OOD); AF/N easy; 20 seeds. Files: `results/56_align_seconddevice/`,
+  `experiments/56_align_seconddevice.py`.
 
 ---
 

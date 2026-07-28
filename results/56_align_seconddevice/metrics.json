@@ -1,0 +1,42 @@
+{
+  "seeds": 20,
+  "test_device": "Icentia CardioSTAT chest-patch",
+  "target_bw": 0.01610757807930685,
+  "means": {
+    "clean": 0.9424867462816472,
+    "closed_aug": 0.9390042203458181,
+    "joint": 0.9607938723449088,
+    "oracle": 1.0
+  },
+  "stds": {
+    "clean": 0.06538915077161878,
+    "closed_aug": 0.06168493603113375,
+    "joint": 0.028186280973470403,
+    "oracle": 0.0
+  },
+  "comparisons": {
+    "closed_aug_vs_clean": {
+      "delta": -0.003482525935829034,
+      "wins": 11,
+      "p": 0.8160344218814741
+    },
+    "joint_vs_clean": {
+      "delta": 0.018307126063261646,
+      "wins": 10,
+      "p": 0.31547787399537225
+    },
+    "joint_vs_aug": {
+      "delta": 0.021789651999090682,
+      "wins": 8,
+      "p": 0.18623966176381104
+    }
+  },
+  "compare_CinC_E51_joint_vs_clean": 0.106,
+  "honesty": [
+    "Icentia within-patient leakage (21 pts, oracle~1.0) -> use RELATIVE deltas",
+    "chest-patch low modality-gap (bw~0.016) -> little headroom",
+    "SJLIFE alignment pairs are WRIST not chest-patch (3rd-device OOD)",
+    "AF/NORM easy task",
+    "single clinical train set"
+  ]
+}

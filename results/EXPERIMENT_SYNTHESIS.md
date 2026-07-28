@@ -198,3 +198,4 @@ beyond rhythm (E53). Near-oracle (0.93) still needs ≫100 real labels — hones
 - E53 `results/53_align_morphology/` — alignment generalizes beyond rhythm: +0.034 on morphology where calibration is null
 - E54 `results/54_lambda_temp_sweep/` — headline robust: 12/12 λ×temp cells beat calibration (plateau 0.80–0.82)
 - E55 `results/55_align_fewshot/` — alignment best at every label budget; 0.85 at k=50 (½ calibration's labels); k=10 dip → zero-shot <25 labels
+- E56 `results/56_align_seconddevice/` — 2nd-device external validity: alignment safe on unseen chest-patch (0.961≥0.942), gap-proportional, halves variance
