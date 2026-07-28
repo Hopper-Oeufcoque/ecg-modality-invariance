@@ -75,6 +75,34 @@ population/context.
 
 ## Datasets
 - PTB-XL 100 Hz subset at `~/data/ptbxl/` (downloaded, ~21k records).
-  500 Hz subset (`filename_hr`) available for E4.
+  500 Hz subset (`filename_hr`) available for E4. AFIB n=1514, NORM n=16748.
+- **CinC 2017** at `~/data/cinc2017/training2017/` — REAL labeled single-lead
+  (AliveCor KardiaMobile, DRY FINGER electrode, 300 Hz). 738 AF / 5050 N / 2456 O
+  / 284 noisy. Large baseline-wander gap (bw~0.25) → the best LABELED Apple-Watch
+  proxy we have. Primary real-transfer test set (E41/E42/E43).
+- **SJLIFE paired** at `~/projects/ecg-modality-invariance/data/sjlife/` (243
+  patients, PAIRED clinical 12-lead 500 Hz + Apple Watch 512 Hz, same person).
+  Public/trainable. NO disease labels (age/sex/HR/time-gap only). Real AW = DRY
+  WRIST, bw~0.20 (~6× clinical). ~8.25× amplitude gain vs clinical → per-record
+  z-score mandatory. Used for E38 (measure real modality profile).
+- **Icentia11k** at `~/projects/ecg-modality-invariance/data/icentia/` (mined
+  subset: 200 AF + 200 Normal windows, 21 patients). CardioSTAT CHEST-PATCH
+  single-lead, 250 Hz, labeled beats+rhythms. Electrically ≈ clinical-clean
+  (bw~0.016) → LOW modality gap → 2nd-device external-validity test (E44).
+  CAVEAT: few patients × many windows = within-patient leakage; treat absolutes
+  as optimistic (oracle hit 1.000). Full set = 11k patients if more needed.
+- **HOME benchmark** at `~/data/HOME/` — 1000 AW ECGs, EVALUATION-ONLY (license
+  forbids training/adaptation; labels withheld; centralized scoring only). Two
+  files at DIFFERENT rates (see sampling-rate pitfall above).
 - CODE-15, MIMIC-IV-ECG (clinical 12-lead) — not yet downloaded.
-- Apple Heart Study, PhysioNet single-lead sets — for E6 (real watch validation).
+
+## Key result (as of 2026-07-27, E38–E44)
+**Closed-loop modality calibration** (measure unlabeled target baseline-wander →
+binary-search a coloured-wander augmentation to hit it, QRS band untouched;
+`src/aw_generator.py::ClosedLoopCalibrator`) lifts clinical→real-single-lead
+transfer AUROC by **+0.041 (p=0.009, 20 seeds)** on CinC — GAP-PROPORTIONAL:
+helps on high-wander-gap dry-electrode devices (CinC; predicted for AW), idles
+harmlessly on clean chest-patch (Icentia, E44). The gap is baseline-wander, NOT
+HF (E43 multi-axis no-op). Pure-augmentation ceiling ~+0.041; beyond needs real
+few-shot labels or representation-level methods. Real AW still has NO public
+labels → AW lift is a dose-response PREDICTION, not proven.

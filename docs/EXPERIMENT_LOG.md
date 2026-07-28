@@ -66,6 +66,7 @@
 | E41 | **END-TO-END AUROC: clinical→real labeled single-lead (CinC, 5 seeds)** | closed-loop 0.753 vs clean 0.681, +0.072 (5/5, p=0.086) | ⚠️✅ | **FIRST real end-to-end utility test. Closed-loop-calibrated clinical training LIFTS real single-lead AUROC. ⟲ E42 CORRECTION: 5-seed +0.072 was small-sample optimism; true effect at 20 seeds is +0.041 (see E42). Coverage→utility CONFIRMED (answers E25b). Cocktail REGRESSED (0.722<0.753, contradicts E26). CinC=finger not wrist; AF/NORM easy task** |
 | E42 | **20-seed significance (clean vs closed-loop vs oracle)** | closed 0.742 vs clean 0.701, +0.041, p=0.0088 | ✅ | **SETTLES E41: closed-loop calibration lift is REAL & SIGNIFICANT but MODEST — +0.041 (15/20 wins, paired t=2.92 p=0.0088, Wilcoxon p=0.0094, Cohen dz=0.65). E41's +0.072 was 5-seed optimism (halved at 20 seeds). Zero test labels. Closes ~18% of clean→oracle(0.931) gap. Strongest properly-powered zero-label result. Modest — real labels still dominate the 0.19 residual** |
 | E43 | **multi-axis closed-loop (bw+hf) vs single-axis (20 seeds)** | bw_hf 0.735 vs bw 0.742, Δ−0.007 p=0.67 | ❌✅ | **HF axis is a NO-OP: closed-loop set hf_amp=0.000 because target hf_energy=0.005 (CinC has ~no HF). Adding HF neutral-to-slightly-negative (−0.007, n.s.). Single-axis bw remains winner (+0.041 reproduced exactly). END-TO-END confirmation of E37/E38 physics: real single-lead is CLEAN/low-pass, gap is baseline-wander NOT HF. qrs/mid axes are in-band → can't perturb without breaking morphology (likely a ceiling, not a lever)** |
+| E44 | **2nd-device replication: Icentia chest-patch (20 seeds)** | clean 0.942 → closed 0.939 (−0.003, p=0.82); target bw 0.016 | ⚠️ | **DOSE-RESPONSE: calibration helps ∝ the gap. Icentia chest-patch ≈ clinical-clean (bw 0.016) → NO gap → clean already transfers 0.942 → calibration correctly idles (−0.003, no harm). vs CinC dry-finger (bw 0.25, big gap) → +0.041. Method is GAP-PROPORTIONAL, targets baseline-wander specifically. AW = dry wrist, LARGE gap (SJLIFE bw 0.20) → predicts calibration SHOULD help on AW. RED FLAG: oracle=1.000 (21 patients, within-patient leakage) → Icentia absolutes optimistic, treat as qualitative** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1083,6 +1084,39 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   clinical train set across seeds. `MultiAxisClosedLoopCalibrator` kept in src/
   (correctly handles targets that DO have an HF gap). Files:
   `results/43_multiaxis_calib/`, `experiments/43_multiaxis_calib.py`.
+
+---
+
+## E44 — Second-device replication (Icentia): dose-response (2026-07-27)
+- **Hypothesis:** the E42 closed-loop calibration lift generalizes to a second,
+  physically-independent real single-lead device (Icentia CardioSTAT chest-patch).
+- **Setup:** E42 protocol, test = Icentia AF/Normal (200/200 windows, 21 patients,
+  mod Lead I, 250→100 Hz), calibrate to unlabeled Icentia bw. 20 seeds.
+- **Result:** clean 0.942 · closed_loop 0.939 · oracle 1.000. Δ closed−clean =
+  **−0.003, 11/20, p=0.82 → no lift**. Unlabeled target bw_energy = 0.016.
+- **Cross-device (the finding):** CinC dry-finger (bw 0.25, big gap) → +0.041
+  (p=0.009); Icentia chest-patch (bw 0.016, ≈clinical-clean, NO gap) → −0.003
+  (n.s.). **Calibration helps IN PROPORTION to the modality gap.** Chest-patch is
+  electrically almost identical to clinical Lead-I, so clean clinical training
+  already transfers at 0.942 — nothing to calibrate, and the method correctly
+  idles without harm.
+- **Verdict ⚠️ (informative null):** not a refutation — a SCOPING. The mechanism
+  is gap-proportional: it targets the baseline-wander shift specifically, helping
+  on high-gap dry-electrode devices and idling on low-gap ones. Combined with E42
+  this is a clean dose-response across two independent devices.
+- **AW implication:** real Apple Watch is a DRY WRIST electrode with a LARGE
+  wander gap (SJLIFE E38: bw 0.20, ~6× clinical) — the CinC regime, not Icentia.
+  Dose-response predicts calibration SHOULD help on real AW. Prediction, not proof
+  (real AW unlabeled).
+- **RED FLAG (honesty):** oracle = 1.000 exactly → 200/200 windows from only 21
+  patients means the ref/test split leaks patient identity (within-patient
+  correlation); train-on-real is trivially perfect and clean=0.942 is inflated by
+  easy correlated windows. **Icentia absolutes are optimistic — treat E44 as a
+  qualitative "no gap → no lift", NOT as calibrated numbers.** Honest fix
+  (follow-up): patient-disjoint splits + more patients.
+- **Lesson:** always check for patient leakage when a cohort has few subjects and
+  many windows each; an oracle of exactly 1.000 is a tell. Files:
+  `results/44_icentia_seconddevice/`, `experiments/44_icentia_seconddevice.py`.
 
 ---
 

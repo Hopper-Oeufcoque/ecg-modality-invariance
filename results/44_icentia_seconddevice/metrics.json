@@ -1,0 +1,144 @@
+{
+  "seeds": 20,
+  "device": "Icentia11k CardioSTAT chest-patch single-lead",
+  "means": {
+    "clean": 0.9424867462816472,
+    "closed_loop": 0.9390042203458181,
+    "oracle": 1.0
+  },
+  "stds": {
+    "clean": 0.06538915077161878,
+    "closed_loop": 0.06168493603113375,
+    "oracle": 0.0
+  },
+  "delta": -0.003482525935829034,
+  "wins": 11,
+  "t": -0.23590007066772123,
+  "p": 0.8160344218814741,
+  "wilcoxon_p": 0.8408222198486328,
+  "dz": -0.05274885859203049,
+  "sig05": false,
+  "target_bw": 0.01610757807930685,
+  "cross_device": {
+    "cinc_E42": {
+      "clean": 0.701,
+      "closed": 0.742,
+      "delta": 0.041,
+      "p": 0.009
+    },
+    "icentia_E44": {
+      "clean": 0.9424867462816472,
+      "closed": 0.9390042203458181,
+      "delta": -0.003482525935829034,
+      "p": 0.8160344218814741
+    }
+  },
+  "per_seed": {
+    "0": {
+      "clean": 0.8507402961184475,
+      "closed_loop": 0.9356742697078831,
+      "oracle": 1.0
+    },
+    "1": {
+      "clean": 0.9954,
+      "closed_loop": 0.9737,
+      "oracle": 1.0
+    },
+    "2": {
+      "clean": 0.8827531012404961,
+      "closed_loop": 0.9484793917567027,
+      "oracle": 1.0
+    },
+    "3": {
+      "clean": 0.9910964385754302,
+      "closed_loop": 0.9669867947178872,
+      "oracle": 1.0
+    },
+    "4": {
+      "clean": 0.9550820328131253,
+      "closed_loop": 0.9356742697078831,
+      "oracle": 1.0
+    },
+    "5": {
+      "clean": 0.9686215538847118,
+      "closed_loop": 0.8636591478696742,
+      "oracle": 1.0
+    },
+    "6": {
+      "clean": 0.9978991596638656,
+      "closed_loop": 0.891656662665066,
+      "oracle": 1.0
+    },
+    "7": {
+      "clean": 0.9944977991196478,
+      "closed_loop": 0.996298519407763,
+      "oracle": 1.0
+    },
+    "8": {
+      "clean": 0.9661364545818327,
+      "closed_loop": 0.9725890356142457,
+      "oracle": 1.0
+    },
+    "9": {
+      "clean": 0.9624962193769533,
+      "closed_loop": 0.8249823570924488,
+      "oracle": 1.0
+    },
+    "10": {
+      "clean": 0.9805513784461153,
+      "closed_loop": 0.9991979949874686,
+      "oracle": 1.0
+    },
+    "11": {
+      "clean": 0.9791916766706683,
+      "closed_loop": 0.9474789915966386,
+      "oracle": 1.0
+    },
+    "12": {
+      "clean": 0.9073165849264337,
+      "closed_loop": 0.9938945050545491,
+      "oracle": 1.0
+    },
+    "13": {
+      "clean": 0.9777576489533012,
+      "closed_loop": 0.9090177133655395,
+      "oracle": 1.0
+    },
+    "14": {
+      "clean": 0.9836738782051282,
+      "closed_loop": 0.9453125,
+      "oracle": 1.0
+    },
+    "15": {
+      "clean": 0.7158816425120773,
+      "closed_loop": 0.7561392914653785,
+      "oracle": 1.0
+    },
+    "16": {
+      "clean": 0.935959595959596,
+      "closed_loop": 0.9551515151515151,
+      "oracle": 1.0
+    },
+    "17": {
+      "clean": 0.9066906690669068,
+      "closed_loop": 0.9940994099409941,
+      "oracle": 1.0
+    },
+    "18": {
+      "clean": 0.9259999999999999,
+      "closed_loop": 0.99,
+      "oracle": 1.0
+    },
+    "19": {
+      "clean": 0.9719887955182073,
+      "closed_loop": 0.9800920368147259,
+      "oracle": 1.0
+    }
+  },
+  "honesty": [
+    "Icentia chest-patch electrically closer to clinical than wrist watch",
+    "200AF/200N from 21 patients -> within-patient correlation",
+    "AF/NORM easy task",
+    "single fixed clinical train set"
+  ]
+}
