@@ -124,14 +124,19 @@ train clinical Lead-I with the calibrated augmentation → (optional) fine-tune 
    augmentation (−0.010, p=0.47); both families hit the same +0.041 wall. The
    ceiling is **information-bound**, not a formulation artifact. Do not chase
    cleverer single-lead invariance objectives.
-2. **INFORMATION INJECTION (the pivot)** — the residual gap needs *new
-   information*, not a better loss:
-   (a) **multi-lead → single-lead distillation** — teach a single-lead student to
-   mimic a 12-lead teacher's logits/features, so clinical multi-lead structure is
-   compressed into the Lead-I student (available now: PTB-XL 12-lead + Lead-I);
-   (b) **auxiliary channels** watches actually carry (accelerometer/PPG) as extra
-   modality-invariant inputs;
+2. **INFORMATION INJECTION — but the SOURCE must be modality-invariant (E49
+   sharpened this):** naive clinical information injection *backfires*. E49
+   distilled a 12-lead clinical teacher into the single-lead student → it HURT
+   (−0.060 vs augmentation, p=0.0005) because the teacher's soft labels encode
+   clinical-modality decision boundaries, pulling the student toward the clinical
+   distribution (wrong direction). Extra *clinical* info is modality-entangled.
+   The information that helps must be **watch-anchored / grounded across both
+   modalities**:
+   (a) **real paired-hardware alignment** — learn from SJLIFE clinical↔watch pairs
+   of the same patient (E50, next); invariant by construction, no disease labels;
+   (b) **auxiliary channels** watches carry (accel/PPG);
    (c) **real target labels** — the proven closer (E46: ~50 → 0.855).
+   ~~multi-lead→single-lead distillation~~ → tried (E49), backfires.
 3. **Other arrhythmias** (PVC/PAC, flutter) — does the rhythm-transfer claim hold
    beyond AF? (Icentia has beat labels if we mine more patients)
 4. **A same-taxonomy labeled single-lead morphological set** — to cleanly separate
@@ -149,3 +154,4 @@ train clinical Lead-I with the calibrated augmentation → (optional) fine-tune 
 - E46 `results/46_fewshot_bridge/` — minimal-tuning bridge
 - E47 `results/47_harder_task/` — rhythm-specific (morphology null)
 - E48 `results/48_representation_invariance/` — learned invariance = augmentation (ceiling is info-bound)
+- E49 `results/49_distillation/` — 12-lead→1-lead clinical distillation BACKFIRES (source must be modality-invariant)

@@ -1,0 +1,51 @@
+{
+  "seeds": 20,
+  "kd_T": 3.0,
+  "kd_alpha": 0.5,
+  "means": {
+    "clean": 0.7007534216827892,
+    "closed_aug": 0.7419576323787631,
+    "distill": 0.6817685111333759,
+    "distill_aug": 0.7256055613027022
+  },
+  "stds": {
+    "clean": 0.0483629175761839,
+    "closed_aug": 0.04726209011836635,
+    "distill": 0.036081152392283725,
+    "distill_aug": 0.03733729143521074
+  },
+  "comparisons": {
+    "closed_aug_vs_clean": {
+      "delta": 0.04120421069597381,
+      "wins": 15,
+      "p": 0.008829542914040965
+    },
+    "distill_vs_clean": {
+      "delta": -0.01898491054941325,
+      "wins": 6,
+      "p": 0.04131420699060424
+    },
+    "distill_aug_vs_clean": {
+      "delta": 0.024852139619912894,
+      "wins": 12,
+      "p": 0.10101027659161618
+    },
+    "distill_vs_aug": {
+      "delta": -0.06018912124538707,
+      "wins": 4,
+      "p": 0.000507199411091752
+    },
+    "distill_aug_vs_aug": {
+      "delta": -0.016352071076060914,
+      "wins": 8,
+      "p": 0.21127780632960644
+    }
+  },
+  "honesty": [
+    "CinC finger != AW wrist",
+    "AF/NORM easy task",
+    "single clinical train set",
+    "KD T=3 alpha=0.5 a priori not tuned",
+    "teacher on same PTB-XL cohort"
+  ]
+}

@@ -70,6 +70,7 @@
 | E46 | **minimal-tuning bridge: calibration + k real labels (10 seeds)** | closed+50=0.855 reaches 0.85; clean never does (k≤100); Δ shrinks 0.034→0.010 | ✅ | **Calibration & labels are SUBSTITUTES: closed-loop lift is biggest at k=0 (+0.034) and shrinks as labels grow (k=100 +0.010). Worth ~10-15 free labels in scarce regime. closed+50→0.855 crosses 0.85 (clean+100 only 0.845). North-star pipeline: calibrate-on-unlabeled + ~50 real labels. HONEST: both plateau ~0.85 << oracle 0.923 — tiny-k fine-tune ≠ near-oracle; last 0.07 needs many more labels. CinC≠wrist; AF/NORM easy** |
 | E47 | **HARDER morphological task (Normal-vs-Other, 20 seeds)** | closed−clean −0.002 p=0.67; clean 0.561, oracle only 0.753 | ⚠️❌ | **SCOPES THE METHOD: calibration lift is RHYTHM-SPECIFIC — vanishes on morphological task (−0.002 vs AF's +0.041), same device/gap. Wander-calibration helps rhythm/HRV robustness, not P/QRS/T shape (in-band, untouched). WORSE: clinical→real barely transfers here at all (clean 0.561≈chance, oracle only 0.753). Bounds ALL prior wins (E41/E42/E46) to rhythm regime. Matches clinical lit: single-lead validated for AF, not morphology. Caveat: CinC 'O' weak catch-all label + taxonomy mismatch inflates difficulty** |
 | E48 | **learned invariance vs implicit augmentation (20 seeds)** | invariance 0.732 (+0.031) vs closed_aug 0.742 (+0.041); head-to-head −0.010 p=0.47 | ❌ | **CEILING IS INFO-BOUND: explicit feature-consistency invariance loss (CE_clean+CE_shift+λ‖Δfeat‖²) does NOT beat implicit augmentation — lands −0.010 below it (n.s.), own lift +0.031 n.s. Two independent families (aug E42/E43 + learned invariance E48) hit the SAME +0.041 wall → wall is a property of single-lead information, not the objective. PIVOT: stop chasing cleverer invariance losses; close the residual with NEW information (real labels E46, multi-lead→single-lead distillation, or accel/PPG aux channels)** |
+| E49 | **12-lead→1-lead clinical distillation (Hinton KD, 20 seeds)** | distill 0.682 (−0.060 vs aug, p=0.0005); distill_aug 0.726 (−0.016 vs aug) | ❌❌ | **INFORMATION SOURCE MATTERS: distilling a 12-lead CLINICAL teacher HURTS real transfer — distill drops BELOW clean floor (−0.019) and far below augmentation (−0.060, p=0.0005). Teacher (train-acc 0.994, overfit) encodes clinical-modality decision boundaries → KD pulls student TOWARD clinical distribution = wrong direction. Calibration partly rescues (distill_aug 0.726) but fights the distill pull, still < pure aug. SHARPENS E48: extra clinical info is modality-ENTANGLED; injecting it imports modality bias, not invariant structure. Useful aux info must be watch-anchored/modality-invariant → pivot to real paired hardware (SJLIFE, E50)** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1215,6 +1216,38 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
   unlikely); CinC finger ≠ AW wrist; AF/N easy task; single train/test set; 20
   seeds, one architecture. Files: `results/48_representation_invariance/`,
   `experiments/48_representation_invariance.py`.
+
+---
+
+## E49 — Multi-lead → single-lead distillation: clinical info BACKFIRES (2026-07-27)
+- **Hypothesis (E48 pivot):** the +0.041 ceiling is information-bound → inject NEW
+  information. We have clinical data as full 12-lead; the watch sees only Lead-I.
+  Train a 12-lead teacher, distil into a single-lead student → student inherits
+  multi-lead structure unlearnable from Lead-I alone; ideally stacks with calibration.
+- **Setup:** teacher = 12-lead ECGResNet1d on PTB-XL (train-acc 0.994, frozen,
+  reused all seeds). Student arms (train PTB-XL AF/NORM, test real CinC AF/N, 20
+  seeds): clean · closed_aug (E42 winner) · distill (CE + α·T²·KL(student‖teacher),
+  T=3 α=0.5) · distill_aug (distill + calibrated input).
+- **Result:** clean 0.701 · closed_aug 0.742 · **distill 0.682** · distill_aug 0.726.
+  distill−clean = −0.019 (p=0.041); **distill−aug = −0.060 (p=0.0005)**;
+  distill_aug−aug = −0.016 (p=0.21 n.s.).
+- **Verdict ❌❌ (strong negative):** distilling a 12-lead CLINICAL teacher HURTS —
+  distill lands below the clean floor and far below augmentation. Calibration
+  partly rescues (distill_aug 0.726) but the two fight; distill_aug still < pure aug.
+- **Lesson — the SOURCE of injected information matters:** the teacher's soft labels
+  encode clinical-modality-specific decision boundaries (train-acc 0.994 = confident
+  clinical overfit). Distilling that "dark knowledge" pulls the student TOWARD the
+  clinical distribution — the wrong direction for real-single-lead transfer. We import
+  **modality bias**, not invariant structure. This *sharpens* E48: the residual gap
+  isn't "missing information you can pour in from anywhere" — extra clinical info is
+  modality-entangled, so injecting it makes the model more clinical, not more invariant.
+- **⟲ Pivot:** useful auxiliary information must be **watch-anchored or
+  modality-invariant**, grounded across BOTH modalities. → E50: learn alignment from
+  real SJLIFE clinical↔watch pairs (same patient), invariant by construction.
+- **Honest flags:** KD T/α a-priori (but −0.060 p=0.0005 is large/robust — tuning
+  unlikely to flip); teacher on same PTB-XL cohort (favours distillation, still hurt);
+  CinC finger ≠ AW wrist; AF/N easy; 20 seeds, single arch/train set. Files:
+  `results/49_distillation/`, `experiments/49_distillation.py`.
 
 ---
 
