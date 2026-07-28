@@ -65,6 +65,7 @@
 | E40 | **closed-loop calibrator (binary-search to measured target)** | dist 1.06→0.659 (38% closer), morph safe | ✅ | **FIX: binary-search wander amp until MEASURED bw hits target + 1/f coloured wander (not sinusoids). First variant to beat clean floor: dist 0.659, bw 0.217 vs target 0.230, kurtosis 7.50 preserved (open-loop→0.08), QRS-corr 0.988/R-peak 0.963. Promoted ClosedLoopCalibrator to src/. Coverage necessary-not-sufficient — AUROC still needs labels** |
 | E41 | **END-TO-END AUROC: clinical→real labeled single-lead (CinC, 5 seeds)** | closed-loop 0.753 vs clean 0.681, +0.072 (5/5, p=0.086) | ⚠️✅ | **FIRST real end-to-end utility test. Closed-loop-calibrated clinical training LIFTS real single-lead AUROC. ⟲ E42 CORRECTION: 5-seed +0.072 was small-sample optimism; true effect at 20 seeds is +0.041 (see E42). Coverage→utility CONFIRMED (answers E25b). Cocktail REGRESSED (0.722<0.753, contradicts E26). CinC=finger not wrist; AF/NORM easy task** |
 | E42 | **20-seed significance (clean vs closed-loop vs oracle)** | closed 0.742 vs clean 0.701, +0.041, p=0.0088 | ✅ | **SETTLES E41: closed-loop calibration lift is REAL & SIGNIFICANT but MODEST — +0.041 (15/20 wins, paired t=2.92 p=0.0088, Wilcoxon p=0.0094, Cohen dz=0.65). E41's +0.072 was 5-seed optimism (halved at 20 seeds). Zero test labels. Closes ~18% of clean→oracle(0.931) gap. Strongest properly-powered zero-label result. Modest — real labels still dominate the 0.19 residual** |
+| E43 | **multi-axis closed-loop (bw+hf) vs single-axis (20 seeds)** | bw_hf 0.735 vs bw 0.742, Δ−0.007 p=0.67 | ❌✅ | **HF axis is a NO-OP: closed-loop set hf_amp=0.000 because target hf_energy=0.005 (CinC has ~no HF). Adding HF neutral-to-slightly-negative (−0.007, n.s.). Single-axis bw remains winner (+0.041 reproduced exactly). END-TO-END confirmation of E37/E38 physics: real single-lead is CLEAN/low-pass, gap is baseline-wander NOT HF. qrs/mid axes are in-band → can't perturb without breaking morphology (likely a ceiling, not a lever)** |
 
 **Ceiling:** L0 clinical 12-lead = **0.865**. **Current best (sim-validated context):**
 lead-masking (+ matched filter + watch-aug + TTA) ≈ **0.72+** with zero
@@ -1049,6 +1050,39 @@ target-domain labels (~75% to ceiling; residual = genuine single-lead info loss)
 - ⟲ **follow-up:** vary clinical subset per seed (honest cohort CI); multi-axis
   closed-loop; harder-task replication (Normal-vs-Other). Files:
   `results/42_seeds20_significance/`, `experiments/42_seeds20_significance.py`.
+
+---
+
+## E43 — Multi-axis closed-loop: the HF axis is a no-op (2026-07-27)
+- **Hypothesis:** closing a second spectral axis (high-freq noise → target
+  hf_energy), on top of E42's baseline-wander axis, beats the +0.041 single-axis
+  lift. Motivated by E40's residual gap in non-bw axes.
+- **Setup:** `MultiAxisClosedLoopCalibrator` (sequential closed-loop: bw, then
+  hf, then re-close bw). Same protocol as E42, 20 seeds, arms clean/closed_bw/
+  closed_bw_hf/oracle.
+- **Result (AUROC real CinC, 20 seeds):** clean 0.701 · closed_bw 0.742 (+0.041,
+  15/20, p=0.0088 — reproduces E42 exactly) · closed_bw_hf 0.735 (+0.035 vs
+  clean) · oracle 0.932. **closed_bw_hf − closed_bw = −0.007, 10/20, p=0.67,
+  dz=−0.10 → HF axis does NOT help.**
+- **Why:** the closed-loop search set **hf_amp = 0.000** because measured target
+  **hf_energy = 0.005** — CinC has essentially no high-frequency content. No HF
+  gap exists to close; the second axis is a no-op (tiny residual slightly hurt).
+- **Verdict ❌ (multi-axis) / ✅ (reconfirms physics):** single-axis bw remains
+  the recipe. Crucially, this is the END-TO-END (AUROC-level) confirmation of the
+  E37/E38 spectral finding: **real single-lead ECG is a CLEAN, low-pass signal;
+  the modality gap is baseline-wander, NOT high-frequency noise.** The retracted
+  E35/E36 "HF gap" is now refuted at three levels (spectral E37, paired E38,
+  downstream-AUROC E43).
+- **Lesson:** a well-built closed-loop calibrator self-limits — it zeroed the
+  axis with no gap rather than injecting spurious noise. The remaining
+  clean→oracle gap (0.19) lives in the in-band (qrs/mid 5-15 Hz) axes, which
+  cannot be perturbed without corrupting the diagnostic morphology → likely a
+  genuine ceiling for pure augmentation, not an unclosed lever. Real labels
+  (few-shot) or representation-level methods needed beyond +0.041.
+- **Honest flags:** CinC finger ≠ AW wrist; AF/NORM easy task; single fixed
+  clinical train set across seeds. `MultiAxisClosedLoopCalibrator` kept in src/
+  (correctly handles targets that DO have an HF gap). Files:
+  `results/43_multiaxis_calib/`, `experiments/43_multiaxis_calib.py`.
 
 ---
 

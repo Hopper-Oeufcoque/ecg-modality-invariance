@@ -410,3 +410,102 @@ class ClosedLoopCalibrator:
 
     def generate_batch(self, clinical_sigs, rng=None):
         return np.stack([self.generate(s, rng=rng) for s in clinical_sigs])
+
+
+class MultiAxisClosedLoopCalibrator:
+    """E43 extension of ClosedLoopCalibrator: close TWO axes by sequential
+    closed-loop binary search — baseline wander (<1 Hz coloured noise) to hit
+    target bw_energy, AND high-frequency noise (>30 Hz) to hit target hf_energy.
+
+    Both perturbations live OUTSIDE the QRS band (5-15 Hz), so morphology is
+    preserved (validate with qrs_morphology_preserved). Motivated by E40's
+    residual: single-axis (bw-only) calibration left qrs/mid/hf gaps.
+
+    Search is sequential (bw first, then hf) — they're near-orthogonal in the
+    spectral bands, so cross-talk is small; re-fit bw after hf if needed.
+
+    Usage:
+        mc = MultiAxisClosedLoopCalibrator.fit(target_bw, target_hf,
+                 clinical_probe_sigs, fs=100.0, siglen=1000, seed=7, n_probe=40)
+        aug = mc.generate(clinical_leadI)
+    """
+
+    def __init__(self, bw_amp, hf_amp, fs=100.0, siglen=1000, seed=None):
+        self.bw_amp = float(bw_amp); self.hf_amp = float(hf_amp)
+        self.fs = fs; self.siglen = siglen
+        self.rng = np.random.default_rng(seed)
+
+    @staticmethod
+    def _low_wander(n, fs, rng):
+        from scipy.signal import butter, filtfilt
+        w = rng.standard_normal(n)
+        b, a = butter(2, 0.9 / (fs / 2), "low")
+        w = filtfilt(b, a, w)
+        return w / (w.std() + 1e-9)
+
+    @staticmethod
+    def _hf_noise(n, fs, rng):
+        from scipy.signal import butter, filtfilt
+        w = rng.standard_normal(n)
+        hi = min(30.0, 0.98 * (fs / 2))
+        b, a = butter(2, hi / (fs / 2), "high")
+        w = filtfilt(b, a, w)
+        return w / (w.std() + 1e-9)
+
+    def _add(self, x, bw_amp, hf_amp, rng):
+        x = np.asarray(x, float)
+        if x.shape[0] < self.siglen:
+            x = np.concatenate([x, np.zeros(self.siglen - x.shape[0])])
+        x = x[:self.siglen]
+        x = (x - x.mean()) / (x.std() + 1e-9)
+        x = x + bw_amp * self._low_wander(self.siglen, self.fs, rng)
+        x = x + hf_amp * self._hf_noise(self.siglen, self.fs, rng)
+        return x
+
+    @classmethod
+    def fit(cls, tgt_bw, tgt_hf, probe_sigs, fs=100.0, siglen=1000, seed=0, n_probe=40):
+        probe = list(probe_sigs)[:n_probe]
+        obj = cls(0.0, 0.0, fs=fs, siglen=siglen, seed=seed)
+
+        def measured(bw_amp, hf_amp, key):
+            vals = []
+            for i, s in enumerate(probe):
+                y = obj._add(s, bw_amp, hf_amp,
+                             np.random.default_rng(int((bw_amp + hf_amp) * 1e6) % 99991 + i))
+                vals.append(signal_modality_stats(y, fs)[key])
+            return float(np.mean(vals))
+
+        # 1) close bw with hf=0
+        lo, hi = 0.0, 3.0
+        for _ in range(16):
+            mid = (lo + hi) / 2
+            if measured(mid, 0.0, "bw_energy") < tgt_bw: lo = mid
+            else: hi = mid
+        bw_amp = (lo + hi) / 2
+        # 2) close hf with bw fixed
+        lo, hi = 0.0, 3.0
+        for _ in range(16):
+            mid = (lo + hi) / 2
+            if measured(bw_amp, mid, "hf_energy") < tgt_hf: lo = mid
+            else: hi = mid
+        hf_amp = (lo + hi) / 2
+        # 3) re-close bw once (hf adds a little low-band leakage)
+        lo, hi = 0.0, 3.0
+        for _ in range(12):
+            mid = (lo + hi) / 2
+            if measured(mid, hf_amp, "bw_energy") < tgt_bw: lo = mid
+            else: hi = mid
+        obj.bw_amp = (lo + hi) / 2; obj.hf_amp = hf_amp
+        return obj
+
+    def generate(self, clinical_leadI, rng=None):
+        rng = rng or self.rng
+        y = self._add(clinical_leadI, self.bw_amp, self.hf_amp, rng)
+        t = np.arange(self.siglen) / self.fs
+        g = 1.0 + 0.15 * np.sin(
+            2 * np.pi * rng.uniform(0.05, 0.3) * t + rng.uniform(0, 6.28))
+        y = y * g
+        return ((y - y.mean()) / (y.std() + 1e-9)).astype(np.float32)
+
+    def generate_batch(self, clinical_sigs, rng=None):
+        return np.stack([self.generate(s, rng=rng) for s in clinical_sigs])
