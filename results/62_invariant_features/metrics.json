@@ -1,0 +1,57 @@
+{
+  "seeds": 20,
+  "means": {
+    "clean": 0.7007534216827892,
+    "closed_aug": 0.7419576323787631,
+    "handcrafted": 0.9083260338966295,
+    "ensemble": 0.8828526537420365,
+    "ensemble_cal": 0.8900759867232748
+  },
+  "stds": {
+    "clean": 0.0483629175761839,
+    "closed_aug": 0.04726209011836635,
+    "handcrafted": 0.005742960067316778,
+    "ensemble": 0.02416700553781327,
+    "ensemble_cal": 0.023508109745256998
+  },
+  "comparisons": {
+    "closed_aug_vs_clean": {
+      "delta": 0.04120421069597381,
+      "wins": 15,
+      "p": 0.008829542914040965
+    },
+    "handcrafted_vs_clean": {
+      "delta": 0.2075726122138402,
+      "wins": 20,
+      "p": 2.2707437197914308e-13
+    },
+    "handcrafted_vs_cal": {
+      "delta": 0.1663684015178664,
+      "wins": 20,
+      "p": 4.889090272934076e-12
+    },
+    "ensemble_vs_clean": {
+      "delta": 0.18209923205924722,
+      "wins": 20,
+      "p": 3.010122675963407e-17
+    },
+    "ensemble_vs_handcraft": {
+      "delta": -0.025473380154592957,
+      "wins": 4,
+      "p": 0.0004789579813669732
+    },
+    "ensemble_cal_vs_cal": {
+      "delta": 0.14811835434451176,
+      "wins": 20,
+      "p": 2.706094088717192e-16
+    }
+  },
+  "honesty": [
+    "CinC finger != AW wrist",
+    "AF/N easy & RR-irregularity near-giveaway for AF",
+    "R-peak detection imperfect on noisy signal",
+    "handcrafted invariant by construction",
+    "single clinical train set",
+    "20 seeds"
+  ]
+}
