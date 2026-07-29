@@ -22,21 +22,28 @@ ranks them for exploration. Numbered experiments append to the main log when the
 | N2 device-adversarial content/style (DANN+GRL) | E58 | ❌ | backfires (unanchored adversary destroys pathology); triangulates N1 |
 | N3 cardiac-cycle per-clip test-time adaptation | E61 | ❌ | per-clip TTA hurts; cardiac locking ≈ random shift (framing irrelevant) |
 | N4 frequency-band modality dropout | E59 | ✅⚠️ | **band-scramble ties calibration with ZERO watch data — cheapest lever** |
+| N5 amplitude/baseline-invariant handcrafted features | E62/E62b | ✅⚠️ | **crushes AF (0.908, timing-specific); collapses 4× on morphology — rhythm-family lever** |
 | — real-AW SEX measurement (bonus, Hop's CSV catch) | E60/E60b | ⚠️ | sex morphology transfers near-intact; method gains small (in-band, no gap) |
 
 **Batch takeaways:**
-1. **One keeper (N4/band-scramble):** a no-data augmentation matching calibration — worth
-   folding into the toolbox. Follow-up: does it stack with calibration / under alignment?
+1. **Two keepers:** (N4/band-scramble) a no-data augmentation matching calibration; and
+   (N5/invariant-features) the strongest lever that exists **for rhythm-family tasks** — but
+   E62b confirms it's timing-specific (collapses on morphology), not general.
 2. **Three unpaired-invariance negatives (N1,N2,N3) converge on one lesson:** you cannot
    manufacture modality invariance without *train-time* correspondence. Distribution
    matching, adversarial scrubbing, and test-time self-supervision all fail to reach even
    calibration. The gold signal remains same-patient paired data (E51).
-3. **Measurement capability unlocked (E60):** we can now put real-Apple-Watch numbers on
+3. **Unifying axis discovered:** a method's gain ∝ how much of the target signal lives in the
+   axis it protects (rhythm vs morphology). Calibration (E47), alignment (E53), and invariant
+   features (E62/E62b) all obey this. Deploy two-track: **timing→invariant handcrafted features;
+   morphology→deep + alignment/calibration.**
+4. **Measurement capability unlocked (E60):** we can now put real-Apple-Watch numbers on
    levers. But **sex is a poor discriminator** (modality-robust, in-band); the decisive
    real-AW method test needs a **disease endpoint with out-of-band sensitivity** = real
    disease labels (pending, Hop acquiring from St Jude).
 
-**Not yet run:** N5 (physio-invariant handcrafted features), N6 (cycle translation, deprioritized).
+**Ideation list N1–N6 COMPLETE** (N6 cycle-translation deprioritized: GAN-heavy on CPU, synthesis
+historically underperformed alignment here — E6b/SelfMIS; left unrun by design).
 
 ---
 
@@ -107,7 +114,14 @@ ranks them for exploration. Numbered experiments append to the main log when the
   reliance on in-band content by construction. Cheap structured augmentation; a different
   mechanism from calibration (removal vs injection). Quick to run.
 
-### N5 — Physiologically-invariant handcrafted features (amplitude/baseline-free)
+### N5 — Physiologically-invariant handcrafted features (amplitude/baseline-free) → E62/E62b ✅⚠️ DONE
+- **RESULT (E62 AF, E62b morphology, 20 seeds each):** invariant-by-construction features
+  (RR dynamics + normalized spectral shape + Hilbert phase; verified bit-identical under the
+  8.25×+offset SJLIFE transform) CRUSH AF (handcrafted 0.908 vs deep 0.701, +0.208, var 8× lower)
+  — but E62b confirms this is TIMING-SPECIFIC: margin collapses 4× to +0.049 on morphology.
+  Rhythm-family lever, not general. Ensembling with the deep model does NOT help (F6
+  complementarity claim fails, both tasks). Establishes the timing→handcrafted / morphology→deep
+  two-track deployment split.
 - **Why:** SignalMC-MED (F6) claims handcrafted features are *complementary* to learned
   embeddings. Features invariant to amplitude scaling and baseline by construction
   (instantaneous phase, RR-interval dynamics, spectral-coherence structure) as an

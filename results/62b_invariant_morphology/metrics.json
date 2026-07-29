@@ -1,0 +1,46 @@
+{
+  "seeds": 20,
+  "task": "NORM-vs-Other morphology (E62 AF control)",
+  "means": {
+    "clean": 0.5605244988055428,
+    "closed_aug": 0.5583273727616817,
+    "handcrafted": 0.6099523766579116,
+    "ensemble": 0.6066813375515313,
+    "ensemble_cal": 0.6033268373580356
+  },
+  "stds": {
+    "clean": 0.02197832828051944,
+    "closed_aug": 0.016786724850335125,
+    "handcrafted": 0.012194185245763467,
+    "ensemble": 0.021735699698874997,
+    "ensemble_cal": 0.015220231974493362
+  },
+  "comparisons": {
+    "handcrafted_vs_clean": {
+      "delta": 0.0494278778523688,
+      "wins": 20,
+      "p": 1.9252241754046408e-08
+    },
+    "handcrafted_vs_cal": {
+      "delta": 0.05162500389622983,
+      "wins": 20,
+      "p": 1.6798040527067397e-09
+    },
+    "ensemble_vs_clean": {
+      "delta": 0.046156838745988506,
+      "wins": 20,
+      "p": 1.1346450979933495e-12
+    },
+    "ensemble_vs_handcraft": {
+      "delta": -0.003271039106380297,
+      "wins": 9,
+      "p": 0.45066784306750984
+    }
+  },
+  "honesty": [
+    "CinC-O weak catch-all (oracle ~0.75)",
+    "morphology intrinsically harder",
+    "same feature set as E62 (now expected near-useless \u2014 the point)",
+    "20 seeds"
+  ]
+}
