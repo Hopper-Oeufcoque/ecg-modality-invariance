@@ -1,0 +1,53 @@
+{
+  "seeds": 10,
+  "k_views": 6,
+  "tta_steps": 5,
+  "tta_lr": 0.005,
+  "means": {
+    "clean": 0.7011946839241076,
+    "closed_aug": 0.7368598913706541,
+    "shift_consist": 0.6778196258772516,
+    "beat_consist": 0.6746790859247994
+  },
+  "stds": {
+    "clean": 0.043713433845255424,
+    "closed_aug": 0.054000681309814336,
+    "shift_consist": 0.035143317479821364,
+    "beat_consist": 0.035192050923773796
+  },
+  "comparisons": {
+    "closed_aug_vs_clean": {
+      "delta": 0.035665207446546665,
+      "wins": 9,
+      "p": 0.0679539389193342
+    },
+    "shift_consist_vs_clean": {
+      "delta": -0.02337505804685578,
+      "wins": 0,
+      "p": 0.005805683100332081
+    },
+    "beat_consist_vs_clean": {
+      "delta": -0.02651559799930815,
+      "wins": 0,
+      "p": 0.002084776270878276
+    },
+    "beat_vs_shift": {
+      "delta": -0.0031405399524523704,
+      "wins": 1,
+      "p": 0.0005151084157045753
+    },
+    "beat_vs_calibration": {
+      "delta": -0.06218080544585482,
+      "wins": 1,
+      "p": 0.005247183781497539
+    }
+  },
+  "honesty": [
+    "CinC finger != AW wrist",
+    "AF/NORM easy",
+    "BN-affine-only per-clip TTA",
+    "K/steps/lr a priori",
+    "circular-shift wrap artifact",
+    "10 seeds"
+  ]
+}

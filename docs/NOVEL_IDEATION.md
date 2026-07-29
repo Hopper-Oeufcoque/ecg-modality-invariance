@@ -14,7 +14,34 @@ ranks them for exploration. Numbered experiments append to the main log when the
 
 ---
 
+## BATCH SUMMARY (N1–N4 complete, 2026-07-27)
+
+| Idea | Experiment | Verdict | One-line outcome |
+|------|-----------|---------|------------------|
+| N1 unpaired distribution align (CORAL/Sinkhorn) | E57 | ⚠️❌ | pairing irreplaceable — recovers only ⅓ gain, loses to calibration |
+| N2 device-adversarial content/style (DANN+GRL) | E58 | ❌ | backfires (unanchored adversary destroys pathology); triangulates N1 |
+| N3 cardiac-cycle per-clip test-time adaptation | E61 | ❌ | per-clip TTA hurts; cardiac locking ≈ random shift (framing irrelevant) |
+| N4 frequency-band modality dropout | E59 | ✅⚠️ | **band-scramble ties calibration with ZERO watch data — cheapest lever** |
+| — real-AW SEX measurement (bonus, Hop's CSV catch) | E60/E60b | ⚠️ | sex morphology transfers near-intact; method gains small (in-band, no gap) |
+
+**Batch takeaways:**
+1. **One keeper (N4/band-scramble):** a no-data augmentation matching calibration — worth
+   folding into the toolbox. Follow-up: does it stack with calibration / under alignment?
+2. **Three unpaired-invariance negatives (N1,N2,N3) converge on one lesson:** you cannot
+   manufacture modality invariance without *train-time* correspondence. Distribution
+   matching, adversarial scrubbing, and test-time self-supervision all fail to reach even
+   calibration. The gold signal remains same-patient paired data (E51).
+3. **Measurement capability unlocked (E60):** we can now put real-Apple-Watch numbers on
+   levers. But **sex is a poor discriminator** (modality-robust, in-band); the decisive
+   real-AW method test needs a **disease endpoint with out-of-band sensitivity** = real
+   disease labels (pending, Hop acquiring from St Jude).
+
+**Not yet run:** N5 (physio-invariant handcrafted features), N6 (cycle translation, deprioritized).
+
+---
+
 ## Ranked exploration backlog
+
 
 ### 🥇 N1 — Drop the paired-hardware dependency (unpaired distribution alignment) → E57 ⚠️❌ DONE
 - **RESULT (E57, 20 seeds):** unpaired distribution matching recovers only ~⅓ of the
@@ -55,7 +82,12 @@ ranks them for exploration. Numbered experiments append to the main log when the
   *device* discriminator + label anchor for ECG modality is uncommon.
 - **CPU:** cheap (one extra small head + GRL).
 
-### 🥉 N3 — Per-clip test-time adaptation via cardiac-cycle self-consistency
+### 🥉 N3 — Per-clip test-time adaptation via cardiac-cycle self-consistency → E61 ❌ DONE
+- **RESULT (E61, 10 seeds):** FAILS. Both per-clip TTA arms (BN-affine adapt via
+  entropy+consistency) drop below clean floor (beat 0.675, shift 0.678, both 0/10, p<0.01).
+  Cardiac locking irrelevant: beat≈shift (Δ−0.003). Tiny-batch BN corruption + entropy-min
+  sharpening wrong predictions + R-peak-aligned beats too duplicate to be informative.
+  Train-time methods (calibration 0.737) unbeaten. Kills N3.
 - **Why:** the realistic deployment scenario is a *single 30 s watch clip*. Novel
   ECG-specific SSL objective: R-peak-align the beats within the clip, enforce embedding
   consistency across beats (a clip is one patient/rhythm → beats should embed alike);
