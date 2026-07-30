@@ -1,0 +1,59 @@
+{
+  "seeds": 40,
+  "wander_cut_hz": 1.5,
+  "hf_band_hz": [
+    1.5,
+    3.0
+  ],
+  "lambda": 0.1,
+  "temp": 0.1,
+  "verdict": "WANDER-SPECIFIC (claim CONFIRMED)",
+  "means": {
+    "align": 0.8051603455337901,
+    "scramble_align": 0.8324334696956764,
+    "hfscramble_align": 0.7943647688135453,
+    "noise_align": 0.7886176197621556
+  },
+  "stds": {
+    "align": 0.025273626844064215,
+    "scramble_align": 0.023510691165934457,
+    "hfscramble_align": 0.027110397341763095,
+    "noise_align": 0.025355309830119514
+  },
+  "comparisons": {
+    "scramble_vs_align": {
+      "delta": 0.027273124161886382,
+      "wins": 38,
+      "p": 1.351935247763647e-14
+    },
+    "hf_vs_align": {
+      "delta": -0.010795576720244726,
+      "wins": 12,
+      "p": 0.0034426784691240853
+    },
+    "noise_vs_align": {
+      "delta": -0.01654272577163456,
+      "wins": 8,
+      "p": 1.3588148605195331e-05
+    },
+    "scramble_vs_hf": {
+      "delta": 0.03806870088213111,
+      "wins": 39,
+      "p": 2.953811740810583e-14
+    },
+    "scramble_vs_noise": {
+      "delta": 0.04381584993352094,
+      "wins": 39,
+      "p": 1.9862065688654272e-14
+    }
+  },
+  "honesty": [
+    "CinC finger != AW wrist",
+    "AF/NORM easy",
+    "band edges + lambda a priori",
+    "noise magnitude-matched to scramble delta-RMS (fair generic control)",
+    "NOT zero-data (uses alignment pairs)",
+    "single train set",
+    "40 seeds"
+  ]
+}
