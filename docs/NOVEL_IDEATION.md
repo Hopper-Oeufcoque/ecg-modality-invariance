@@ -108,7 +108,10 @@ historically underperformed alignment here — E6b/SelfMIS; left unrun by design
   ZERO watch data + ZERO target profile; beats clean +0.038 (13/20, p=0.006) → cheapest
   lever yet. band_DROP (random attenuation) HURTS (0.666, −0.035) — removing energy strips
   real P-wave/ST content (info-destruction motif). Still ≪ paired 0.807 (shares the ~0.74
-  augmentation ceiling). Follow-up queued: does scramble stack with calibration / under paired?
+  augmentation ceiling). Follow-up: E63 tested scramble+calibration stack →
+  0.764, beats scramble sig (+0.026 p=0.026) but NOT calibration sig (+0.022 p=0.10,
+  10/20) → suggestive partial complementarity, underpowered at 20 seeds. Still queued:
+  scramble UNDER paired alignment; 30–40-seed rerun to resolve the combo vs calibration.
 - **Why:** the gap is baseline-wander (out-of-band). Instead of *injecting* wander
   (calibration), randomly **drop/scramble the low-freq band** during training → forces
   reliance on in-band content by construction. Cheap structured augmentation; a different

@@ -1,0 +1,65 @@
+{
+  "seeds": 20,
+  "cutoff_hz": 1.5,
+  "verdict": "REDUNDANT",
+  "best_single": "calibration",
+  "means": {
+    "clean": 0.7007534216827892,
+    "calibration": 0.7419576323787631,
+    "scramble": 0.7385094001574376,
+    "scramble_calib": 0.7643040324035418,
+    "joint_paired": 0.8071667647984849
+  },
+  "stds": {
+    "clean": 0.0483629175761839,
+    "calibration": 0.04726209011836635,
+    "scramble": 0.046087684237055664,
+    "scramble_calib": 0.04220437367664107,
+    "joint_paired": 0.022849564274900983
+  },
+  "comparisons": {
+    "calibration_vs_clean": {
+      "delta": 0.04120421069597381,
+      "wins": 15,
+      "p": 0.008829542914040965
+    },
+    "scramble_vs_clean": {
+      "delta": 0.0377559784746483,
+      "wins": 13,
+      "p": 0.006096031882671399
+    },
+    "scramble_calib_vs_clean": {
+      "delta": 0.0635506107207526,
+      "wins": 16,
+      "p": 0.0003476027201403094
+    },
+    "scramble_calib_vs_scramble": {
+      "delta": 0.025794632246104295,
+      "wins": 15,
+      "p": 0.02561476739360102
+    },
+    "scramble_calib_vs_calib": {
+      "delta": 0.02234640002477879,
+      "wins": 10,
+      "p": 0.10403303938198244
+    },
+    "scramble_calib_vs_bestsingle": {
+      "delta": 0.02234640002477879,
+      "wins": 10,
+      "p": 0.10403303938198244
+    },
+    "scramble_calib_vs_paired": {
+      "delta": -0.04286273239494328,
+      "wins": 1,
+      "p": 6.851464196389829e-05
+    }
+  },
+  "honesty": [
+    "CinC finger != AW wrist",
+    "AF/NORM easy",
+    "cutoff 1.5Hz a priori",
+    "combo uses watch data (via calibration) \u2014 NOT zero-data like pure scramble",
+    "single clinical train set",
+    "20 seeds"
+  ]
+}
