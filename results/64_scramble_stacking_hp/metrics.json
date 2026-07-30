@@ -1,0 +1,74 @@
+{
+  "seeds": 40,
+  "cutoff_hz": 1.5,
+  "lambda": 0.1,
+  "temp": 0.1,
+  "verdict_q1_scramble_calib": "REDUNDANT/NULL",
+  "verdict_q2_scramble_align": "COMPLEMENTARY/STACKS",
+  "means": {
+    "clean": 0.6984880583974487,
+    "calibration": 0.7446315034892133,
+    "scramble": 0.7324016793920037,
+    "scramble_calib": 0.7570821914243735,
+    "align": 0.8051603455337901,
+    "scramble_align": 0.8324334696956764
+  },
+  "stds": {
+    "clean": 0.04499142955900092,
+    "calibration": 0.047023040961671966,
+    "scramble": 0.04382298560710316,
+    "scramble_calib": 0.049915023423507746,
+    "align": 0.025273626844064215,
+    "scramble_align": 0.023510691165934457
+  },
+  "comparisons": {
+    "calibration_vs_clean": {
+      "delta": 0.04614344509176442,
+      "wins": 33,
+      "p": 3.364306508851287e-06
+    },
+    "scramble_vs_clean": {
+      "delta": 0.03391362099455496,
+      "wins": 29,
+      "p": 5.7650396485342406e-05
+    },
+    "scramble_calib_vs_scramble": {
+      "delta": 0.024680512032369775,
+      "wins": 30,
+      "p": 0.00037451569514376396
+    },
+    "scramble_calib_vs_calib": {
+      "delta": 0.012450687935160316,
+      "wins": 21,
+      "p": 0.23310222439931177
+    },
+    "align_vs_clean": {
+      "delta": 0.10667228713634133,
+      "wins": 39,
+      "p": 4.184190081785269e-15
+    },
+    "align_vs_calib": {
+      "delta": 0.060528842044576925,
+      "wins": 36,
+      "p": 8.990486190569204e-09
+    },
+    "scramble_align_vs_align": {
+      "delta": 0.027273124161886382,
+      "wins": 38,
+      "p": 1.351935247763647e-14
+    },
+    "scramble_align_vs_clean": {
+      "delta": 0.13394541129822773,
+      "wins": 40,
+      "p": 4.146039494970918e-18
+    }
+  },
+  "honesty": [
+    "CinC finger != AW wrist",
+    "AF/NORM easy",
+    "cutoff 1.5Hz + lambda 0.1 a priori",
+    "combos w/ calibration or alignment use watch data \u2014 NOT zero-data",
+    "single clinical train set",
+    "40 seeds"
+  ]
+}
